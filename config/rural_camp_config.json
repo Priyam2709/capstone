@@ -1,0 +1,105 @@
+{
+  "project_info": {
+    "name": "Explainable AI-Based Diabetic Retinopathy Screening System - Rural Edge Profile",
+    "problem_id": "SIH26038",
+    "version": "1.0.0",
+    "target_domain": "Battery-powered Handheld / Laptop Deployment at Rural Camp"
+  },
+  "paths": {
+    "root": ".",
+    "raw_data_dir": "data/raw",
+    "processed_data_dir": "data/processed",
+    "labels_dir": "data/labels",
+    "models_dir": "models",
+    "checkpoints_dir": "models/checkpoints",
+    "results_dir": "results",
+    "logs_dir": "results/logs",
+    "reports_dir": "results/reports",
+    "visualizations_dir": "results/visualizations"
+  },
+  "dataset": {
+    "supported_datasets": ["APTOS", "EyePACS", "IDRiD", "Messidor"],
+    "active_dataset": "APTOS",
+    "split_ratios": {
+      "train": 0.70,
+      "validation": 0.15,
+      "test": 0.15
+    },
+    "random_seed": 42
+  },
+  "image": {
+    "target_size": [224, 224, 3],
+    "color_space": "RGB",
+    "normalize_range": [0.0, 1.0],
+    "crop_black_borders": true,
+    "circular_mask": true
+  },
+  "quality_assessment": {
+    "thresholds": {
+      "blur_min_laplacian_variance": 85.0,
+      "brightness_min": 35.0,
+      "brightness_max": 225.0,
+      "contrast_min_rms": 20.0,
+      "noise_max_std": 25.0,
+      "sharpness_min_tenengrad": 120.0
+    },
+    "weights": {
+      "blur": 0.30,
+      "brightness": 0.20,
+      "contrast": 0.20,
+      "noise": 0.10,
+      "sharpness": 0.20
+    },
+    "score_thresholds": {
+      "good": 70.0,
+      "needs_enhancement": 45.0
+    },
+    "categories": ["Good", "Needs Enhancement", "Retake Image"]
+  },
+  "preprocessing": {
+    "pipeline": ["median_filter", "illumination_correction", "clahe"],
+    "clahe_clip_limit": 2.5,
+    "clahe_tile_grid_size": [8, 8],
+    "median_filter_kernel": [3, 3]
+  },
+  "model": {
+    "supported_architectures": ["mobilenetv2", "resnet18"],
+    "selected_architecture": "mobilenetv2",
+    "num_classes": 5,
+    "class_names": [
+      "0 - No DR",
+      "1 - Mild NPDR",
+      "2 - Moderate NPDR",
+      "3 - Severe NPDR",
+      "4 - Proliferative DR"
+    ],
+    "pretrained_weights": "imagenet",
+    "dropout_rate": 0.3
+  },
+  "training": {
+    "batch_size": 16,
+    "max_epochs": 20,
+    "initial_learning_rate": 0.0002,
+    "optimizer": "adam"
+  },
+  "explainability": {
+    "method": "Grad-CAM",
+    "target_layer": "auto",
+    "colormap": "jet",
+    "overlay_alpha": 0.5,
+    "highlight_lesions": true,
+    "generate_clinical_text": true
+  },
+  "reporting": {
+    "organization": "Rural Community Eye Care Initiative - SIH26038",
+    "export_format": "pdf",
+    "referral_threshold_stage": 2
+  },
+  "rural_deployment": {
+    "offline_mode": true,
+    "field_worker_id": "RURAL-ASHA-001",
+    "camp_location": "PHC Mobile Unit",
+    "language": "hi_en",
+    "save_telemetry": true
+  }
+}

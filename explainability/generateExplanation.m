@@ -1,0 +1,113 @@
+function explanation = generateExplanation(stageCode, confidencePercent, lesionStats)
+% GENERATEEXPLANATION Produces clinical explainability narrative based on Grad-CAM saliency.
+%
+%   explanation = generateExplanation(stageCode)
+%   explanation = generateExplanation(stageCode, confidencePercent)
+%   explanation = generateExplanation(stageCode, confidencePercent, lesionStats)
+%
+%   Inputs:
+%       stageCode         - Integer ICDR stage (0 to 4).
+%       confidencePercent - (Optional) Model diagnostic confidence percentage (Default: 90.0).
+%       lesionStats       - (Optional) Struct from segmentSalientLesions().
+%
+%   Outputs:
+%       explanation       - Struct containing:
+%           .summaryText      - Comprehensive natural language clinical justification
+%           .lesionTypes      - Characteristic pathological lesions identified
+%           .dominantQuadrant - Anatomical location of highest focal model attention
+%           .coveragePercent  - Percentage of retinal field with high saliency
+%           .referralUrgency  - Urgency level for rural health workers
+%
+%   Author: SIH26038 Capstone Engineering Team
+%   Date: September 2026
+
+    if nargin < 2 || isempty(confidencePercent)
+        confidencePercent = 90.0;
+    end
+
+    if nargin < 3 || isempty(lesionStats)
+        lesionStats = struct('coveragePercent', 3.5, ...
+                             'dominantQuadrant', 'Central Macula & Superior-Temporal', ...
+                             'numClusters', 2);
+    end
+
+    stageNames = { ...
+        '0 - No Diabetic Retinopathy (No DR)', ...
+        '1 - Mild Non-Proliferative DR (Mild NPDR)', ...
+        '2 - Moderate Non-Proliferative DR (Moderate NPDR)', ...
+        '3 - Severe Non-Proliferative DR (Severe NPDR)', ...
+        '4 - Proliferative Diabetic Retinopathy (PDR)' ...
+    };
+
+    stageName = stageNames{max(1, min(5, stageCode + 1))};
+    covPct = lesionStats.coveragePercent;
+    quad = lesionStats.dominantQuadrant;
+    nClusters = lesionStats.numClusters;
+
+    switch stageCode
+        case 0
+            lesionTypes = 'No microvascular lesions, intact retinal architecture, clear foveal avascular zone';
+            referralUrgency = 'Routine annual review; no specialist referral required';
+            narrative = sprintf([...
+                'The AI model predicted %s with %.1f%% confidence. ' ...
+                'Grad-CAM saliency is uniformly low and diffuse across the retinal field (Coverage: %.1f%%). ' ...
+                'No focal capillary outpouchings (microaneurysms), lipid exudates, or hemorrhages were detected. ' ...
+                'The optic disc margin is sharp and the central macular architecture is preserved. ' ...
+                'RECOMMENDATION: Routine annual eye examination and blood glucose counseling at the local PHC.'], ...
+                stageName, confidencePercent, covPct);
+
+        case 1
+            lesionTypes = 'Isolated microaneurysms (tiny red capillary outpouchings)';
+            referralUrgency = 'Semi-annual surveillance (6 months); PHC glycemic management';
+            narrative = sprintf([...
+                'The AI model predicted %s with %.1f%% confidence. ' ...
+                'Grad-CAM highlights %d focal micro-lesion cluster(s) predominantly located in the %s (Coverage: %.1f%%). ' ...
+                'The saliency pattern is consistent with isolated microaneurysms without significant hard exudates or macular edema. ' ...
+                'RECOMMENDATION: Schedule follow-up non-mydriatic screening in 6 months; emphasize strict diabetic diet and HbA1c control.'], ...
+                stageName, confidencePercent, nClusters, quad, covPct);
+
+        case 2
+            lesionTypes = 'Microaneurysms, blot hemorrhages, and hard yellow lipid exudates';
+            referralUrgency = 'Non-urgent tele-ophthalmology referral (within 30 days)';
+            narrative = sprintf([...
+                'The AI model predicted %s with %.1f%% confidence. ' ...
+                'Grad-CAM reveals %d distinct focal attention hotspots concentrated in the %s (Coverage: %.1f%%). ' ...
+                'Deep feature activations correlate with multiple microaneurysms, blot intraretinal hemorrhages, and glistening hard exudates. ' ...
+                'RECOMMENDATION: SIGHT-THREATENING RISK: Transmit clinical screening report with Grad-CAM to District Hospital tele-ophthalmology network for evaluation.'], ...
+                stageName, confidencePercent, nClusters, quad, covPct);
+
+        case 3
+            lesionTypes = 'Extensive intraretinal hemorrhages across quadrants, venous beading, cotton wool spots';
+            referralUrgency = 'Priority hospital referral (within 7 - 14 days)';
+            narrative = sprintf([...
+                'The AI model predicted %s with %.1f%% confidence. ' ...
+                'Grad-CAM saliency demonstrates extensive, high-intensity activation spanning multiple retinal quadrants (%s, Coverage: %.1f%%). ' ...
+                'Strong feature convergence aligns with extensive blot hemorrhages (meeting the 4-2-1 clinical criteria), soft cotton-wool exudates (micro-infarcts), and venous beading. ' ...
+                'RECOMMENDATION: HIGH PRIORITY REFERRAL: Patient requires formal dilated fundus examination and laser/anti-VEGF evaluation within 1 to 2 weeks.'], ...
+                stageName, confidencePercent, quad, covPct);
+
+        case 4
+            lesionTypes = 'Neovascularization fronds (NVD/NVE), fibrous proliferation, preretinal/vitreous hemorrhage';
+            referralUrgency = 'EMERGENCY TERTIARY REFERRAL (within 48 hours - Imminent Vision Loss)';
+            narrative = sprintf([...
+                'CRITICAL ALERT: The AI model predicted %s with %.1f%% confidence. ' ...
+                'Grad-CAM demonstrates severe focal activations centered near the %s (Coverage: %.1f%%). ' ...
+                'Saliency pattern strongly indicates pathological neovascularization (fragile new vessel growth) and preretinal fibrous fronds with risk of vitreous hemorrhage or tractional retinal detachment. ' ...
+                'RECOMMENDATION: EMERGENCY REFERRAL: Immediate transportation to tertiary vitreoretinal center within 48 hours is mandatory to prevent permanent blindness.'], ...
+                stageName, confidencePercent, quad, covPct);
+
+        otherwise
+            lesionTypes = 'Inconclusive retinal microvascular pattern';
+            referralUrgency = 'Clinical specialist consultation required';
+            narrative = 'Diagnostic pattern is ambiguous; physical examination by an ophthalmologist is recommended.';
+    end
+
+    explanation = struct();
+    explanation.summaryText      = narrative;
+    explanation.lesionTypes      = lesionTypes;
+    explanation.dominantQuadrant = quad;
+    explanation.coveragePercent  = covPct;
+    explanation.referralUrgency  = referralUrgency;
+    explanation.stageName        = stageName;
+    explanation.confidencePercent= confidencePercent;
+end

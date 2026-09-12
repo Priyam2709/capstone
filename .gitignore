@@ -1,0 +1,23 @@
+# MATLAB artifacts
+*.asv
+*.slxc
+*.autosave
+*.m~
+*.mex*
+slprj/
+*.mat.tmp*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# System & OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Scratch / temporary test directories
+results/scratch_tests/
+*.tmp
