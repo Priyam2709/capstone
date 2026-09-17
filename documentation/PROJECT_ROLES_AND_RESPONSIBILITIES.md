@@ -1,6 +1,7 @@
 # Project Engineering Roles & Work Breakdown Structure
 
-**Project:** Explainable AI-Based Diabetic Retinopathy Screening System for Rural India  
+## Project: DRISHTI-AI
+### (Diabetic Retinopathy Intelligent Screening with Hierarchical Triage & Interpretability)
 **Smart India Hackathon Problem Statement:** `SIH26038`  
 **Application Type:** Commercial-Grade Medical SaMD (Software as a Medical Device) Class-B  
 **Team Composition:** 6 Members (3 Machine Learning, 2 Data Science, 1 Full Stack)  
@@ -14,37 +15,37 @@ This document establishes the official engineering roles, module ownerships, cod
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                 END-TO-END PIPELINE DATAFLOW                                │
+│                             DRISHTI-AI END-TO-END PIPELINE DATAFLOW                         │
 └─────────────────────────────────────────────────────────────────────────────────────────────┘
 
- [1. DS MEMBER 1]             [2. DS MEMBER 2]              [3. ML MEMBER 1]
+ [1. Subham Panigrahi]        [2. Konduri Mrunal]           [3. Rajbardhan Kumar]
  ┌──────────────────────┐     ┌──────────────────────┐      ┌──────────────────────┐
- │ • Multi-Dataset Curation│  │ • L*a*b* CLAHE Enhance │    │ • Transfer CNN Backbones│
- │ • Class Imbalance    │────►│ • Illumination Leveling│───►│ • Custom Retinal Head│
- │ • 5-Metric IQA Gate  │     │ • Denoising (PSNR/SSIM)│    │ • Adam Training Pipeline│
+ │ • Multi-Dataset Table│  │ • L*a*b* CLAHE Enhance │    │ • Transfer CNN Models│
+ │ • Class Imbalance    │────►│ • Illumination Level │───►│ • Custom Retinal Head│
+ │ • 5-Metric IQA Gate  │     │ • Denoising (PSNR)   │    │ • Adam Train Pipeline│
  └──────────────────────┘     └──────────────────────┘      └──────────────────────┘
             │                                                           │
             ▼                                                           ▼
- [6. FULL STACK MEMBER]       [5. ML MEMBER 3]              [4. ML MEMBER 2]
+ [6. Vaibhav Raj]             [5. Kadambala Likhith]        [4. Priyam Saxena]
  ┌──────────────────────┐     ┌──────────────────────┐      ┌──────────────────────┐
  │ • 18-View Workstation│     │ • Grad-CAM Backprop  │      │ • Edge Inference <50ms│
- │ • PDF Report Engine  │◄────│ • Lesion Segmentation│◄─────│ • Softmax Triage Rule│
+ │ • PDF Report Engine  │◄────│ • Lesion Bounding    │◄─────│ • Softmax Triage Rule│
  │ • ABDM FHIR JSON Hub │     │ • Quadrant Narratives│      │ • Kappa (κ=0.9124)   │
  └──────────────────────┘     └──────────────────────┘      └──────────────────────┘
 ```
 
 ---
 
-## 2. Team Responsibility Matrix (Quick Reference)
+## 2. Team Responsibility Matrix & Official Roster
 
-| Member | Domain & Role | Primary Modules Owned | Key Technical Artifacts |
-| :--- | :--- | :--- | :--- |
-| **DS Member 1** | **Dataset Engineering & IQA Gate** | `data/`<br>`qualityAssessment/` | • Clean multi-dataset tables (APTOS, EyePACS)<br>• Synthetic fundus generator (`createSyntheticDataset.m`)<br>• 5-parameter IQA gatekeeper (`assessImageQuality.m`) |
-| **DS Member 2** | **Retinal Enhancement & Queue Simulation** | `preprocessing/`<br>`simulink/` | • 6-stage $L^*a^*b^*$ CLAHE pipeline (`preprocessPipeline.m`)<br>• PSNR / SSIM fidelity metrics ($>31.8\text{ dB}$, $>0.94$)<br>• Simulink discrete-event queue model (`runCampSimulation.m`) |
-| **ML Member 1** | **Deep Learning Backbones & Training** | `classification/buildModel.m`<br>`training/`<br>`models/` | • 4 transfer learning backbones (ResNet-50, MobileNetV2)<br>• Retinal classification head surgery (GAP + Dropout 0.40)<br>• Adam training loop with piecewise decay (`trainModel.m`) |
-| **ML Member 2** | **Inference Engine & Clinical Metrics** | `classification/predictDR.m`<br>`classification/evaluateMetrics.m`<br>`testing/` | • Real-time edge inference engine ($42.5\text{ ms}$ on CPU)<br>• 4-tier clinical triage logic (Routine vs Referable DR)<br>• Quadratic Weighted Kappa ($\kappa_w = 0.9124$) & ROC/AUC |
-| **ML Member 3** | **Explainable AI (Grad-CAM) & Lesions** | `explainability/` | • Grad-CAM feature attribution engine (`computeGradCAM.m`)<br>• Otsu lesion segmentation & bounding boxes (`segmentSalientLesions.m`)<br>• Anatomical quadrant mapping & plain-language text |
-| **Full Stack** | **Workstation GUI & Reporting Hub** | `gui/`<br>`reports/`<br>`main.m`<br>`utils/` | • 18-screen App Designer workstation (`DRScreeningApp_exported.m`)<br>• A4 Clinical PDF report with Quad-Image panel (`exportReportPDF.m`)<br>• ABDM FHIR R4 JSON & MAT export hub (`exportReportFHIR.m`) |
+| S.No | Student Name | Reg. No. | Domain & Role | Primary Modules Owned | Key Technical Artifacts |
+| :---: | :--- | :---: | :--- | :--- | :--- |
+| **1** | **Subham Panigrahi** | `12312794` | **Data Science Member 1**<br>(Dataset & IQA Gate) | `data/`<br>`qualityAssessment/` | • Clean multi-dataset tables (APTOS, EyePACS)<br>• Synthetic fundus generator (`createSyntheticDataset.m`)<br>• 5-parameter IQA gatekeeper (`assessImageQuality.m`) |
+| **2** | **Konduri Mrunal** | `12316339` | **Data Science Member 2**<br>(CLAHE & Queues) | `preprocessing/`<br>`simulink/` | • 6-stage $L^*a^*b^*$ CLAHE pipeline (`preprocessPipeline.m`)<br>• PSNR / SSIM fidelity metrics ($>31.8\text{ dB}$, $>0.94$)<br>• Simulink discrete-event queue model (`runCampSimulation.m`) |
+| **3** | **Rajbardhan Kumar** | `12326119` | **ML Member 1**<br>(CNN Architectures & Training) | `classification/buildModel.m`<br>`training/`<br>`models/` | • 4 transfer learning backbones (ResNet-50, MobileNetV2)<br>• Retinal classification head surgery (GAP + Dropout 0.40)<br>• Adam training loop with piecewise decay (`trainModel.m`) |
+| **4** | **Priyam Saxena** | `12313674` | **ML Member 2**<br>(Inference & Clinical Metrics) | `classification/predictDR.m`<br>`classification/evaluateMetrics.m`<br>`testing/` | • Real-time edge inference engine ($42.5\text{ ms}$ on CPU)<br>• 4-tier clinical triage logic (Routine vs Referable DR)<br>• Quadratic Weighted Kappa ($\kappa_w = 0.9124$) & ROC/AUC |
+| **5** | **Kadambala Likhith** | `12314034` | **ML Member 3**<br>(Explainable AI & Lesions) | `explainability/` | • Grad-CAM feature attribution engine (`computeGradCAM.m`)<br>• Otsu lesion segmentation & bounding boxes (`segmentSalientLesions.m`)<br>• Anatomical quadrant mapping & plain-language text |
+| **6** | **Vaibhav Raj** | `12325142` | **Full Stack Member**<br>(GUI, Reports & System Hub) | `gui/`<br>`reports/`<br>`main.m`<br>`utils/` | • 18-screen App Designer workstation (`DRScreeningApp_exported.m`)<br>• A4 Clinical PDF report with Quad-Image panel (`exportReportPDF.m`)<br>• ABDM FHIR R4 JSON & MAT export hub (`exportReportFHIR.m`) |
 
 ---
 
@@ -52,7 +53,7 @@ This document establishes the official engineering roles, module ownerships, cod
 
 ```
 ========================================================================================
- MEMBER 1: DATA SCIENCE — DATASET CURATION & IMAGE QUALITY GATEKEEPER
+ MEMBER 1: SUBHAM PANIGRAHI (12312794) — DATA SCIENCE: DATASET CURATION & IQA GATE
 ========================================================================================
 ```
 ### 🎯 Objective
@@ -93,7 +94,7 @@ Ensure that all incoming retinal data is medically valid, balanced, and opticall
 
 ```
 ========================================================================================
- MEMBER 2: DATA SCIENCE — RETINAL ENHANCEMENT & QUEUEING SIMULATION
+ MEMBER 2: KONDURI MRUNAL (12316339) — DATA SCIENCE: RETINAL ENHANCEMENT & QUEUE SIMULATION
 ========================================================================================
 ```
 ### 🎯 Objective
@@ -133,7 +134,7 @@ Enhance retinal vascular contrast and subtle micro-lesions while mathematically 
 
 ```
 ========================================================================================
- MEMBER 3: MACHINE LEARNING — DEEP LEARNING ARCHITECTURES & TRAINING
+ MEMBER 3: RAJBARDHAN KUMAR (12326119) — MACHINE LEARNING: DEEP LEARNING ARCHITECTURES & TRAINING
 ========================================================================================
 ```
 ### 🎯 Objective
@@ -170,7 +171,7 @@ Architect, perform network surgery, and train transfer-learned convolutional neu
 
 ```
 ========================================================================================
- MEMBER 4: MACHINE LEARNING — EDGE INFERENCE & CLINICAL VALIDATION
+ MEMBER 4: PRIYAM SAXENA (12313674) — MACHINE LEARNING: EDGE INFERENCE & CLINICAL VALIDATION
 ========================================================================================
 ```
 ### 🎯 Objective
@@ -208,7 +209,7 @@ Deploy deep learning models for sub-50ms inference on non-GPU edge laptops, prog
 
 ```
 ========================================================================================
- MEMBER 5: MACHINE LEARNING — EXPLAINABLE AI (XAI) & LESION LOCALIZATION
+ MEMBER 5: KADAMBALA LIKHITH (12314034) — MACHINE LEARNING: EXPLAINABLE AI (XAI) & LESIONS
 ========================================================================================
 ```
 ### 🎯 Objective
@@ -238,7 +239,7 @@ Transform the black-box CNN into an interpretable clinical tool by computing Gra
 
 ```
 ========================================================================================
- MEMBER 6: FULL STACK — WORKSTATION GUI, REPORTING HUB & INTEGRATION
+ MEMBER 6: VAIBHAV RAJ (12325142) — FULL STACK: WORKSTATION GUI, REPORTING HUB & INTEGRATION
 ========================================================================================
 ```
 ### 🎯 Objective

@@ -1,10 +1,11 @@
 # PROJECT PROPOSAL & SYNOPSIS
 
-## Explainable AI-Based Diabetic Retinopathy Screening System for Rural Primary Health Centres
-
+## Project Name: DRISHTI-AI
+### (Diabetic Retinopathy Intelligent Screening with Hierarchical Triage & Interpretability)
+**Subtitle:** An Explainable Edge-AI Retinal Screening and Clinical Decision Support System for Rural Primary Health Centres  
 **Problem Statement ID:** Smart India Hackathon (SIH26038)  
 **Target Domain:** Healthcare, Telemedicine & AI for Rural Public Health  
-**Academic Submission:** Project Synopsis / Phase-1 Engineering Proposal  
+**Academic Submission:** Capstone Project Proposal & Engineering Synopsis  
 **Team Composition:** 6 Members (3 Machine Learning, 2 Data Science, 1 Full Stack)  
 **Document Status:** Initial Proposal & Technical Approach  
 
@@ -86,19 +87,33 @@ To address these challenges, we propose an integrated software engineering solut
 
 To ensure modularity and accountability, the project responsibilities are divided across **3 Machine Learning students, 2 Data Science students, and 1 Full Stack student**:
 
+### 📋 Official Team Roster & Module Ownership
+
+| S.No | Student Name | Registration No. | Domain | Primary Subsystems Owned |
+| :---: | :--- | :---: | :--- | :--- |
+| **1** | **Subham Panigrahi** | `12312794` | **Data Science** | Dataset Ingestion, Class Balance & 5-Metric IQA Gatekeeper |
+| **2** | **Konduri Mrunal** | `12316339` | **Data Science** | L*a*b* CLAHE Retinal Enhancement & Simulink Queue Simulation |
+| **3** | **Rajbardhan Kumar** | `12326119` | **Machine Learning** | Transfer Learning CNN Backbones, Head Surgery & Training Loop |
+| **4** | **Priyam Saxena** | `12313674` | **Machine Learning** | Real-Time Edge Inference Engine, Clinical Triage & Validation |
+| **5** | **Kadambala Likhith** | `12314034` | **Machine Learning** | Grad-CAM Saliency Engine, Lesion Bounding & Text Justifications |
+| **6** | **Vaibhav Raj** | `12325142` | **Full Stack** | 18-Screen Workstation GUI, A4 PDF Reports & ABDM FHIR R4 Hub |
+
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                 TEAM WORK BREAKDOWN (6 ROLES)                               │
 ├──────────────────────┬─────────────────────────────┬────────────────────────────────────────┤
 │  DATA SCIENCE (2)    │     MACHINE LEARNING (3)    │            FULL STACK (1)              │
 ├──────────────────────┼─────────────────────────────┼────────────────────────────────────────┤
-│ DS 1: Dataset & IQA  │ ML 1: Architecture & Train  │ FS 1: 18-Screen Workstation GUI,       │
-│ DS 2: CLAHE & Queues │ ML 2: Inference & Metrics   │       Reporting Engine & ABDM FHIR Hub │
-│                      │ ML 3: Grad-CAM Explainable  │                                        │
+│ 1. Subham Panigrahi  │ 3. Rajbardhan Kumar         │ 6. Vaibhav Raj                         │
+│    (Dataset & IQA)   │    (CNN Architecture/Train) │    (18-View GUI, Reports, ABDM FHIR)   │
+│ 2. Konduri Mrunal    │ 4. Priyam Saxena            │                                        │
+│    (CLAHE & Queues)  │    (Inference & Validation) │                                        │
+│                      │ 5. Kadambala Likhith        │                                        │
+│                      │    (Grad-CAM Saliency & XAI)│                                        │
 └──────────────────────┴─────────────────────────────┴────────────────────────────────────────┘
 ```
 
-### 👤 Member 1: Data Science — Dataset Engineering & Image Quality Gate (IQA)
+### 👤 Member 1: Subham Panigrahi (Reg. No: 12312794) — Data Science: Dataset Curation & IQA Gate
 * **Assigned Modules:** `data/` and `qualityAssessment/`
 * **Planned Tasks:**
   1. **Dataset Ingestion & Standardization:** Aggregate and sanitize image records from APTOS-2019, EyePACS, IDRiD, and Messidor. Map varying ground-truth labels into the standard 5-stage ICDR scale.
@@ -112,7 +127,7 @@ To ensure modularity and accountability, the project responsibilities are divide
      - Edge sharpness via Tenengrad Sobel gradient energy.
   5. **Triage Gatekeeper Logic:** Combine metrics into an overall 0–100 score producing a 3-way verdict: `Good`, `Needs Enhancement`, or `Retake Image`.
 
-### 👤 Member 2: Data Science — Retinal Enhancement Pipeline & Queue Simulation
+### 👤 Member 2: Konduri Mrunal (Reg. No: 12316339) — Data Science: Retinal Enhancement & Queue Simulation
 * **Assigned Modules:** `preprocessing/` and `simulink/`
 * **Planned Tasks:**
   1. **$L^*a^*b^*$ Enhancement Pipeline:** Convert RGB fundus captures to $L^*a^*b^*$ color space to decouple luminance ($L^*$) from chromatic components ($a^*, b^*$).
@@ -121,7 +136,7 @@ To ensure modularity and accountability, the project responsibilities are divide
   4. **Quantitative Metric Benchmarking:** Compute objective fidelity metrics: Peak Signal-to-Noise Ratio ($\text{PSNR} > 31.8\text{ dB}$), Structural Similarity Index ($\text{SSIM} > 0.94$), and Contrast Improvement Index.
   5. **Simulink Operational Queue Model:** Formulate mathematical queueing models ($M/M/1$, $M/M/c$ Erlang-C, and $M/G/1$ Pollaczek-Khinchine) and build a discrete-event simulation of an 8-hour rural camp to evaluate patient wait times and camera bottlenecks.
 
-### 👤 Member 3: Machine Learning — Deep Transfer Learning Architectures & Training
+### 👤 Member 3: Rajbardhan Kumar (Reg. No: 12326119) — Machine Learning: Deep Transfer Learning & Training
 * **Assigned Modules:** `classification/buildModel.m`, `training/`, and `models/`
 * **Planned Tasks:**
   1. **Model Backbone Construction:** Implement transfer learning on 4 distinct CNN backbones:
@@ -133,7 +148,7 @@ To ensure modularity and accountability, the project responsibilities are divide
   3. **Stochastic Data Augmentation:** Program affine augmentations: random horizontal/vertical reflections, continuous rotations ($-180^\circ$ to $+180^\circ$), scaling, and shear.
   4. **Training Optimization:** Program the training pipeline using the Adam optimizer ($\beta_1=0.9, \beta_2=0.999$, $\text{LR}=10^{-4}$), Categorical Cross-Entropy loss, piecewise learning rate decay schedule ($\gamma=0.1$ every 10 epochs), early stopping with validation patience, and checkpoint weight serialization.
 
-### 👤 Member 4: Machine Learning — Edge Inference Engine & Clinical Validation
+### 👤 Member 4: Priyam Saxena (Reg. No: 12313674) — Machine Learning: Edge Inference & Clinical Validation
 * **Assigned Modules:** `classification/predictDR.m`, `classification/evaluateMetrics.m`, and `testing/`
 * **Planned Tasks:**
   1. **Real-Time Edge Inference Engine:** Develop `predictDR.m` to execute forward passes in $< 50\text{ ms}$ on standard non-GPU laptop CPUs, returning calibrated softmax probabilities.
@@ -149,7 +164,7 @@ To ensure modularity and accountability, the project responsibilities are divide
      - Clinical Sensitivity ($\ge 90\%$) and Specificity ($\ge 90\%$) on referable DR ($\text{Stage} \ge 2$).
   4. **Hardware Latency Benchmarking:** Profile execution times and memory footprint across edge hardware.
 
-### 👤 Member 5: Machine Learning — Explainable AI (Grad-CAM) & Lesion Localization
+### 👤 Member 5: Kadambala Likhith (Reg. No: 12314034) — Machine Learning: Explainable AI (Grad-CAM) & Lesions
 * **Assigned Modules:** `explainability/`
 * **Planned Tasks:**
   1. **Grad-CAM Algorithm:** Compute gradients of the target class score $y^c$ with respect to feature activation maps $A^k$ of the final convolutional layer (`activation_49_relu` / `out_relu`), pool gradient weights $\alpha_k^c$, and apply $\text{ReLU}$:
@@ -158,7 +173,7 @@ To ensure modularity and accountability, the project responsibilities are divide
   3. **Morphological Lesion Segmentation:** Apply Otsu’s thresholding and connected component analysis (`bwconncomp`) to isolate focal lesion hotspots (microaneurysms, hemorrhages, hard exudates) and draw bounding boxes.
   4. **Quadrant Mapping & Plain-Language Clinical Justification:** Map detected lesion centroids to retinal quadrants (Superotemporal, Inferotemporal, etc.) and generate automated natural-language justifications for rural health workers (ASHAs).
 
-### 👤 Member 6: Full Stack — Workstation GUI, Reporting Hub & Systems Integration
+### 👤 Member 6: Vaibhav Raj (Reg. No: 12325142) — Full Stack: Workstation GUI, Reporting Hub & Systems Integration
 * **Assigned Modules:** `gui/`, `reports/`, `main.m`, `utils/`, and `config/`
 * **Planned Tasks:**
   1. **18-Screen Workstation GUI:** Build the clinical workstation interface in MATLAB App Designer:
