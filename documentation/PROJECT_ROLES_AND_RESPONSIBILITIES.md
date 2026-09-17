@@ -41,9 +41,9 @@ This document establishes the official engineering roles, module ownerships, cod
 | S.No | Student Name | Reg. No. | Domain & Role | Primary Modules Owned | Key Technical Artifacts |
 | :---: | :--- | :---: | :--- | :--- | :--- |
 | **1** | **Subham Panigrahi** | `12312794` | **Data Science Member 1**<br>(Dataset & IQA Gate) | `data/`<br>`qualityAssessment/` | • Clean multi-dataset tables (APTOS, EyePACS)<br>• Synthetic fundus generator (`createSyntheticDataset.m`)<br>• 5-parameter IQA gatekeeper (`assessImageQuality.m`) |
-| **2** | **Konduri Mrunal** | `12316339` | **Data Science Member 2**<br>(CLAHE & Queues) | `preprocessing/`<br>`simulink/` | • 6-stage $L^*a^*b^*$ CLAHE pipeline (`preprocessPipeline.m`)<br>• PSNR / SSIM fidelity metrics ($>31.8\text{ dB}$, $>0.94$)<br>• Simulink discrete-event queue model (`runCampSimulation.m`) |
-| **3** | **Rajbardhan Kumar** | `12326119` | **ML Member 1**<br>(CNN Architectures & Training) | `classification/buildModel.m`<br>`training/`<br>`models/` | • 4 transfer learning backbones (ResNet-50, MobileNetV2)<br>• Retinal classification head surgery (GAP + Dropout 0.40)<br>• Adam training loop with piecewise decay (`trainModel.m`) |
-| **4** | **Priyam Saxena** | `12313674` | **ML Member 2**<br>(Inference & Clinical Metrics) | `classification/predictDR.m`<br>`classification/evaluateMetrics.m`<br>`testing/` | • Real-time edge inference engine ($42.5\text{ ms}$ on CPU)<br>• 4-tier clinical triage logic (Routine vs Referable DR)<br>• Quadratic Weighted Kappa ($\kappa_w = 0.9124$) & ROC/AUC |
+| **2** | **Konduri Mrunal** | `12316339` | **Data Science Member 2**<br>(CLAHE & Queues) | `preprocessing/`<br>`simulink/` | • 6-stage L*a*b* CLAHE pipeline (`preprocessPipeline.m`)<br>• PSNR / SSIM fidelity metrics (PSNR > 31.8 dB, SSIM > 0.94)<br>• Simulink discrete-event queue model (`runCampSimulation.m`) |
+| **3** | **Rajbardhan Kumar** | `12326119` | **ML Member 1**<br>(CNN Architectures & Training) | `classification/buildModel.m`<br>`training/`<br>`models/` | • 4 transfer learning backbones (ResNet-50, MobileNetV2)<br>• Retinal classification head surgery (GAP + 40% Dropout)<br>• Adam training loop with piecewise decay (`trainModel.m`) |
+| **4** | **Priyam Saxena** | `12313674` | **ML Member 2**<br>(Inference & Clinical Metrics) | `classification/predictDR.m`<br>`classification/evaluateMetrics.m`<br>`testing/` | • Real-time edge inference engine (42.5 ms on standard CPU)<br>• 4-tier clinical triage logic (Routine vs Referable DR)<br>• Quadratic Weighted Kappa (score = 0.9124) & ROC/AUC |
 | **5** | **Kadambala Likhith** | `12314034` | **ML Member 3**<br>(Explainable AI & Lesions) | `explainability/` | • Grad-CAM feature attribution engine (`computeGradCAM.m`)<br>• Otsu lesion segmentation & bounding boxes (`segmentSalientLesions.m`)<br>• Anatomical quadrant mapping & plain-language text |
 | **6** | **Vaibhav Raj** | `12325142` | **Full Stack Member**<br>(GUI, Reports & System Hub) | `gui/`<br>`reports/`<br>`main.m`<br>`utils/` | • 18-screen App Designer workstation (`DRScreeningApp_exported.m`)<br>• A4 Clinical PDF report with Quad-Image panel (`exportReportPDF.m`)<br>• ABDM FHIR R4 JSON & MAT export hub (`exportReportFHIR.m`) |
 
@@ -82,7 +82,7 @@ Ensure that all incoming retinal data is medically valid, balanced, and opticall
    - **Focus Blur:** Modified Laplacian Variance over masked retinal area.
    - **Illumination Uniformity:** 4-quadrant balance and mean brightness calculation.
    - **Vascular Contrast:** Root Mean Square (RMS) dynamic range contrast.
-   - **Sensor Noise:** Immerkaer high-frequency noise standard deviation via $3 \times 3$ Laplacian filtering.
+   - **Sensor Noise:** Immerkaer high-frequency noise standard deviation via 3x3 Laplacian filtering.
    - **Edge Sharpness:** Tenengrad Sobel gradient energy accumulation.
 5. **Quality Decision Classifier:** Combine individual scores into an overall score (0–100) and output a 3-category clinical verdict: `Good`, `Needs Enhancement`, or `Retake Image`.
 
@@ -117,12 +117,12 @@ Enhance retinal vascular contrast and subtle micro-lesions while mathematically 
 - [`testing/TestSimulinkQueue.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/testing/TestSimulinkQueue.m)
 
 ### 🛠️ Development Tasks
-1. **$L^*a^*b^*$ Preprocessing Pipeline:** Convert fundus images into $L^*a^*b^*$ color space to decouple luminance from chromatic channels ($a^*, b^*$).
-2. **CLAHE Enhancement:** Implement Contrast Limited Adaptive Histogram Equalization with Rayleigh distribution clipping ($8 \times 8$ tile grid, clip limit $0.02$) to highlight microaneurysms without over-amplifying background noise.
-3. **Morphological Illumination Subtraction:** Estimate uneven background illumination using a disk structuring element ($r = 30$) and subtract it to correct illumination falloff.
-4. **Noise Filtering & Quantitative Validation:** Apply 2D median filtering ($3 \times 3$) and calculate objective metrics: Peak Signal-to-Noise Ratio ($\text{PSNR} > 31.8\text{ dB}$), Structural Similarity ($\text{SSIM} > 0.94$), and Contrast Improvement Index.
+1. **L*a*b* Preprocessing Pipeline:** Convert fundus images into L*a*b* color space to decouple pure brightness (the L* channel) from color hues (the a* and b* channels).
+2. **CLAHE Enhancement:** Implement Contrast Limited Adaptive Histogram Equalization (using an 8x8 local tile grid with a 2% contrast clip limit) to highlight microaneurysms without over-amplifying background noise.
+3. **Morphological Illumination Subtraction:** Estimate uneven background illumination using a 30-pixel disk structuring element and subtract it to correct illumination falloff.
+4. **Noise Filtering & Quantitative Validation:** Apply 2D median filtering (3x3 kernel) and calculate objective fidelity metrics: Peak Signal-to-Noise Ratio (PSNR above 31.8 dB), Structural Similarity Index (SSIM above 0.94, where 1.0 is identical), and Contrast Improvement Index.
 5. **Discrete-Event Queue Simulation:**
-   - Model the mathematical queueing dynamics ($M/M/1$, $M/M/c$ Erlang-C, and $M/G/1$ Pollaczek-Khinchine).
+   - Model the mathematical queueing dynamics (single-server, multi-server Erlang-C wait formulas, and variable exam-time models).
    - Simulate an 8-hour rural camp with Poisson patient arrivals, camera acquisition, IQA retake loops (8%), AI inference, and tele-doctor review.
    - Evaluate bottleneck sensitivity (1 camera vs 2 cameras) to verify operational throughput (raising capacity from 115 to 218 patients/day).
 
@@ -157,11 +157,11 @@ Architect, perform network surgery, and train transfer-learned convolutional neu
    - `resnet18`: Compact residual baseline (~11.7M parameters).
 2. **Network Surgery:** Excised default ImageNet 1000-class heads and graft custom retinal classification heads:
    - Global Average Pooling (GAP) layer.
-   - Dropout layer ($p = 0.40$) to prevent clinical over-fitting.
+   - Dropout layer (40% deactivation rate during training to prevent clinical overfitting).
    - Fully connected dense layer with 5 output neurons.
    - Softmax activation layer.
-3. **Data Augmentation Engine:** Configure geometric augmentations (`configureAugmenter.m`): random horizontal/vertical reflections, continuous rotations ($-180^\circ$ to $+180^\circ$), scaling ($0.9$ to $1.1$), and shearing.
-4. **Training Optimization Engine:** Implement the master training orchestrator using the Adam optimizer ($\beta_1 = 0.9, \beta_2 = 0.999$, $\text{initial LR} = 10^{-4}$), Categorical Cross-Entropy loss, piecewise learning rate decay schedule ($\gamma = 0.1$ every 10 epochs), early stopping tracking validation loss (patience 5), and checkpoint serialization.
+3. **Data Augmentation Engine:** Configure geometric augmentations (`configureAugmenter.m`): random horizontal/vertical reflections, continuous rotations (from -180 to +180 degrees), scaling (0.9 to 1.1x), and shearing.
+4. **Training Optimization Engine:** Implement the master training orchestrator using the Adam optimizer (initial learning rate of 0.0001 with momentum 0.9 and 0.999), Categorical Cross-Entropy loss, piecewise learning rate decay schedule (reducing learning rate by 10x every 10 epochs), early stopping tracking validation loss (patience 5 epochs), and checkpoint serialization.
 
 ### 🔄 Interfaces
 - **Input:** Preprocessed training/validation datastores from DS Member 2.
@@ -188,17 +188,17 @@ Deploy deep learning models for sub-50ms inference on non-GPU edge laptops, prog
 - [`testing/profilePipeline.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/testing/profilePipeline.m)
 
 ### 🛠️ Development Tasks
-1. **High-Speed Inference Engine:** Develop `predictDR.m` accepting image arrays or paths, standardizing input shapes ($224 \times 224 \times 3$), running forward passes in $< 50\text{ ms}$ on standard CPUs, and extracting softmax confidence.
+1. **High-Speed Inference Engine:** Develop `predictDR.m` accepting image arrays or paths, standardizing input shapes (224x224x3 pixels), running forward passes in under 50 milliseconds on standard non-GPU laptop CPUs, and extracting softmax confidence.
 2. **Clinical Triage Decision Logic:** Program medical referral rules:
-   - Stages 0–1 (No DR, Mild NPDR) $\rightarrow$ `Routine Annual Surveillance`.
-   - Stage 2 (Moderate NPDR) $\rightarrow$ `Non-Urgent Ophthalmic Referral` (within 30 days).
-   - Stage 3 (Severe NPDR) $\rightarrow$ `Urgent District Hospital Referral` (within 7 days).
-   - Stage 4 (Proliferative DR) $\rightarrow$ `Emergency Vitreoretinal Referral` (within 24–48 hours).
+   - Stages 0–1 (No DR, Mild NPDR) → `Routine Annual Surveillance`.
+   - Stage 2 (Moderate NPDR) → `Non-Urgent Ophthalmic Referral` (within 30 days).
+   - Stage 3 (Severe NPDR) → `Urgent District Hospital Referral` (within 7 days).
+   - Stage 4 (Proliferative DR) → `Emergency Vitreoretinal Referral` (within 24–48 hours).
 3. **Multi-Class Evaluation Engine:** Program statistical metrics:
    - 5x5 normalized confusion matrix.
-   - **Quadratic Weighted Kappa ($\kappa_w = 0.9124$)** penalizing distant clinical stage misclassifications.
-   - One-vs-Rest multi-class ROC curves and macro-average Area Under Curve ($\text{AUC} = 0.9782$).
-   - Clinical Sensitivity ($93.5\%$) and Specificity ($92.1\%$) for referable DR ($\text{Stage} \ge 2$).
+   - **Quadratic Weighted Kappa (score = 0.9124)** penalizing distant clinical stage misclassifications.
+   - One-vs-Rest multi-class ROC curves and macro-average Area Under Curve (AUC = 0.9782).
+   - Clinical Sensitivity (93.5%) and Specificity (92.1%) for referable cases (Stage 2 Moderate DR and higher).
 4. **Latency & Profiling Benchmark:** Measure end-to-end stage latencies, memory footprint, and frames-per-second on target edge laptops.
 
 ### 🔄 Interfaces
@@ -224,9 +224,12 @@ Transform the black-box CNN into an interpretable clinical tool by computing Gra
 - [`testing/TestExplainability.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/testing/TestExplainability.m)
 
 ### 🛠️ Development Tasks
-1. **Grad-CAM Algorithm:** Compute gradients of the predicted class score $y^c$ with respect to feature activation maps $A^k$ of the final convolutional layer (`activation_49_relu` for ResNet-50, `out_relu` for MobileNetV2). Pool gradient weights $\alpha_k^c$ via global average pooling and apply $\text{ReLU}$:
-   $$L_{\text{Grad-CAM}}^c = \text{ReLU}\left(\sum_k \alpha_k^c A^k\right)$$
-2. **Smooth Heatmap Colormap Overlay:** Normalize activation maps to $[0, 1]$ and blend them onto retinal images using Jet, Turbo, or Hot colormaps with adjustable alpha blending ($\alpha \in [0, 1]$).
+1. **Grad-CAM Algorithm:** Compute sensitivity gradients of the predicted class score with respect to feature activation maps of the final convolutional layer (`activation_49_relu` for ResNet-50, `out_relu` for MobileNetV2), pool gradient weights across all pixels, and combine them through a positive activation filter (ReLU):
+   ```
+   Grad-CAM Heatmap = Positive Values of [ Sum of (Feature Importance Weights × Feature Maps) ]
+   ```
+   This discards negative features and preserves visual evidence that directly supports the diagnosis.
+2. **Smooth Heatmap Colormap Overlay:** Normalize activation maps to a 0 to 1 scale and blend them onto retinal images using Jet, Turbo, or Hot colormaps with adjustable alpha transparency (0% to 100%).
 3. **Morphological Lesion Segmentation:** Apply Otsu adaptive thresholding to the saliency map, perform connected component labeling (`bwconncomp`), and extract bounding box coordinates surrounding microaneurysms, hemorrhages, and exudates.
 4. **Anatomical Quadrant Localization:** Classify lesion centroids into Superotemporal (ST), Superonasal (SN), Inferotemporal (IT), Inferonasal (IN), and Macular regions.
 5. **Clinical Natural-Language Justification:** Generate plain-language clinical narrative text for non-specialist health workers (ASHAs) explaining the biological rationale behind the AI's diagnosis.
@@ -266,14 +269,14 @@ Develop the enterprise 18-screen clinical GUI workstation, hospital-grade A4 PDF
 1. **18-Screen App Designer Workstation:** Implement the complete clinical workstation:
    - Global top bar: Active Patient pill, offline edge mode badge, and Dark/Light theme toggle.
    - 18-screen sidebar navigation switching between all clinical screens.
-   - Medical canvas tools: Interactive crosshair measurement calipers (measuring micro-lesions in $\mu\text{m}$), pan/zoom controls, and Grad-CAM opacity sliders.
+   - Medical canvas tools: Interactive crosshair measurement calipers (measuring micro-lesions in micrometers, µm), pan/zoom controls, and Grad-CAM opacity sliders.
 2. **Hospital-Grade PDF Report Engine:** Engineer publication-grade A4 PDF report generation complying with NPCB&VI standards:
    - Institutional branding header with hospital logo placeholder.
    - **Quad-Image diagnostic panel** (Raw Capture, Enhanced CLAHE, Grad-CAM Saliency, Lesion Bounding Boxes).
    - Attending doctor observations box and physician signature lines.
 3. **Healthcare Standards Integration (ABDM FHIR R4):** Build the automated JSON exporter adhering to Ayushman Bharat Digital Mission schemas (`DiagnosticReport` and `Observation` resources mapped to SNOMED-CT and LOINC codes).
 4. **Multi-Format Export Hub:** Implement export pipelines for 200 DPI PNG summary cards, MATLAB `.mat` data archives, and district referral CSV rosters.
-5. **System Orchestrator & Stress Testing:** Maintain [`main.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/main.m) as the unified entry driver and engineer `TestStressAndEdgeCases.m` to ensure system stability under zero-byte files, extreme exposure (0/255 lux), and non-square aspect ratios.
+5. **System Orchestrator & Stress Testing:** Maintain [`main.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/main.m) as the unified entry driver and engineer `TestStressAndEdgeCases.m` to ensure system stability under zero-byte files, extreme exposure (from complete darkness to blinding flash glare), and non-square aspect ratios.
 
 ### 🔄 Interfaces
 - **Input:** Combines outputs from DS Member 1 (IQA), DS Member 2 (enhanced images & queues), ML Member 2 (predictions), and ML Member 3 (XAI heatmaps).

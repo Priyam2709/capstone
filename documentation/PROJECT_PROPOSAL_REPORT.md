@@ -60,11 +60,11 @@ To address these challenges, we propose an integrated software engineering solut
 
 ### Key Proposed Features:
 1. **Automated Image Quality Assessment (IQA):** An optical quality gate calculating modified Laplacian variance (blur), 4-quadrant illumination uniformity, RMS contrast, Immerkaer noise, and Tenengrad sharpness. It will automatically prompt operators to retake poor captures before deep learning inference.
-2. **Retinal Feature Contrast Enhancement:** A specialized 6-stage image enhancement pipeline operating in $L^*a^*b^*$ color space using Contrast Limited Adaptive Histogram Equalization (CLAHE) and morphological background subtraction to highlight subtle microaneurysms and hemorrhages without color distortion.
+2. **Retinal Feature Contrast Enhancement:** A specialized 6-stage image enhancement pipeline operating in the L*a*b* color space using Contrast Limited Adaptive Histogram Equalization (CLAHE) and morphological background subtraction to highlight subtle microaneurysms and hemorrhages without color distortion.
 3. **Deep Transfer Learning Inference:** Multi-class classification based on transfer-learned convolutional backbones (**ResNet-50** for high-capacity benchmark, **MobileNetV2** for ultra-lightweight edge deployment) outputting calibrated probabilities across all 5 International Clinical Diabetic Retinopathy (ICDR) grades.
 4. **Explainable AI (Grad-CAM) & Lesion Bounding:** Generation of class-discriminative gradient activation maps, alpha-blended heatmap overlays, Otsu-segmented lesion bounding boxes, and natural-language justifications indicating the dominant pathological quadrant (e.g., Inferotemporal, Macular).
 5. **Hospital-Grade Reporting & ABDM FHIR Integration:** 1-click generation of A4 clinical diagnostic PDF reports featuring a Quad-Image panel (Raw, CLAHE, Grad-CAM, Lesions), physician signature lines, and machine-readable JSON records complying with **Ayushman Bharat Digital Mission (ABDM) FHIR Release 4** schemas.
-6. **Simulink Operational Queue Simulation:** Discrete-event queueing models ($M/M/1$, $M/M/c$, and $M/G/1$) simulating patient flows and camera station bottlenecks in rural community screening camps.
+6. **Simulink Operational Queue Simulation:** Discrete-event queueing models (single-server, multi-server, and general service queues) simulating patient flows and camera station bottlenecks in rural community screening camps.
 
 ---
 
@@ -79,7 +79,7 @@ To address these challenges, we propose an integrated software engineering solut
 | **Queueing & Operations** | **Simulink & SimEvents** | Discrete-event entity modeling of camp registration, camera acquisition, and tele-review queues. |
 | **Verification & Linting** | **Python 3.10+ / Custom Linters** | Automated cross-platform syntax validation, bracket matching, and CI integrity checks. |
 | **Clinical Standards** | **HL7 FHIR Release 4 / SNOMED-CT / LOINC** | Conformance with National Digital Health Mission (NDHM / ABDM) for interoperability with government hospital EHR systems. |
-| **Benchmarking Datasets** | **APTOS 2019, EyePACS, IDRiD, Messidor** | Clinically labeled fundus datasets providing diverse ethnicities, camera angles ($45^\circ / 50^\circ$), and lighting variations. |
+| **Benchmarking Datasets** | **APTOS 2019, EyePACS, IDRiD, Messidor** | Clinically labeled fundus datasets providing diverse ethnicities, camera angles (45-degree and 50-degree fields of view), and lighting variations. |
 
 ---
 
@@ -130,11 +130,11 @@ To ensure modularity and accountability, the project responsibilities are divide
 ### 👤 Member 2: Konduri Mrunal (Reg. No: 12316339) — Data Science: Retinal Enhancement & Queue Simulation
 * **Assigned Modules:** `preprocessing/` and `simulink/`
 * **Planned Tasks:**
-  1. **$L^*a^*b^*$ Enhancement Pipeline:** Convert RGB fundus captures to $L^*a^*b^*$ color space to decouple luminance ($L^*$) from chromatic components ($a^*, b^*$).
-  2. **Rayleigh CLAHE Implementation:** Implement Contrast Limited Adaptive Histogram Equalization ($8 \times 8$ tile grid, clip limit $0.02$) to accentuate microaneurysms and hemorrhages without over-amplifying noise.
-  3. **Morphological Illumination Flattening:** Estimate non-uniform illumination falloff via large disk structuring element opening ($r = 30$) and subtract it from the background.
-  4. **Quantitative Metric Benchmarking:** Compute objective fidelity metrics: Peak Signal-to-Noise Ratio ($\text{PSNR} > 31.8\text{ dB}$), Structural Similarity Index ($\text{SSIM} > 0.94$), and Contrast Improvement Index.
-  5. **Simulink Operational Queue Model:** Formulate mathematical queueing models ($M/M/1$, $M/M/c$ Erlang-C, and $M/G/1$ Pollaczek-Khinchine) and build a discrete-event simulation of an 8-hour rural camp to evaluate patient wait times and camera bottlenecks.
+  1. **L*a*b* Enhancement Pipeline:** Convert RGB fundus captures to L*a*b* color space to decouple pure brightness (the L* channel) from color components (the a* and b* channels).
+  2. **Rayleigh CLAHE Implementation:** Implement Contrast Limited Adaptive Histogram Equalization (using an 8x8 local tile grid with a 2% contrast clip limit) to accentuate microaneurysms and hemorrhages without over-amplifying background noise.
+  3. **Morphological Illumination Flattening:** Estimate non-uniform illumination falloff using a 30-pixel disk neighborhood and subtract it to correct background lighting gradients.
+  4. **Quantitative Metric Benchmarking:** Compute objective fidelity metrics: Peak Signal-to-Noise Ratio (PSNR above 31.8 dB), Structural Similarity Index (SSIM above 0.94, where 1.0 represents perfect structural match), and Contrast Improvement Index.
+  5. **Simulink Operational Queue Model:** Formulate mathematical queueing models (single-camera, multi-camera Erlang-C wait formulas, and variable exam-time models) and build a discrete-event simulation of an 8-hour rural camp to evaluate patient wait times and camera bottlenecks.
 
 ### 👤 Member 3: Rajbardhan Kumar (Reg. No: 12326119) — Machine Learning: Deep Transfer Learning & Training
 * **Assigned Modules:** `classification/buildModel.m`, `training/`, and `models/`
@@ -144,33 +144,36 @@ To ensure modularity and accountability, the project responsibilities are divide
      - **MobileNetV2** (inverted residual bottlenecks for edge hardware, ~3.5M parameters)
      - **EfficientNet-B0** (compound scaling, ~5.3M parameters)
      - **ResNet-18** (fast baseline for low-power devices)
-  2. **Custom Network Surgery:** Replace default ImageNet heads with a custom retinal classification head: Global Average Pooling (GAP), Dropout ($p = 0.40$), a 5-unit Fully Connected layer, and Softmax activation.
-  3. **Stochastic Data Augmentation:** Program affine augmentations: random horizontal/vertical reflections, continuous rotations ($-180^\circ$ to $+180^\circ$), scaling, and shear.
-  4. **Training Optimization:** Program the training pipeline using the Adam optimizer ($\beta_1=0.9, \beta_2=0.999$, $\text{LR}=10^{-4}$), Categorical Cross-Entropy loss, piecewise learning rate decay schedule ($\gamma=0.1$ every 10 epochs), early stopping with validation patience, and checkpoint weight serialization.
+  2. **Custom Network Surgery:** Replace default ImageNet heads with a custom retinal classification head: Global Average Pooling (GAP), a Dropout layer (40% deactivation rate to prevent clinical overfitting), a 5-unit Fully Connected layer, and Softmax activation.
+  3. **Stochastic Data Augmentation:** Program affine augmentations: random horizontal/vertical reflections, continuous rotations (from -180 to +180 degrees), scaling, and shear.
+  4. **Training Optimization:** Program the training pipeline using the Adam optimizer (initial learning rate of 0.0001 with momentum 0.9), Categorical Cross-Entropy loss, piecewise learning rate decay schedule (reducing learning rate by 10x every 10 epochs), early stopping with validation patience, and checkpoint weight serialization.
 
 ### 👤 Member 4: Priyam Saxena (Reg. No: 12313674) — Machine Learning: Edge Inference & Clinical Validation
 * **Assigned Modules:** `classification/predictDR.m`, `classification/evaluateMetrics.m`, and `testing/`
 * **Planned Tasks:**
-  1. **Real-Time Edge Inference Engine:** Develop `predictDR.m` to execute forward passes in $< 50\text{ ms}$ on standard non-GPU laptop CPUs, returning calibrated softmax probabilities.
+  1. **Real-Time Edge Inference Engine:** Develop `predictDR.m` to execute forward passes in under 50 milliseconds on standard non-GPU laptop CPUs, returning calibrated softmax probabilities.
   2. **Clinical Triage Decision Logic:** Program medical referral rules:
-     - Stages 0–1 (No DR, Mild NPDR) $\rightarrow$ Routine annual community surveillance.
-     - Stage 2 (Moderate NPDR) $\rightarrow$ Non-urgent ophthalmic referral within 30 days.
-     - Stage 3 (Severe NPDR) $\rightarrow$ Urgent referral to District Hospital within 7 days.
-     - Stage 4 (Proliferative DR) $\rightarrow$ Emergency vitreoretinal referral within 24–48 hours.
+     - Stages 0–1 (No DR, Mild NPDR) → Routine annual community surveillance.
+     - Stage 2 (Moderate NPDR) → Non-urgent ophthalmic referral within 30 days.
+     - Stage 3 (Severe NPDR) → Urgent referral to District Hospital within 7 days.
+     - Stage 4 (Proliferative DR) → Emergency vitreoretinal referral within 24–48 hours.
   3. **Multi-Class Statistical Evaluation:** Evaluate:
      - Normalized 5x5 confusion matrix.
-     - Cohen’s **Quadratic Weighted Kappa ($\kappa_w \ge 0.90$)** penalizing distant grade misdiagnoses.
-     - One-vs-Rest ROC curves and multi-class Area Under Curve ($\text{AUC} \ge 0.95$).
-     - Clinical Sensitivity ($\ge 90\%$) and Specificity ($\ge 90\%$) on referable DR ($\text{Stage} \ge 2$).
+     - Cohen’s **Quadratic Weighted Kappa (target score >= 0.90)** penalizing distant grade misdiagnoses.
+     - One-vs-Rest ROC curves and multi-class Area Under Curve (AUC >= 0.95).
+     - Clinical Sensitivity (>= 90%) and Specificity (>= 90%) on referable cases (Stage 2 Moderate DR and above).
   4. **Hardware Latency Benchmarking:** Profile execution times and memory footprint across edge hardware.
 
 ### 👤 Member 5: Kadambala Likhith (Reg. No: 12314034) — Machine Learning: Explainable AI (Grad-CAM) & Lesions
 * **Assigned Modules:** `explainability/`
 * **Planned Tasks:**
-  1. **Grad-CAM Algorithm:** Compute gradients of the target class score $y^c$ with respect to feature activation maps $A^k$ of the final convolutional layer (`activation_49_relu` / `out_relu`), pool gradient weights $\alpha_k^c$, and apply $\text{ReLU}$:
-     $$L_{\text{Grad-CAM}}^c = \text{ReLU}\left(\sum_k \alpha_k^c A^k\right)$$
-  2. **Saliency Blending:** Normalize activation values to $[0, 1]$ and overlay heatmaps on fundus photographs with custom colormaps (Turbo, Jet, Hot) and variable opacity ($\alpha$).
-  3. **Morphological Lesion Segmentation:** Apply Otsu’s thresholding and connected component analysis (`bwconncomp`) to isolate focal lesion hotspots (microaneurysms, hemorrhages, hard exudates) and draw bounding boxes.
+  1. **Grad-CAM Algorithm:** Compute the sensitivity gradients of the predicted DR stage score with respect to feature maps of the final convolutional layer (`activation_49_relu` / `out_relu`), calculate an importance weight for each feature channel, and combine them through a positive evidence filter (ReLU):
+     ```
+     Grad-CAM Heatmap = Positive Values of [ Sum of (Feature Importance Weights × Feature Maps) ]
+     ```
+     This discards negative or irrelevant background features and retains only visual patterns that positively indicate disease.
+  2. **Saliency Blending:** Normalize activation values to a 0 to 1 scale and overlay heatmaps on fundus photographs with custom colormaps (Turbo, Jet, Hot) and variable opacity (from 0% to 100% transparency).
+  3. **Morphological Lesion Segmentation:** Apply Otsu adaptive thresholding and connected component analysis (`bwconncomp`) to isolate focal lesion hotspots (microaneurysms, hemorrhages, hard exudates) and draw bounding boxes.
   4. **Quadrant Mapping & Plain-Language Clinical Justification:** Map detected lesion centroids to retinal quadrants (Superotemporal, Inferotemporal, etc.) and generate automated natural-language justifications for rural health workers (ASHAs).
 
 ### 👤 Member 6: Vaibhav Raj (Reg. No: 12325142) — Full Stack: Workstation GUI, Reporting Hub & Systems Integration
@@ -179,14 +182,14 @@ To ensure modularity and accountability, the project responsibilities are divide
   1. **18-Screen Workstation GUI:** Build the clinical workstation interface in MATLAB App Designer:
      - Top navigation bar: Active patient pill, offline status indicator, and dynamic Dark/Light theme switching.
      - 18-screen sidebar navigation switching between all clinical screens.
-     - Interactive medical canvas: crosshair calipers measuring micro-lesions in $\mu\text{m}$, pan/zoom controls, and Grad-CAM opacity sliders.
+     - Interactive medical canvas: crosshair calipers measuring micro-lesions in micrometers (µm), pan/zoom controls, and Grad-CAM opacity sliders.
   2. **Hospital-Grade PDF Report Engine:** Develop the official A4 diagnostic PDF generator complying with NPCB&VI standards:
      - Institutional branding & logo header.
      - **Quad-Image diagnostic panel** (Raw Fundus, Enhanced CLAHE, Grad-CAM Saliency, Lesion Bounding Boxes).
      - Attending doctor observations box and physician signature lines.
   3. **ABDM FHIR R4 Integration:** Program the JSON export engine conforming to Ayushman Bharat Digital Mission schemas (`DiagnosticReport` and `Observation` resources mapped to SNOMED-CT and LOINC codes).
   4. **Multi-Format Export Hub:** Implement export pipelines for 200 DPI PNG summary cards, MATLAB `.mat` data archives, and district referral CSV rosters.
-  5. **Master Orchestration & System Testing:** Maintain `main.m` as the unified entry driver and build stress test suites to ensure system stability under zero-byte files, extreme lighting (0/255 lux), and non-square images.
+  5. **Master Orchestration & System Testing:** Maintain `main.m` as the unified entry driver and build stress test suites to ensure system stability under zero-byte files, extreme lighting (from complete darkness to blinding flash glare), and non-square images.
 
 ---
 
@@ -206,14 +209,14 @@ Raw Fundus Image ──► [Quality Gatekeeper] ──► Focus Blur (Modified L
 - **How It Works:** Before running deep learning, the capture is evaluated across 5 mathematical indicators (blur, lighting balance across 4 quadrants, contrast, sensor noise, and sharpness).
 - **Automated Triage Verdict:** Flags poor captures immediately as `Retake Image`, prompting the operator to recapture before the patient leaves the screening camp.
 
-### Phase 2: Retinal Feature Enhancement in $L^*a^*b^*$ Color Space
+### Phase 2: Retinal Feature Enhancement in L*a*b* Color Space
 - **The Core Problem:** Early diabetic microaneurysms and faint capillary hemorrhages have very low contrast against the reddish retina. Enhancing contrast directly in standard RGB distorts color balance, turning blood vessels unnatural shades of purple or cyan.
-- **What is $L^*a^*b^*$ (Decoupling Brightness from Color):**
-  Unlike RGB (where brightness and colors are blended across all three channels), the CIE $L^*a^*b^*$ space decouples image information:
-  - **$L^*$ (Lightness / Luminance):** Pure brightness channel ($0 = \text{black}$, $100 = \text{white}$).
-  - **$a^*$ (Green–Red Axis):** Encodes the green-to-red color spectrum.
-  - **$b^*$ (Blue–Yellow Axis):** Encodes the blue-to-yellow color spectrum.
-- **Proposed CLAHE Enhancement:** Contrast Limited Adaptive Histogram Equalization (CLAHE with Rayleigh distribution) is applied **strictly to the $L^*$ (Lightness) channel**, leaving the $a^*$ and $b^*$ color channels completely untouched.
+- **What is L*a*b* (Decoupling Brightness from Color):**
+  Unlike RGB (where brightness and colors are blended across all three channels), the CIE L*a*b* space decouples image information:
+  - **L* (Lightness / Luminance):** Pure brightness channel (0 = black, 100 = white).
+  - **a* (Green–Red Axis):** Encodes the green-to-red color spectrum.
+  - **b* (Blue–Yellow Axis):** Encodes the blue-to-yellow color spectrum.
+- **Proposed CLAHE Enhancement:** Contrast Limited Adaptive Histogram Equalization (CLAHE with Rayleigh distribution) is applied **strictly to the L* (Lightness) channel**, leaving the a* and b* color channels completely untouched.
 - **Clinical Benefit:** Subtle microvascular lesions become sharply visible with high contrast, while the retina preserves its natural warm reddish-orange clinical hue without chromatic distortion.
 
 ### Phase 3: Deep Transfer Learning & 5-Stage ICDR Staging
@@ -227,20 +230,20 @@ Input Image (224x224x3) ──► [MobileNetV2 / ResNet-50 Backbone] ──► [
                                                                  [Softmax Output]
 ```
 - **Dual Backbone Architecture:**
-  - **MobileNetV2 (~3.5M parameters):** Inverted residual bottlenecks engineered for real-time edge CPU inference ($< 50\text{ ms}$) on standard laptops without requiring an expensive GPU.
+  - **MobileNetV2 (~3.5M parameters):** Inverted residual bottlenecks engineered for real-time edge CPU inference (under 50 milliseconds) on standard laptops without requiring an expensive GPU.
   - **ResNet-50 (~25.6M parameters):** Deep residual network providing a high-capacity validation benchmark.
-- **Custom Retinal Head:** Replaces ImageNet categories with Global Average Pooling (GAP), a Dropout layer ($p = 0.40$ to prevent clinical overfitting), and a 5-unit Softmax head calibrated across all 5 ICDR severity stages (Grade 0: Normal to Grade 4: Proliferative DR).
-- **Training Strategy:** Adam optimizer with piecewise learning rate step decay ($\gamma = 0.1$ every 10 epochs) and early stopping tracking validation loss.
+- **Custom Retinal Head:** Replaces ImageNet categories with Global Average Pooling (GAP), a Dropout layer (40% deactivation rate to prevent clinical overfitting), and a 5-unit Softmax head calibrated across all 5 ICDR severity stages (Grade 0: Normal to Grade 4: Proliferative DR).
+- **Training Strategy:** Adam optimizer with piecewise learning rate step decay (reducing learning rate by 10x every 10 epochs) and early stopping tracking validation loss.
 
 ### Phase 4: Explainable AI (Grad-CAM) & Anatomical Pathology Localization
 - **Overcoming the "Black Box":** A medical practitioner cannot trust an AI that outputs a raw probability score without showing *where* in the patient's eye it detected disease.
 - **How Grad-CAM Works in 2 Intuitive Steps:**
-  1. **Step 1 — Calculate Feature Importance ($\alpha_k^c$):** The algorithm traces gradients from the predicted disease score back to the final convolutional feature maps. This evaluates: *"How strongly did each feature channel contribute to diagnosing this retina with Severe DR?"*
-  2. **Step 2 — Generate Visual Saliency Map ($L_{\text{Grad-CAM}}^c$):** Feature maps are multiplied by their importance weights and summed together. A **ReLU** (Rectified Linear Unit) filter discards negative values, preserving *only the positive visual evidence* of disease (such as microaneurysms, hemorrhages, and hard exudates).
+  1. **Step 1 — Calculate Feature Importance (Alpha Weights):** The algorithm traces gradients from the predicted disease score back to the final convolutional feature maps. This evaluates: *"How strongly did each feature channel contribute to diagnosing this retina with Severe DR?"*
+  2. **Step 2 — Generate Visual Saliency Map (Grad-CAM Heatmap):** Feature maps are multiplied by their importance weights and summed together. A **ReLU** (Rectified Linear Unit) filter discards negative values, preserving *only the positive visual evidence* of disease (such as microaneurysms, hemorrhages, and hard exudates).
 - **Clinical Visualization:** The heatmap is overlaid onto the retinal photo (Red/Yellow = disease hotspots, Blue = normal tissue), automated bounding boxes are drawn around clustered lesions, and plain-language notes identify the affected anatomical quadrant (e.g., *"Focal hemorrhages localized in Inferotemporal region"*).
 
 ### Phase 5: Clinical Workstation & National Standards Integration
-- **App Designer Workstation:** Designed for non-specialist rural health workers (ASHAs) with responsive Dark/Light themes, prominent triage alerts, and measurement calipers ($\mu\text{m}$).
+- **App Designer Workstation:** Designed for non-specialist rural health workers (ASHAs) with responsive Dark/Light themes, prominent triage alerts, and measurement calipers (in micrometers, µm).
 - **ABDM FHIR R4 Integration:** Generates standardized JSON records mapped to LOINC (`LP200057-0`) and SNOMED-CT codes for seamless synchronization with the Ayushman Bharat Digital Mission EHR gateway.
 - **Queueing Simulation:** Discrete-event models simulate patient queues across registration, camera acquisition, and tele-ophthalmologist review to optimize camp throughput.
 
@@ -250,7 +253,7 @@ Input Image (224x224x3) ──► [MobileNetV2 / ResNet-50 Backbone] ──► [
 
 Upon completion, the project will deliver:
 1. **Fully Integrated MATLAB Application:** Executable both via an interactive 18-screen App Designer workstation and headless CLI (`main.m`).
-2. **Clinical Validation Benchmark:** Target Quadratic Weighted Kappa $\kappa_w \ge 0.90$, Sensitivity $\ge 90\%$, Specificity $\ge 90\%$, and edge inference latency $< 50\text{ ms}$.
+2. **Clinical Validation Benchmark:** Target Quadratic Weighted Kappa >= 0.90, Sensitivity >= 90%, Specificity >= 90%, and edge inference latency under 50 milliseconds.
 3. **Hospital-Grade Reporting Hub:** Automated A4 PDF reports and ABDM-compliant FHIR R4 JSON records.
 4. **Operations Research Model:** Discrete-event queue simulation demonstrating community camp throughput and capacity optimization.
 5. **Complete Documentation Suite:** System Design Document (SDD), Software Requirements Specification (SRS), Risk Analysis (FMEA), and User Guides.
