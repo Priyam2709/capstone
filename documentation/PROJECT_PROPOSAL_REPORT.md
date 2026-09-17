@@ -233,30 +233,7 @@ Input Image (224x224x3) ──► [ResNet-50 / MobileNetV2 Backbone] ──► [
 
 ---
 
-## 6. Project Work Plan & Gantt Milestones
-
-```
-┌───────────────────────────┬────────────┬────────────┬────────────┬────────────┐
-│ Planned Development Phase │ Month 1    │ Month 2    │ Month 3    │ Month 4    │
-├───────────────────────────┼────────────┼────────────┼────────────┼────────────┤
-│ Phase 1: Ingestion & IQA  │ [████████] │            │            │            │
-│ Phase 2: CLAHE & Preproc  │   [██████] │            │            │            │
-│ Phase 3: CNN & Training   │            │ [████████] │            │            │
-│ Phase 4: Inference & XAI  │            │   [██████] │ [██████]   │            │
-│ Phase 5: GUI Workstation  │            │            │ [████████] │            │
-│ Phase 6: Reports & ABDM   │            │            │   [██████] │ [████]     │
-│ Phase 7: Validation & DES │            │            │            │ [████████] │
-└───────────────────────────┴────────────┴────────────┴────────────┴────────────┘
-```
-
-- **Milestone 1 (Month 1):** Ingestion of APTOS/EyePACS datasets, synthetic generator, and mathematical formulation of the 5-metric IQA gatekeeper.
-- **Milestone 2 (Month 2):** $L^*a^*b^*$ CLAHE enhancement pipeline, CNN backbone construction, and training loop implementation with Adam and early stopping.
-- **Milestone 3 (Month 3):** Grad-CAM explainability engine, lesion segmentation, and 18-screen App Designer GUI workstation development.
-- **Milestone 4 (Month 4):** A4 PDF report generator, ABDM FHIR JSON export hub, discrete-event Simulink camp queue simulation, and clinical statistical validation ($\kappa_w \ge 0.90$).
-
----
-
-## 7. Expected Deliverables & Impact
+## 6. Expected Deliverables & Impact
 
 Upon completion, the project will deliver:
 1. **Fully Integrated MATLAB Application:** Executable both via an interactive 18-screen App Designer workstation and headless CLI (`main.m`).
