@@ -192,23 +192,33 @@ To ensure modularity and accountability, the project responsibilities are divide
 
 ## 5. Technical Approach & Detailed Methodology
 
-### Phase 1: Data Preprocessing & Mathematical Quality Assurance
+### Phase 1: Optical Image Quality Assessment (IQA Gatekeeper)
 ```
-Raw Fundus Image ──► [Color Extraction] ──► [Masking] ──► [Laplacian Blur Score]
-                                                       ──► [4-Quadrant Illumination]
-                                                       ──► [RMS Contrast]
-                                                       ──► [Immerkaer Noise]
-                                                       ──► [Tenengrad Sharpness]
-                                                                  │
-                                   Verdict: Good / Needs Enhancement / Retake
+Raw Fundus Image ──► [Quality Gatekeeper] ──► Focus Blur (Modified Laplacian)
+                                         ──► Illumination Uniformity (4 Quadrants)
+                                         ──► Vascular Contrast (RMS)
+                                         ──► Sensor Noise (Immerkaer Laplacian)
+                                         ──► Edge Sharpness (Tenengrad Sobel)
+                                                        │
+                         Verdict: Good (Proceed) / Needs Enhancement / Retake Image
 ```
-- **Modified Laplacian Variance:** Evaluates high-frequency spatial gradients to detect out-of-focus captures.
-- **Illumination Uniformity:** Computes mean luminance across 4 concentric quadrants; flags uneven flash or peripheral shadowing.
-- **$L^*a^*b^*$ CLAHE Enhancement:** The RGB image is converted to the CIE $L^*a^*b^*$ color space. CLAHE is applied exclusively to the $L^*$ channel with a Rayleigh distribution, enhancing contrast while keeping vascular hue intact.
+- **Why It Matters:** Community health workers in rural screening camps often capture out-of-focus or poorly lit images. Feeding degraded images to an AI model causes dangerous false negatives.
+- **How It Works:** Before running deep learning, the capture is evaluated across 5 mathematical indicators (blur, lighting balance across 4 quadrants, contrast, sensor noise, and sharpness).
+- **Automated Triage Verdict:** Flags poor captures immediately as `Retake Image`, prompting the operator to recapture before the patient leaves the screening camp.
 
-### Phase 2: Deep Transfer Learning & Training Architecture
+### Phase 2: Retinal Feature Enhancement in $L^*a^*b^*$ Color Space
+- **The Core Problem:** Early diabetic microaneurysms and faint capillary hemorrhages have very low contrast against the reddish retina. Enhancing contrast directly in standard RGB distorts color balance, turning blood vessels unnatural shades of purple or cyan.
+- **What is $L^*a^*b^*$ (Decoupling Brightness from Color):**
+  Unlike RGB (where brightness and colors are blended across all three channels), the CIE $L^*a^*b^*$ space decouples image information:
+  - **$L^*$ (Lightness / Luminance):** Pure brightness channel ($0 = \text{black}$, $100 = \text{white}$).
+  - **$a^*$ (Green–Red Axis):** Encodes the green-to-red color spectrum.
+  - **$b^*$ (Blue–Yellow Axis):** Encodes the blue-to-yellow color spectrum.
+- **Proposed CLAHE Enhancement:** Contrast Limited Adaptive Histogram Equalization (CLAHE with Rayleigh distribution) is applied **strictly to the $L^*$ (Lightness) channel**, leaving the $a^*$ and $b^*$ color channels completely untouched.
+- **Clinical Benefit:** Subtle microvascular lesions become sharply visible with high contrast, while the retina preserves its natural warm reddish-orange clinical hue without chromatic distortion.
+
+### Phase 3: Deep Transfer Learning & 5-Stage ICDR Staging
 ```
-Input Image (224x224x3) ──► [ResNet-50 / MobileNetV2 Backbone] ──► [GAP Layer]
+Input Image (224x224x3) ──► [MobileNetV2 / ResNet-50 Backbone] ──► [GAP Layer]
                                                                         │
                                                                  [Dropout (0.40)]
                                                                         │
@@ -216,19 +226,22 @@ Input Image (224x224x3) ──► [ResNet-50 / MobileNetV2 Backbone] ──► [
                                                                         │
                                                                  [Softmax Output]
 ```
-- **Backbone Selection:** ResNet-50 is selected for its deep residual representations ($25.6\text{M}$ params), while MobileNetV2 is selected for low-power edge execution ($3.5\text{M}$ params).
-- **Network Surgery:** Excises the ImageNet 1000-class dense layer and attaches Global Average Pooling, Dropout ($0.40$), and a 5-unit Softmax head corresponding to ICDR Grades 0 to 4.
-- **Optimization:** Adam optimizer with piecewise learning rate step decay ($\gamma = 0.1$ every 10 epochs) and early stopping tracking validation loss to prevent overfitting on clinical training data.
+- **Dual Backbone Architecture:**
+  - **MobileNetV2 (~3.5M parameters):** Inverted residual bottlenecks engineered for real-time edge CPU inference ($< 50\text{ ms}$) on standard laptops without requiring an expensive GPU.
+  - **ResNet-50 (~25.6M parameters):** Deep residual network providing a high-capacity validation benchmark.
+- **Custom Retinal Head:** Replaces ImageNet categories with Global Average Pooling (GAP), a Dropout layer ($p = 0.40$ to prevent clinical overfitting), and a 5-unit Softmax head calibrated across all 5 ICDR severity stages (Grade 0: Normal to Grade 4: Proliferative DR).
+- **Training Strategy:** Adam optimizer with piecewise learning rate step decay ($\gamma = 0.1$ every 10 epochs) and early stopping tracking validation loss.
 
-### Phase 3: Explainable AI (Grad-CAM) & Anatomical Pathology Localization
-- **Gradient Backpropagation:** Feature activations from the final convolutional layer are multiplied by pooled class gradients to generate a spatial importance map.
-- **Lesion Segmentation:** Otsu adaptive thresholding and connected component labeling (`bwconncomp`) are applied to the saliency map to draw bounding boxes around pathology clusters.
-- **Quadrant Mapping:** Saliency centroids are mapped into 5 anatomical zones:
-  - Superotemporal (ST), Superonasal (SN), Inferotemporal (IT), Inferonasal (IN), and Macular.
+### Phase 4: Explainable AI (Grad-CAM) & Anatomical Pathology Localization
+- **Overcoming the "Black Box":** A medical practitioner cannot trust an AI that outputs a raw probability score without showing *where* in the patient's eye it detected disease.
+- **How Grad-CAM Works in 2 Intuitive Steps:**
+  1. **Step 1 — Calculate Feature Importance ($\alpha_k^c$):** The algorithm traces gradients from the predicted disease score back to the final convolutional feature maps. This evaluates: *"How strongly did each feature channel contribute to diagnosing this retina with Severe DR?"*
+  2. **Step 2 — Generate Visual Saliency Map ($L_{\text{Grad-CAM}}^c$):** Feature maps are multiplied by their importance weights and summed together. A **ReLU** (Rectified Linear Unit) filter discards negative values, preserving *only the positive visual evidence* of disease (such as microaneurysms, hemorrhages, and hard exudates).
+- **Clinical Visualization:** The heatmap is overlaid onto the retinal photo (Red/Yellow = disease hotspots, Blue = normal tissue), automated bounding boxes are drawn around clustered lesions, and plain-language notes identify the affected anatomical quadrant (e.g., *"Focal hemorrhages localized in Inferotemporal region"*).
 
-### Phase 4: Clinical Interface & National Standards Integration
-- **App Designer Workstation:** Designed for non-specialist community health workers (ASHAs) with simplified workflows, prominent triage alerts, and measurement calipers.
-- **ABDM FHIR R4 Export:** Generates standardized JSON records mapped to LOINC (`LP200057-0`) and SNOMED-CT codes for seamless synchronization with the Ayushman Bharat Digital Mission EHR gateway.
+### Phase 5: Clinical Workstation & National Standards Integration
+- **App Designer Workstation:** Designed for non-specialist rural health workers (ASHAs) with responsive Dark/Light themes, prominent triage alerts, and measurement calipers ($\mu\text{m}$).
+- **ABDM FHIR R4 Integration:** Generates standardized JSON records mapped to LOINC (`LP200057-0`) and SNOMED-CT codes for seamless synchronization with the Ayushman Bharat Digital Mission EHR gateway.
 - **Queueing Simulation:** Discrete-event models simulate patient queues across registration, camera acquisition, and tele-ophthalmologist review to optimize camp throughput.
 
 ---
