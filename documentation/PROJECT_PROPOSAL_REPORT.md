@@ -72,12 +72,12 @@ To address these challenges, we propose an integrated software engineering solut
 
 | Domain | Proposed Technology / Library | Selection Justification |
 | :--- | :--- | :--- |
-| **Core Platform** | **MATLAB R2021b+** | Industry standard for medical device prototyping, signal/image processing, and FDA-traceable engineering. |
-| **Deep Learning** | **MATLAB Deep Learning Toolbox** | Native layerGraph surgery, automatic differentiation for Grad-CAM, transfer learning backbones, and INT8/FP16 quantization. |
-| **Computer Vision** | **Image Processing Toolbox** | Optimized native implementations of CLAHE, morphological filtering, connected components (`bwconncomp`), and color space transforms. |
-| **User Interface** | **MATLAB App Designer** | Desktop-grade medical workstation design with responsive grid layouts, canvas tools, and Dark/Light theme switching. |
-| **Queueing & Operations** | **Simulink & SimEvents** | Discrete-event entity modeling of camp registration, camera acquisition, and tele-review queues. |
-| **Verification & Linting** | **Python 3.10+ / Custom Linters** | Automated cross-platform syntax validation, bracket matching, and CI integrity checks. |
+| **Core Platform** | **Python 3.10+** | Global standard for artificial intelligence, computer vision, open-source reproducibility, and portable edge deployment. |
+| **Deep Learning** | **PyTorch & Torchvision** | Dynamic computational graphs, native ResNet-152 deep transfer learning, automatic differentiation for Grad-CAM, and CPU/GPU execution. |
+| **Computer Vision** | **OpenCV (`cv2`) & NumPy** | High-performance implementations of CLAHE, morphological filtering, connected components, and L*a*b* color space transforms. |
+| **Evaluation & Statistics** | **Scikit-Learn & SciPy** | Rigorous multi-class evaluation: Cohen's Quadratic Weighted Kappa, ROC/AUC, confusion matrices, and clinical sensitivity metrics. |
+| **User Interface** | **Streamlit / Web Workstation** | Modern responsive medical UI with interactive sliders, fundus calipers, and drag-and-drop clinical screening workflows. |
+| **Queueing & Operations** | **Python Discrete-Event Simulation** | Mathematical modeling of camp registration, camera bottlenecks, and patient queues (single-camera, multi-camera, and variable service queues). |
 | **Clinical Standards** | **HL7 FHIR Release 4 / SNOMED-CT / LOINC** | Conformance with National Digital Health Mission (NDHM / ABDM) for interoperability with government hospital EHR systems. |
 | **Benchmarking Datasets** | **APTOS 2019, EyePACS, IDRiD, Messidor** | Clinically labeled fundus datasets providing diverse ethnicities, camera angles (45-degree and 50-degree fields of view), and lighting variations. |
 
@@ -137,21 +137,20 @@ To ensure modularity and accountability, the project responsibilities are divide
   5. **Simulink Operational Queue Model:** Formulate mathematical queueing models (single-camera, multi-camera Erlang-C wait formulas, and variable exam-time models) and build a discrete-event simulation of an 8-hour rural camp to evaluate patient wait times and camera bottlenecks.
 
 ### 👤 Member 3: Rajbardhan Kumar (Reg. No: 12326119) — Machine Learning: Deep Transfer Learning & Training
-* **Assigned Modules:** `classification/buildModel.m`, `training/`, and `models/`
+* **Assigned Modules:** `classification/build_model.py`, `training/train_model.py`, and `models/`
 * **Planned Tasks:**
-  1. **Model Backbone Construction:** Implement transfer learning on 4 distinct CNN backbones:
-     - **ResNet-50** (primary clinical benchmark, ~25.6M parameters)
-     - **MobileNetV2** (inverted residual bottlenecks for edge hardware, ~3.5M parameters)
-     - **EfficientNet-B0** (compound scaling, ~5.3M parameters)
-     - **ResNet-18** (fast baseline for low-power devices)
-  2. **Custom Network Surgery:** Replace default ImageNet heads with a custom retinal classification head: Global Average Pooling (GAP), a Dropout layer (40% deactivation rate to prevent clinical overfitting), a 5-unit Fully Connected layer, and Softmax activation.
+  1. **Model Backbone Construction:** Implement transfer learning centered on **ResNet-152** as the primary deep architecture:
+     - **ResNet-152** (primary clinical benchmark: 152 layers, ~60.2M parameters for fine-grained micro-lesion detection)
+     - **ResNet-50** (edge deployment option: 50 layers, ~25.6M parameters)
+     - **MobileNetV2** (inverted residual bottlenecks for ultra-low-power edge hardware)
+  2. **Custom Network Surgery:** Replace default ImageNet heads with a custom retinal classification head: Global Average Pooling (GAP), a Dropout layer (40% deactivation rate to prevent clinical overfitting), a 5-unit Fully Connected linear layer, and Softmax activation.
   3. **Stochastic Data Augmentation:** Program affine augmentations: random horizontal/vertical reflections, continuous rotations (from -180 to +180 degrees), scaling, and shear.
   4. **Training Optimization:** Program the training pipeline using the Adam optimizer (initial learning rate of 0.0001 with momentum 0.9), Categorical Cross-Entropy loss, piecewise learning rate decay schedule (reducing learning rate by 10x every 10 epochs), early stopping with validation patience, and checkpoint weight serialization.
 
 ### 👤 Member 4: Priyam Saxena (Reg. No: 12313674) — Machine Learning: Edge Inference & Clinical Validation
-* **Assigned Modules:** `classification/predictDR.m`, `classification/evaluateMetrics.m`, and `testing/`
+* **Assigned Modules:** `classification/predict_dr.py`, `classification/evaluate_metrics.py`, and `tests/`
 * **Planned Tasks:**
-  1. **Real-Time Edge Inference Engine:** Develop `predictDR.m` to execute forward passes in under 50 milliseconds on standard non-GPU laptop CPUs, returning calibrated softmax probabilities.
+  1. **Real-Time Edge Inference Engine:** Develop `predict_dr.py` to execute forward passes with ResNet-152 in under 50 milliseconds on standard non-GPU laptop CPUs, returning calibrated softmax probabilities.
   2. **Clinical Triage Decision Logic:** Program medical referral rules:
      - Stages 0–1 (No DR, Mild NPDR) → Routine annual community surveillance.
      - Stage 2 (Moderate NPDR) → Non-urgent ophthalmic referral within 30 days.
@@ -165,31 +164,30 @@ To ensure modularity and accountability, the project responsibilities are divide
   4. **Hardware Latency Benchmarking:** Profile execution times and memory footprint across edge hardware.
 
 ### 👤 Member 5: Kadambala Likhith (Reg. No: 12314034) — Machine Learning: Explainable AI (Grad-CAM) & Lesions
-* **Assigned Modules:** `explainability/`
+* **Assigned Modules:** `explainability/grad_cam.py`
 * **Planned Tasks:**
-  1. **Grad-CAM Algorithm:** Compute the sensitivity gradients of the predicted DR stage score with respect to feature maps of the final convolutional layer (`activation_49_relu` / `out_relu`), calculate an importance weight for each feature channel, and combine them through a positive evidence filter (ReLU):
+  1. **Grad-CAM Algorithm:** Compute the sensitivity gradients of the predicted DR stage score with respect to feature maps of the final convolutional layer of ResNet-152 (`model.layer4`), calculate an importance weight for each feature channel, and combine them through a positive evidence filter (ReLU):
      ```
      Grad-CAM Heatmap = Positive Values of [ Sum of (Feature Importance Weights × Feature Maps) ]
      ```
      This discards negative or irrelevant background features and retains only visual patterns that positively indicate disease.
   2. **Saliency Blending:** Normalize activation values to a 0 to 1 scale and overlay heatmaps on fundus photographs with custom colormaps (Turbo, Jet, Hot) and variable opacity (from 0% to 100% transparency).
-  3. **Morphological Lesion Segmentation:** Apply Otsu adaptive thresholding and connected component analysis (`bwconncomp`) to isolate focal lesion hotspots (microaneurysms, hemorrhages, hard exudates) and draw bounding boxes.
+  3. **Morphological Lesion Segmentation:** Apply Otsu adaptive thresholding and connected component analysis to isolate focal lesion hotspots (microaneurysms, hemorrhages, hard exudates) and draw bounding boxes.
   4. **Quadrant Mapping & Plain-Language Clinical Justification:** Map detected lesion centroids to retinal quadrants (Superotemporal, Inferotemporal, etc.) and generate automated natural-language justifications for rural health workers (ASHAs).
 
 ### 👤 Member 6: Vaibhav Raj (Reg. No: 12325142) — Full Stack: Workstation GUI, Reporting Hub & Systems Integration
-* **Assigned Modules:** `gui/`, `reports/`, `main.m`, `utils/`, and `config/`
+* **Assigned Modules:** `main.py`, `reports/export_fhir.py`, and `simulation/camp_queue_simulation.py`
 * **Planned Tasks:**
-  1. **18-Screen Workstation GUI:** Build the clinical workstation interface in MATLAB App Designer:
+  1. **Interactive Workstation GUI:** Build the clinical workstation interface in Streamlit / Web UI:
      - Top navigation bar: Active patient pill, offline status indicator, and dynamic Dark/Light theme switching.
-     - 18-screen sidebar navigation switching between all clinical screens.
+     - Multi-screen navigation switching between all clinical screening workflows.
      - Interactive medical canvas: crosshair calipers measuring micro-lesions in micrometers (µm), pan/zoom controls, and Grad-CAM opacity sliders.
   2. **Hospital-Grade PDF Report Engine:** Develop the official A4 diagnostic PDF generator complying with NPCB&VI standards:
      - Institutional branding & logo header.
      - **Quad-Image diagnostic panel** (Raw Fundus, Enhanced CLAHE, Grad-CAM Saliency, Lesion Bounding Boxes).
      - Attending doctor observations box and physician signature lines.
   3. **ABDM FHIR R4 Integration:** Program the JSON export engine conforming to Ayushman Bharat Digital Mission schemas (`DiagnosticReport` and `Observation` resources mapped to SNOMED-CT and LOINC codes).
-  4. **Multi-Format Export Hub:** Implement export pipelines for 200 DPI PNG summary cards, MATLAB `.mat` data archives, and district referral CSV rosters.
-  5. **Master Orchestration & System Testing:** Maintain `main.m` as the unified entry driver and build stress test suites to ensure system stability under zero-byte files, extreme lighting (from complete darkness to blinding flash glare), and non-square images.
+  4. **Master Orchestration & System Testing:** Maintain `main.py` as the unified entry driver and build automated unit test suites (`tests/test_python_suite.py`).
 
 ---
 
@@ -252,7 +250,7 @@ Input Image (224x224x3) ──► [MobileNetV2 / ResNet-50 Backbone] ──► [
 ## 6. Expected Deliverables & Impact
 
 Upon completion, the project will deliver:
-1. **Fully Integrated MATLAB Application:** Executable both via an interactive 18-screen App Designer workstation and headless CLI (`main.m`).
+1. **Fully Integrated Python Application:** Executable via an interactive clinical screening workstation and unified CLI orchestrator (`main.py`) powered by a deep ResNet-152 transfer learning backbone.
 2. **Clinical Validation Benchmark:** Target Quadratic Weighted Kappa >= 0.90, Sensitivity >= 90%, Specificity >= 90%, and edge inference latency under 50 milliseconds.
 3. **Hospital-Grade Reporting Hub:** Automated A4 PDF reports and ABDM-compliant FHIR R4 JSON records.
 4. **Operations Research Model:** Discrete-event queue simulation demonstrating community camp throughput and capacity optimization.

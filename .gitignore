@@ -21,3 +21,8 @@ desktop.ini
 # Scratch / temporary test directories
 results/scratch_tests/
 *.tmp
+
+# Prototype scripts excluded from repository
+transfer_learning_model.*
+prototype_transfer_learning.*
+documentation/PROTOTYPE_DEMO_GUIDE.md
