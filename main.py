@@ -42,8 +42,19 @@ def main():
     print("=" * 80 + "\n")
 
     if args.mode == "prototype":
-        # Launch standalone prototype
-        import transfer_learning_model
+        # Launch standalone prototype if present locally, else run pipeline inference
+        try:
+            import transfer_learning_model
+        except ImportError:
+            from classification.predict_dr import predict_dr
+            default_image = args.image or os.path.join("data", "raw", "aptos", "aptos_02_1.png")
+            print(f"Running DRISHTI-AI {args.architecture.upper()} on: {default_image}")
+            res = predict_dr(default_image, architecture=args.architecture)
+            print(f"  Diagnosis          : {res['stageName']}")
+            print(f"  Confidence         : {res['confidencePercent']}%")
+            print(f"  Latency            : {res['inferenceLatencyMs']} ms")
+            print(f"  Referral Required  : {res['referralRequired']}")
+            print(f"  Action Protocol    : {res['actionProtocol']}")
         return
 
     default_image = args.image or os.path.join("data", "raw", "aptos", "aptos_02_1.png")

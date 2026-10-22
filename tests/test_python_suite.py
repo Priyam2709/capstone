@@ -6,7 +6,12 @@ Runs with `python -m unittest tests/test_python_suite.py`.
 """
 
 import unittest
+import os
+import sys
 import numpy as np
+
+# Ensure project root is in sys.path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 class TestClassification(unittest.TestCase):
     def test_build_model_spec(self):
