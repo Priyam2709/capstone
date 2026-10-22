@@ -1,94 +1,63 @@
-# Project Engineering Roles & Work Breakdown Structure
+# PROJECT ROLES & SUBSYSTEM RESPONSIBILITIES
 
-## Project: DRISHTI-AI
-### (Diabetic Retinopathy Intelligent Screening with Hierarchical Triage & Interpretability)
-**Smart India Hackathon Problem Statement:** `SIH26038`  
-**Application Type:** Commercial-Grade Medical SaMD (Software as a Medical Device) Class-B  
-**Team Composition:** 6 Members (3 Machine Learning, 2 Data Science, 1 Full Stack)  
-**Target Release:** v1.0.0-production  
+## Project: DRISHTI-AI (SIH26038)
+### Explainable Edge-AI Retinal Screening System for Rural Health Centers
+**Platform Architecture:** 100% Pure Python Ecosystem (PyTorch, OpenCV, NumPy, SciPy)  
+**Primary Deep Learning Model:** ResNet-152 Deep Transfer Learning Backbone  
+**Team Structure:** 6 Members (3 Machine Learning, 2 Data Science, 1 Full Stack)  
+**Document Status:** Production-Aligned Python Architecture  
 
 ---
 
-## 1. Executive Summary & Team Dataflow Architecture
+## 1. Executive Summary & Team Structure
 
-This document establishes the official engineering roles, module ownerships, coding tasks, and input/output contracts for our 6-member engineering team. Each member owns an isolated, testable subsystem of the application while collaborating through clean data interfaces.
+To maintain strict accountability, modularity, and high velocity, the DRISHTI-AI engineering responsibilities are mapped across three complementary engineering domains:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────────┐
-│                             DRISHTI-AI END-TO-END PIPELINE DATAFLOW                         │
-└─────────────────────────────────────────────────────────────────────────────────────────────┘
-
- [1. Subham Panigrahi]        [2. Konduri Mrunal]           [3. Rajbardhan Kumar]
- ┌──────────────────────┐     ┌──────────────────────┐      ┌──────────────────────┐
- │ • Multi-Dataset Table│  │ • L*a*b* CLAHE Enhance │    │ • Transfer CNN Models│
- │ • Class Imbalance    │────►│ • Illumination Level │───►│ • Custom Retinal Head│
- │ • 5-Metric IQA Gate  │     │ • Denoising (PSNR)   │    │ • Adam Train Pipeline│
- └──────────────────────┘     └──────────────────────┘      └──────────────────────┘
-            │                                                           │
-            ▼                                                           ▼
- [6. Vaibhav Raj]             [5. Kadambala Likhith]        [4. Priyam Saxena]
- ┌──────────────────────┐     ┌──────────────────────┐      ┌──────────────────────┐
- │ • 18-View Workstation│     │ • Grad-CAM Backprop  │      │ • Edge Inference <50ms│
- │ • PDF Report Engine  │◄────│ • Lesion Bounding    │◄─────│ • Softmax Triage Rule│
- │ • ABDM FHIR JSON Hub │     │ • Quadrant Narratives│      │ • Kappa (κ=0.9124)   │
- └──────────────────────┘     └──────────────────────┘      └──────────────────────┘
+│                              DRISHTI-AI TEAM MATRIX (6 MEMBERS)                             │
+├──────────────────────┬─────────────────────────────┬────────────────────────────────────────┤
+│  DATA SCIENCE (2)    │     MACHINE LEARNING (3)    │            FULL STACK (1)              │
+├──────────────────────┼─────────────────────────────┼────────────────────────────────────────┤
+│ 1. Subham Panigrahi  │ 3. Rajbardhan Kumar         │ 6. Vaibhav Raj                         │
+│    (Dataset & IQA)   │    (ResNet-152 Architecture)│    (Web UI Workstation, FHIR, CLI)     │
+│ 2. Konduri Mrunal    │ 4. Priyam Saxena            │                                        │
+│    (CLAHE & Queues)  │    (Inference & Validation) │                                        │
+│                      │ 5. Kadambala Likhith        │                                        │
+│                      │    (Grad-CAM Saliency & XAI)│                                        │
+└──────────────────────┴─────────────────────────────┴────────────────────────────────────────┘
 ```
 
 ---
 
-## 2. Team Responsibility Matrix & Official Roster
-
-| S.No | Student Name | Reg. No. | Domain & Role | Primary Modules Owned | Key Technical Artifacts |
-| :---: | :--- | :---: | :--- | :--- | :--- |
-| **1** | **Subham Panigrahi** | `12312794` | **Data Science Member 1**<br>(Dataset & IQA Gate) | `data/`<br>`qualityAssessment/` | • Clean multi-dataset tables (APTOS, EyePACS)<br>• Synthetic fundus generator (`createSyntheticDataset.m`)<br>• 5-parameter IQA gatekeeper (`assessImageQuality.m`) |
-| **2** | **Konduri Mrunal** | `12316339` | **Data Science Member 2**<br>(CLAHE & Queues) | `preprocessing/`<br>`simulink/` | • 6-stage L*a*b* CLAHE pipeline (`preprocessPipeline.m`)<br>• PSNR / SSIM fidelity metrics (PSNR > 31.8 dB, SSIM > 0.94)<br>• Simulink discrete-event queue model (`runCampSimulation.m`) |
-| **3** | **Rajbardhan Kumar** | `12326119` | **ML Member 1**<br>(CNN Architectures & Training) | `classification/buildModel.m`<br>`training/`<br>`models/` | • 4 transfer learning backbones (ResNet-50, MobileNetV2)<br>• Retinal classification head surgery (GAP + 40% Dropout)<br>• Adam training loop with piecewise decay (`trainModel.m`) |
-| **4** | **Priyam Saxena** | `12313674` | **ML Member 2**<br>(Inference & Clinical Metrics) | `classification/predictDR.m`<br>`classification/evaluateMetrics.m`<br>`testing/` | • Real-time edge inference engine (42.5 ms on standard CPU)<br>• 4-tier clinical triage logic (Routine vs Referable DR)<br>• Quadratic Weighted Kappa (score = 0.9124) & ROC/AUC |
-| **5** | **Kadambala Likhith** | `12314034` | **ML Member 3**<br>(Explainable AI & Lesions) | `explainability/` | • Grad-CAM feature attribution engine (`computeGradCAM.m`)<br>• Otsu lesion segmentation & bounding boxes (`segmentSalientLesions.m`)<br>• Anatomical quadrant mapping & plain-language text |
-| **6** | **Vaibhav Raj** | `12325142` | **Full Stack Member**<br>(GUI, Reports & System Hub) | `gui/`<br>`reports/`<br>`main.m`<br>`utils/` | • 18-screen App Designer workstation (`DRScreeningApp_exported.m`)<br>• A4 Clinical PDF report with Quad-Image panel (`exportReportPDF.m`)<br>• ABDM FHIR R4 JSON & MAT export hub (`exportReportFHIR.m`) |
-
----
-
-## 3. Detailed Work Packages by Team Member
+## 2. Detailed Member Role Profiles
 
 ```
 ========================================================================================
- MEMBER 1: SUBHAM PANIGRAHI (12312794) — DATA SCIENCE: DATASET CURATION & IQA GATE
+ MEMBER 1: SUBHAM PANIGRAHI (12312794) — DATA SCIENCE: DATASET INGESTION & IQA GATE
 ========================================================================================
 ```
 ### 🎯 Objective
-Ensure that all incoming retinal data is medically valid, balanced, and optically qualified before reaching the deep learning models.
+Curate multi-benchmark retinal datasets and engineer the 5-parameter optical Image Quality Assessment (IQA) gatekeeper preventing degraded captures from reaching deep learning inference.
 
 ### 📂 Directory & File Ownership
-- [`data/loadDataset.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/data/loadDataset.m)
-- [`data/validateDataset.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/data/validateDataset.m)
-- [`data/createSyntheticDataset.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/data/createSyntheticDataset.m)
-- [`data/displayClassDistribution.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/data/displayClassDistribution.m)
-- [`qualityAssessment/assessImageQuality.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/qualityAssessment/assessImageQuality.m)
-- [`qualityAssessment/computeBlur.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/qualityAssessment/computeBlur.m)
-- [`qualityAssessment/computeBrightness.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/qualityAssessment/computeBrightness.m)
-- [`qualityAssessment/computeContrast.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/qualityAssessment/computeContrast.m)
-- [`qualityAssessment/computeNoise.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/qualityAssessment/computeNoise.m)
-- [`qualityAssessment/computeSharpness.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/qualityAssessment/computeSharpness.m)
-- [`qualityAssessment/visualizeQualityReport.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/qualityAssessment/visualizeQualityReport.m)
-- [`testing/TestDatasetLoader.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/testing/TestDatasetLoader.m)
-- [`testing/TestQualityAssessment.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/testing/TestQualityAssessment.m)
+- [`quality_assessment/assess_quality.py`](file:///c:/Users/Priyam/Desktop/AI/Capstone/quality_assessment/assess_quality.py)
+- [`quality_assessment/compute_blur.py`](file:///c:/Users/Priyam/Desktop/AI/Capstone/quality_assessment/compute_blur.py)
+- [`quality_assessment/compute_brightness.py`](file:///c:/Users/Priyam/Desktop/AI/Capstone/quality_assessment/compute_brightness.py)
+- [`quality_assessment/compute_contrast.py`](file:///c:/Users/Priyam/Desktop/AI/Capstone/quality_assessment/compute_contrast.py)
+- [`data/`](file:///c:/Users/Priyam/Desktop/AI/Capstone/data)
 
 ### 🛠️ Development Tasks
-1. **Multi-Dataset Ingestion:** Build unified loader parsing metadata across APTOS-2019, EyePACS, IDRiD, and Messidor. Standardize label schemas to 5 ICDR severity stages (0: No DR, 1: Mild, 2: Moderate, 3: Severe, 4: PDR).
-2. **Stratified Splitting:** Implement 70% Train, 15% Validation, and 15% Test splitting preserving minority clinical classes.
-3. **Synthetic Image Generator:** Code a procedural fundus generator creating realistic synthetic retina disks, blood vessels, and optic discs to allow offline testing without large gigabyte datasets.
+1. **Multi-Source Benchmark Ingestion:** Aggregate, clean, and standardize fundus photography records across APTOS-2019, EyePACS, IDRiD, and Messidor.
+2. **Stratified Split & Class Balancing:** Implement 70% Train / 15% Validation / 15% Test partitioning preserving representation of rare clinical stages (Severe NPDR and Proliferative DR).
+3. **Synthetic Image Generator:** Program procedural fundus image synthesis creating realistic synthetic retina disks, blood vessels, and optic discs for offline testing.
 4. **5-Parameter IQA Algorithm Engine:** Implement mathematical optical quality estimators:
    - **Focus Blur:** Modified Laplacian Variance over masked retinal area.
    - **Illumination Uniformity:** 4-quadrant balance and mean brightness calculation.
    - **Vascular Contrast:** Root Mean Square (RMS) dynamic range contrast.
-   - **Sensor Noise:** Immerkaer high-frequency noise standard deviation via 3x3 Laplacian filtering.
+   - **Sensor Noise:** High-frequency noise standard deviation via Laplacian filtering.
    - **Edge Sharpness:** Tenengrad Sobel gradient energy accumulation.
-5. **Quality Decision Classifier:** Combine individual scores into an overall score (0–100) and output a 3-category clinical verdict: `Good`, `Needs Enhancement`, or `Retake Image`.
-
-### 🔄 Interfaces
-- **Input:** Raw image files and clinical CSV metadata.
-- **Output:** Validated image matrices (`uint8`), quality report struct (`overallScore`, `category`, `recommendation`, `metrics`).
+5. **Quality Decision Classifier:** Combine individual scores into an overall score (0–100) and output a 3-category clinical verdict: `Good`, `Usable`, or `Retake Image`.
 
 ---
 
@@ -98,74 +67,45 @@ Ensure that all incoming retinal data is medically valid, balanced, and opticall
 ========================================================================================
 ```
 ### 🎯 Objective
-Enhance retinal vascular contrast and subtle micro-lesions while mathematically modeling rural camp patient throughput and bottlenecks.
+Enhance retinal vascular contrast and subtle micro-lesions while mathematically modeling rural camp patient throughput and camera bottlenecks.
 
 ### 📂 Directory & File Ownership
-- [`preprocessing/preprocessPipeline.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/preprocessing/preprocessPipeline.m)
-- [`preprocessing/applyCLAHE.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/preprocessing/applyCLAHE.m)
-- [`preprocessing/correctIllumination.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/preprocessing/correctIllumination.m)
-- [`preprocessing/applyMedianFilter.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/preprocessing/applyMedianFilter.m)
-- [`preprocessing/enhanceContrast.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/preprocessing/enhanceContrast.m)
-- [`preprocessing/evaluateEnhancementMetrics.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/preprocessing/evaluateEnhancementMetrics.m)
-- [`preprocessing/compareEnhancement.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/preprocessing/compareEnhancement.m)
-- [`simulink/setupSimulinkModel.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/simulink/setupSimulinkModel.m)
-- [`simulink/runCampSimulation.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/simulink/runCampSimulation.m)
-- [`simulink/plotSimulationResults.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/simulink/plotSimulationResults.m)
-- [`simulink/createSimulinkModel.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/simulink/createSimulinkModel.m)
-- [`reports/compileCohortReport.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/reports/compileCohortReport.m)
-- [`testing/TestPreprocessing.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/testing/TestPreprocessing.m)
-- [`testing/TestSimulinkQueue.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/testing/TestSimulinkQueue.m)
+- [`preprocessing/apply_clahe.py`](file:///c:/Users/Priyam/Desktop/AI/Capstone/preprocessing/apply_clahe.py)
+- [`preprocessing/correct_illumination.py`](file:///c:/Users/Priyam/Desktop/AI/Capstone/preprocessing/correct_illumination.py)
+- [`preprocessing/preprocess_pipeline.py`](file:///c:/Users/Priyam/Desktop/AI/Capstone/preprocessing/preprocess_pipeline.py)
+- [`simulation/camp_queue_simulation.py`](file:///c:/Users/Priyam/Desktop/AI/Capstone/simulation/camp_queue_simulation.py)
 
 ### 🛠️ Development Tasks
 1. **L*a*b* Preprocessing Pipeline:** Convert fundus images into L*a*b* color space to decouple pure brightness (the L* channel) from color hues (the a* and b* channels).
-2. **CLAHE Enhancement:** Implement Contrast Limited Adaptive Histogram Equalization (using an 8x8 local tile grid with a 2% contrast clip limit) to highlight microaneurysms without over-amplifying background noise.
-3. **Morphological Illumination Subtraction:** Estimate uneven background illumination using a 30-pixel disk structuring element and subtract it to correct illumination falloff.
-4. **Noise Filtering & Quantitative Validation:** Apply 2D median filtering (3x3 kernel) and calculate objective fidelity metrics: Peak Signal-to-Noise Ratio (PSNR above 31.8 dB), Structural Similarity Index (SSIM above 0.94, where 1.0 is identical), and Contrast Improvement Index.
-5. **Discrete-Event Queue Simulation:**
-   - Model the mathematical queueing dynamics (single-server, multi-server Erlang-C wait formulas, and variable exam-time models).
-   - Simulate an 8-hour rural camp with Poisson patient arrivals, camera acquisition, IQA retake loops (8%), AI inference, and tele-doctor review.
-   - Evaluate bottleneck sensitivity (1 camera vs 2 cameras) to verify operational throughput (raising capacity from 115 to 218 patients/day).
-
-### 🔄 Interfaces
-- **Input:** Raw fundus image from DS Member 1.
-- **Output:** Enhanced RGB image (`enhancedImage`), PSNR/SSIM metrics struct, and Simulink camp simulation results struct (`queueLengths`, `backlog`, `utilization`).
+2. **CLAHE Enhancement:** Implement Contrast Limited Adaptive Histogram Equalization to highlight microaneurysms without over-amplifying background noise.
+3. **Homomorphic Illumination Correction:** Correct background lighting falloff and non-uniform illumination gradients.
+4. **Quantitative Validation Metrics:** Calculate objective fidelity metrics: Peak Signal-to-Noise Ratio (PSNR above 31.8 dB) and Structural Similarity Index (SSIM above 0.94).
+5. **Camp Queue Discrete-Event Simulation:** Formulate Python Monte Carlo Poisson arrival queue models comparing 1-camera vs. 2-camera operational bottlenecks in an 8-hour rural screening camp.
 
 ---
 
 ```
 ========================================================================================
- MEMBER 3: RAJBARDHAN KUMAR (12326119) — MACHINE LEARNING: DEEP LEARNING ARCHITECTURES & TRAINING
+ MEMBER 3: RAJBARDHAN KUMAR (12326119) — MACHINE LEARNING: RESNET-152 ARCHITECTURE & TRAINING
 ========================================================================================
 ```
 ### 🎯 Objective
-Architect, perform network surgery, and train transfer-learned convolutional neural networks for 5-class diabetic retinopathy severity staging.
+Architect, perform network surgery, and train transfer-learned convolutional neural networks centered on ResNet-152 for 5-class diabetic retinopathy severity staging.
 
 ### 📂 Directory & File Ownership
-- [`classification/buildModel.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/classification/buildModel.m)
-- [`training/trainModel.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/training/trainModel.m)
-- [`training/configureAugmenter.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/training/configureAugmenter.m)
-- [`training/exportTrainingCurves.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/training/exportTrainingCurves.m)
-- [`models/saveModelCheckpoint.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/models/saveModelCheckpoint.m)
-- [`models/loadModelCheckpoint.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/models/loadModelCheckpoint.m)
-- [`testing/TestModelClassification.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/testing/TestModelClassification.m)
+- [`classification/build_model.py`](file:///c:/Users/Priyam/Desktop/AI/Capstone/classification/build_model.py)
+- [`training/train_model.py`](file:///c:/Users/Priyam/Desktop/AI/Capstone/training/train_model.py)
 
 ### 🛠️ Development Tasks
-1. **Model Backbone Library:** Construct transfer learning graphs for 4 distinct CNN backbones:
-   - `resnet50`: Primary high-capacity clinical benchmark (~25.6M parameters).
-   - `mobilenetv2`: Inverted residual bottlenecks for ultra-lightweight edge deployment (~3.5M parameters).
-   - `efficientnetb0`: Compound scaling for maximum parameter efficiency (~5.3M parameters).
-   - `resnet18`: Compact residual baseline (~11.7M parameters).
-2. **Network Surgery:** Excised default ImageNet 1000-class heads and graft custom retinal classification heads:
-   - Global Average Pooling (GAP) layer.
-   - Dropout layer (40% deactivation rate during training to prevent clinical overfitting).
-   - Fully connected dense layer with 5 output neurons.
-   - Softmax activation layer.
-3. **Data Augmentation Engine:** Configure geometric augmentations (`configureAugmenter.m`): random horizontal/vertical reflections, continuous rotations (from -180 to +180 degrees), scaling (0.9 to 1.1x), and shearing.
-4. **Training Optimization Engine:** Implement the master training orchestrator using the Adam optimizer (initial learning rate of 0.0001 with momentum 0.9 and 0.999), Categorical Cross-Entropy loss, piecewise learning rate decay schedule (reducing learning rate by 10x every 10 epochs), early stopping tracking validation loss (patience 5 epochs), and checkpoint serialization.
-
-### 🔄 Interfaces
-- **Input:** Preprocessed training/validation datastores from DS Member 2.
-- **Output:** Trained neural network object (`trainedNet`), layer graphs (`lgraph`), model info struct, and `.mat` model checkpoints.
+1. **Model Backbone Library:** Construct transfer learning graphs centered on **ResNet-152** as primary architecture:
+   - `resnet152`: Primary deep benchmark (152 residual bottleneck layers, ~60.2M parameters).
+   - `resnet50` and `mobilenet_v2`: Lightweight options for constrained edge hardware.
+2. **Custom Network Surgery:** Replace default ImageNet 1000-class heads with custom retinal classification heads:
+   - Dropout layer ($p = 0.40$ deactivation rate to prevent clinical overfitting).
+   - Fully connected linear layer with 5 output classes (`nn.Linear(2048, 5)`).
+   - Softmax activation output.
+3. **Layer Freezing Strategy:** Freeze early convolutional layers to preserve generic edge/texture weights; unfreeze `layer4` and classification head for domain adaptation.
+4. **Training Optimization Engine:** Implement training loop using the AdamW optimizer (learning rate $10^{-4}$, weight decay $10^{-4}$), Weighted Cross-Entropy Loss to counter class imbalance, and StepLR/CosineAnnealing learning rate decay.
 
 ---
 
@@ -178,32 +118,22 @@ Architect, perform network surgery, and train transfer-learned convolutional neu
 Deploy deep learning models for sub-50ms inference on non-GPU edge laptops, program clinical triage logic, and validate statistical performance.
 
 ### 📂 Directory & File Ownership
-- [`classification/predictDR.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/classification/predictDR.m)
-- [`classification/batchPredictDR.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/classification/batchPredictDR.m)
-- [`classification/evaluateMetrics.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/classification/evaluateMetrics.m)
-- [`classification/plotConfusionMatrix.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/classification/plotConfusionMatrix.m)
-- [`classification/plotROCCurves.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/classification/plotROCCurves.m)
-- [`classification/visualizePredictionCard.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/classification/visualizePredictionCard.m)
-- [`testing/evaluateFullValidationSuite.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/testing/evaluateFullValidationSuite.m)
-- [`testing/profilePipeline.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/testing/profilePipeline.m)
+- [`classification/predict_dr.py`](file:///c:/Users/Priyam/Desktop/AI/Capstone/classification/predict_dr.py)
+- [`classification/evaluate_metrics.py`](file:///c:/Users/Priyam/Desktop/AI/Capstone/classification/evaluate_metrics.py)
+- [`tests/test_python_suite.py`](file:///c:/Users/Priyam/Desktop/AI/Capstone/tests/test_python_suite.py)
 
 ### 🛠️ Development Tasks
-1. **High-Speed Inference Engine:** Develop `predictDR.m` accepting image arrays or paths, standardizing input shapes (224x224x3 pixels), running forward passes in under 50 milliseconds on standard non-GPU laptop CPUs, and extracting softmax confidence.
+1. **High-Speed Inference Engine:** Develop `predict_dr.py` accepting image arrays or paths, standardizing input shapes (224x224x3 pixels), running forward passes in under 50 milliseconds on standard non-GPU laptop CPUs, and extracting softmax confidence.
 2. **Clinical Triage Decision Logic:** Program medical referral rules:
-   - Stages 0–1 (No DR, Mild NPDR) → `Routine Annual Surveillance`.
-   - Stage 2 (Moderate NPDR) → `Non-Urgent Ophthalmic Referral` (within 30 days).
-   - Stage 3 (Severe NPDR) → `Urgent District Hospital Referral` (within 7 days).
+   - Stages 0–1 (No DR, Mild NPDR) → `Routine Annual Surveillance at Local PHC`.
+   - Stage 2 (Moderate NPDR) → `Non-Urgent Tele-Ophthalmology Referral` (within 30 days).
+   - Stage 3 (Severe NPDR) → `Priority District Hospital Referral` (within 7–14 days).
    - Stage 4 (Proliferative DR) → `Emergency Vitreoretinal Referral` (within 24–48 hours).
 3. **Multi-Class Evaluation Engine:** Program statistical metrics:
    - 5x5 normalized confusion matrix.
-   - **Quadratic Weighted Kappa (score = 0.9124)** penalizing distant clinical stage misclassifications.
-   - One-vs-Rest multi-class ROC curves and macro-average Area Under Curve (AUC = 0.9782).
-   - Clinical Sensitivity (93.5%) and Specificity (92.1%) for referable cases (Stage 2 Moderate DR and higher).
-4. **Latency & Profiling Benchmark:** Measure end-to-end stage latencies, memory footprint, and frames-per-second on target edge laptops.
-
-### 🔄 Interfaces
-- **Input:** Trained model from ML Member 1; enhanced test image from DS Member 2.
-- **Output:** Diagnostic result struct (`predictedClass`, `stageName`, `confidence`, `classProbabilities`, `referralRequired`, `urgency`, `latencyMs`).
+   - **Cohen's Quadratic Weighted Kappa (target $\kappa_w \ge 0.90$)** penalizing distant clinical stage misclassifications.
+   - Referable DR Sensitivity ($\ge 90\%$) and Specificity ($\ge 90\%$) for Stage 2 Moderate DR and higher.
+4. **Automated Test Suite:** 12 unit tests verifying 100% passing across all Python modules.
 
 ---
 
@@ -216,95 +146,68 @@ Deploy deep learning models for sub-50ms inference on non-GPU edge laptops, prog
 Transform the black-box CNN into an interpretable clinical tool by computing Grad-CAM saliency heatmaps and localizing microvascular lesions.
 
 ### 📂 Directory & File Ownership
-- [`explainability/computeGradCAM.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/explainability/computeGradCAM.m)
-- [`explainability/overlayHeatmap.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/explainability/overlayHeatmap.m)
-- [`explainability/segmentSalientLesions.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/explainability/segmentSalientLesions.m)
-- [`explainability/generateExplanation.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/explainability/generateExplanation.m)
-- [`explainability/exportExplanationFigure.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/explainability/exportExplanationFigure.m)
-- [`testing/TestExplainability.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/testing/TestExplainability.m)
+- [`explainability/grad_cam.py`](file:///c:/Users/Priyam/Desktop/AI/Capstone/explainability/grad_cam.py)
 
 ### 🛠️ Development Tasks
-1. **Grad-CAM Algorithm:** Compute sensitivity gradients of the predicted class score with respect to feature activation maps of the final convolutional layer (`activation_49_relu` for ResNet-50, `out_relu` for MobileNetV2), pool gradient weights across all pixels, and combine them through a positive activation filter (ReLU):
-   ```
-   Grad-CAM Heatmap = Positive Values of [ Sum of (Feature Importance Weights × Feature Maps) ]
-   ```
-   This discards negative features and preserves visual evidence that directly supports the diagnosis.
-2. **Smooth Heatmap Colormap Overlay:** Normalize activation maps to a 0 to 1 scale and blend them onto retinal images using Jet, Turbo, or Hot colormaps with adjustable alpha transparency (0% to 100%).
-3. **Morphological Lesion Segmentation:** Apply Otsu adaptive thresholding to the saliency map, perform connected component labeling (`bwconncomp`), and extract bounding box coordinates surrounding microaneurysms, hemorrhages, and exudates.
-4. **Anatomical Quadrant Localization:** Classify lesion centroids into Superotemporal (ST), Superonasal (SN), Inferotemporal (IT), Inferonasal (IN), and Macular regions.
-5. **Clinical Natural-Language Justification:** Generate plain-language clinical narrative text for non-specialist health workers (ASHAs) explaining the biological rationale behind the AI's diagnosis.
-
-### 🔄 Interfaces
-- **Input:** Model from ML Member 1; image and predicted stage from ML Member 2.
-- **Output:** Saliency struct (`heatmap`, `overlayImage`, `annotatedImage`, `lesionStats`, `summaryNarrative`).
+1. **Grad-CAM Algorithm:** Compute sensitivity gradients of the predicted class score with respect to feature activation maps of ResNet-152 `model.layer4`, pool gradient weights across feature channels, and filter through ReLU:
+   $$\text{Grad-CAM Heatmap} = \text{ReLU}\left(\sum_{k} \alpha_k A^k\right)$$
+2. **Smooth Heatmap Colormap Overlay:** Normalize activation maps to a 0–1 scale and blend them onto retinal images using colormap Jet with interactive opacity blending.
+3. **Lesion Hotspot Localization:** Extract bounding coordinates surrounding microaneurysms, hemorrhages, and hard exudates.
+4. **Clinical Natural-Language Justification:** Generate plain-language clinical narrative text for non-specialist health workers (ASHAs) explaining the biological rationale behind the AI's diagnosis.
 
 ---
 
 ```
 ========================================================================================
- MEMBER 6: VAIBHAV RAJ (12325142) — FULL STACK: WORKSTATION GUI, REPORTING HUB & INTEGRATION
+ MEMBER 6: VAIBHAV RAJ (12325142) — FULL STACK: WORKSTATION WEB UI, REPORTING HUB & INTEGRATION
 ========================================================================================
 ```
 ### 🎯 Objective
-Develop the enterprise 18-screen clinical GUI workstation, hospital-grade A4 PDF reporting engine, ABDM FHIR JSON export hub, and master orchestration.
+Develop the interactive Clinical Workstation Web UI, master CLI orchestrator, ABDM FHIR JSON export hub, and end-to-end integration.
 
 ### 📂 Directory & File Ownership
-- [`gui/DRScreeningApp_exported.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/gui/DRScreeningApp_exported.m)
-- [`gui/launchApp.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/gui/launchApp.m)
-- [`gui/testGUIModule.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/gui/testGUIModule.m)
-- [`reports/generatePatientReport.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/reports/generatePatientReport.m)
-- [`reports/exportReportPDF.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/reports/exportReportPDF.m)
-- [`reports/exportReportFHIR.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/reports/exportReportFHIR.m)
-- [`reports/exportReportMAT.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/reports/exportReportMAT.m)
-- [`main.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/main.m)
-- [`startup.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/startup.m)
-- [`config/default_config.json`](file:///c:/Users/Priyam/Desktop/AI/Capstone/config/default_config.json)
-- [`config/rural_camp_config.json`](file:///c:/Users/Priyam/Desktop/AI/Capstone/config/rural_camp_config.json)
-- [`utils/logger.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/utils/logger.m)
-- [`utils/errorHandler.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/utils/errorHandler.m)
-- [`testing/TestStressAndEdgeCases.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/testing/TestStressAndEdgeCases.m)
-- [`testing/runAllTests.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/testing/runAllTests.m)
+- [`app.py`](file:///c:/Users/Priyam/Desktop/AI/Capstone/app.py)
+- [`main.py`](file:///c:/Users/Priyam/Desktop/AI/Capstone/main.py)
+- [`reports/export_fhir.py`](file:///c:/Users/Priyam/Desktop/AI/Capstone/reports/export_fhir.py)
+- [`requirements.txt`](file:///c:/Users/Priyam/Desktop/AI/Capstone/requirements.txt)
 
 ### 🛠️ Development Tasks
-1. **18-Screen App Designer Workstation:** Implement the complete clinical workstation:
-   - Global top bar: Active Patient pill, offline edge mode badge, and Dark/Light theme toggle.
-   - 18-screen sidebar navigation switching between all clinical screens.
-   - Medical canvas tools: Interactive crosshair measurement calipers (measuring micro-lesions in micrometers, µm), pan/zoom controls, and Grad-CAM opacity sliders.
-2. **Hospital-Grade PDF Report Engine:** Engineer publication-grade A4 PDF report generation complying with NPCB&VI standards:
-   - Institutional branding header with hospital logo placeholder.
-   - **Quad-Image diagnostic panel** (Raw Capture, Enhanced CLAHE, Grad-CAM Saliency, Lesion Bounding Boxes).
-   - Attending doctor observations box and physician signature lines.
+1. **Interactive Clinical Workstation Web UI (`app.py`):** Implement the complete browser workstation:
+   - Drag-and-drop and file-picker retinal fundus image upload.
+   - 1-click clinical benchmark sample loader (Stages 0 to 4).
+   - Real-time optical Image Quality Assessment gauges.
+   - Animated 5-stage softmax probability distribution bars.
+   - Interactive Grad-CAM heatmap opacity slider.
+   - Patient demographic form and print-optimized PDF styling.
+2. **Master Orchestrator CLI (`main.py`):** Unified execution driver supporting modes: `--mode ui`, `--mode predict`, `--mode quality`, `--mode simulate`, and `--mode fhir`.
 3. **Healthcare Standards Integration (ABDM FHIR R4):** Build the automated JSON exporter adhering to Ayushman Bharat Digital Mission schemas (`DiagnosticReport` and `Observation` resources mapped to SNOMED-CT and LOINC codes).
-4. **Multi-Format Export Hub:** Implement export pipelines for 200 DPI PNG summary cards, MATLAB `.mat` data archives, and district referral CSV rosters.
-5. **System Orchestrator & Stress Testing:** Maintain [`main.m`](file:///c:/Users/Priyam/Desktop/AI/Capstone/main.m) as the unified entry driver and engineer `TestStressAndEdgeCases.m` to ensure system stability under zero-byte files, extreme exposure (from complete darkness to blinding flash glare), and non-square aspect ratios.
-
-### 🔄 Interfaces
-- **Input:** Combines outputs from DS Member 1 (IQA), DS Member 2 (enhanced images & queues), ML Member 2 (predictions), and ML Member 3 (XAI heatmaps).
-- **Output:** End-to-end executable application (`main.m`), interactive GUI (`launchApp`), PDF reports, and FHIR JSON records.
+4. **Packaging & Dependency Management:** Maintain locked `requirements.txt` ensuring zero-dependency local browser workstation execution.
 
 ---
 
-## 4. Integration Guidelines & Verification Rules
+## 3. Verification & Execution Standards
 
-To maintain high code quality across the team, all members must adhere to these three rules:
-
-1. **Static Syntax Verification:**
-   Before committing any `.m` file, run the automated Python integrity checker:
+To maintain high software engineering standards, all modules are verified through:
+1. **Automated Unit Testing:**
    ```bash
-   python test_syntax_and_integrity.py
+   python tests/test_python_suite.py
    ```
-   *Rule: Must report `ALL INTEGRITY & SYNTAX CHECKS PASSED!` with 0 errors.*
-
-2. **Automated Unit Testing:**
-   Ensure your module's unit tests pass in MATLAB:
-   ```matlab
-   startup;
-   testResults = runAllTests();
+   *Requirement: 12/12 tests passing (100% OK).*
+2. **Interactive Clinical Workstation Execution:**
+   ```bash
+   python app.py
+   # or
+   python main.py --mode ui
    ```
-
-3. **Decoupled Architecture:**
-   Never hardcode computation inside GUI callbacks. All algorithms must reside in their respective folders (`preprocessing/`, `classification/`, `explainability/`, `reports/`) as standalone functions that can run headlessly from the command line.
+   *Requirement: Launches local workstation at `http://localhost:5050` with drag-and-drop analysis.*
+3. **Headless CLI Verification:**
+   ```bash
+   python main.py --mode predict --image data/raw/aptos/aptos_02_1.png
+   python main.py --mode quality --image data/raw/aptos/aptos_02_1.png
+   python main.py --mode simulate --cameras 2
+   python main.py --mode fhir --patient PAT-2026-0042
+   ```
 
 ---
 
-*Authored by the SIH26038 Engineering Architecture Team • September 2026*
+*Authored by the SIH26038 Engineering Architecture Team • Academic Year 2026*
