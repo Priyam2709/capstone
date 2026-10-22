@@ -22,8 +22,8 @@ def main():
     parser = argparse.ArgumentParser(
         description="DRISHTI-AI: Explainable AI Retinal Screening System (SIH26038)"
     )
-    parser.add_argument("--mode", choices=["prototype", "predict", "quality", "simulate", "fhir"],
-                        default="prototype", help="Execution mode (default: prototype)")
+    parser.add_argument("--mode", choices=["prototype", "predict", "quality", "simulate", "fhir", "ui"],
+                        default="ui", help="Execution mode (default: ui)")
     parser.add_argument("--image", type=str, default=None,
                         help="Path to retinal fundus image for prediction/quality")
     parser.add_argument("--architecture", type=str, default="resnet152",
@@ -96,6 +96,10 @@ def main():
         print(f"  Bundle Resource Type   : {out['resourceType']}")
         print(f"  Diagnostic Report ID   : {out['entry'][0]['resource']['id']}")
         print(f"  Conclusion             : {out['entry'][0]['resource']['conclusion']}")
+
+    elif args.mode == "ui":
+        from app import launch_server
+        launch_server()
 
 if __name__ == "__main__":
     main()
