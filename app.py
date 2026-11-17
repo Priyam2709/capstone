@@ -199,6 +199,7 @@ HTML_UI = """<!DOCTYPE html>
         <div class="flex items-center space-x-2">
           <span class="font-extrabold text-base tracking-tight text-white">DRISHTI-AI CLINICAL WORKSTATION</span>
           <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">Phase 1 Live</span>
+          <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">IDRiD: 516 Images Integrated</span>
         </div>
         <div class="text-xs text-slate-400">SIH26038 &bull; ResNet-152 Deep Transfer Learning &bull; Rural PHC Retinal Screening</div>
       </div>
@@ -290,15 +291,31 @@ HTML_UI = """<!DOCTYPE html>
             <div class="text-[11px] text-slate-500">Supports JPG, PNG, JPEG, TIFF &bull; Real-Time AI Analysis</div>
           </div>
 
-          <!-- PRESET CLINICAL SAMPLES -->
-          <div class="no-print space-y-2">
-            <div class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Or Load Benchmark Retinal Scans:</div>
+          <!-- OFFICIAL IDRID DATASET SAMPLES -->
+          <div class="no-print space-y-2 bg-slate-950/70 p-3 rounded-xl border border-blue-500/30 shadow-inner">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] uppercase tracking-wider text-blue-300 font-bold flex items-center gap-1.5">
+                <span class="h-2 w-2 rounded-full bg-blue-400 animate-pulse"></span>
+                Official IDRiD Patient Cohort:
+              </span>
+              <span class="text-[9px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded font-mono font-bold">516 Scans</span>
+            </div>
             <div class="grid grid-cols-5 gap-1.5">
-              <button onclick="loadSamplePreset(0)" class="px-2 py-1.5 rounded-lg bg-slate-800 hover:bg-emerald-950/50 hover:border-emerald-700/50 border border-slate-700 text-[10px] font-bold text-emerald-400 transition text-center truncate">0: Normal</button>
-              <button onclick="loadSamplePreset(1)" class="px-2 py-1.5 rounded-lg bg-slate-800 hover:bg-sky-950/50 hover:border-sky-700/50 border border-slate-700 text-[10px] font-bold text-sky-400 transition text-center truncate">1: Mild</button>
-              <button onclick="loadSamplePreset(2)" class="px-2 py-1.5 rounded-lg bg-slate-800 hover:bg-amber-950/50 hover:border-amber-700/50 border border-slate-700 text-[10px] font-bold text-amber-400 transition text-center truncate">2: Moderate</button>
-              <button onclick="loadSamplePreset(3)" class="px-2 py-1.5 rounded-lg bg-slate-800 hover:bg-orange-950/50 hover:border-orange-700/50 border border-slate-700 text-[10px] font-bold text-orange-400 transition text-center truncate">3: Severe</button>
-              <button onclick="loadSamplePreset(4)" class="px-2 py-1.5 rounded-lg bg-slate-800 hover:bg-rose-950/50 hover:border-rose-700/50 border border-slate-700 text-[10px] font-bold text-rose-400 transition text-center truncate">4: PDR</button>
+              <button onclick="loadRealIdridSample(0)" class="px-1 py-1.5 rounded-lg bg-slate-800 hover:bg-emerald-950 hover:border-emerald-500 border border-slate-700 text-[10px] font-bold text-emerald-400 transition text-center truncate" title="IDRiD_118 (Grade 0 Normal)">
+                0: Normal
+              </button>
+              <button onclick="loadRealIdridSample(1)" class="px-1 py-1.5 rounded-lg bg-slate-800 hover:bg-sky-950 hover:border-sky-500 border border-slate-700 text-[10px] font-bold text-sky-400 transition text-center truncate" title="IDRiD_021 (Grade 1 Mild)">
+                1: Mild
+              </button>
+              <button onclick="loadRealIdridSample(2)" class="px-1 py-1.5 rounded-lg bg-slate-800 hover:bg-amber-950 hover:border-amber-500 border border-slate-700 text-[10px] font-bold text-amber-400 transition text-center truncate" title="IDRiD_003 (Grade 2 Moderate)">
+                2: Mod
+              </button>
+              <button onclick="loadRealIdridSample(3)" class="px-1 py-1.5 rounded-lg bg-slate-800 hover:bg-orange-950 hover:border-orange-500 border border-slate-700 text-[10px] font-bold text-orange-400 transition text-center truncate" title="IDRiD_001 (Grade 3 Severe)">
+                3: Severe
+              </button>
+              <button onclick="loadRealIdridSample(4)" class="px-1 py-1.5 rounded-lg bg-slate-800 hover:bg-rose-950 hover:border-rose-500 border border-slate-700 text-[10px] font-bold text-rose-400 transition text-center truncate" title="IDRiD_005 (Grade 4 PDR)">
+                4: PDR
+              </button>
             </div>
           </div>
 
@@ -484,8 +501,63 @@ HTML_UI = """<!DOCTYPE html>
     window.addEventListener('DOMContentLoaded', () => {
       document.getElementById('printDate').textContent = new Date().toLocaleString();
       initDragAndDrop();
-      loadSamplePreset(2); // Start with Stage 2 default
+      loadRealIdridSample(2); // Start with Real IDRiD Stage 2 (Moderate NPDR) patient scan
     });
+
+    function loadRealIdridSample(grade) {
+      document.getElementById('loader').classList.remove('hidden');
+      fetch('/api/idrid_sample?grade=' + grade)
+        .then(r => r.json())
+        .then(data => {
+          if (data && data.image_b64) {
+            const img = new Image();
+            img.onload = function() {
+              const canvas = document.getElementById('fundusCanvas');
+              const ctx = canvas.getContext('2d');
+              ctx.clearRect(0, 0, 224, 224);
+              ctx.drawImage(img, 0, 0, 224, 224);
+
+              // Update Patient ID to match real IDRiD patient subject
+              if (data.image_id) {
+                document.getElementById('patientId').value = 'PAT-' + data.image_id;
+                document.getElementById('patientName').value = 'IDRiD Patient ' + data.image_id;
+              }
+
+              // Extract RGBA bytes
+              const imgData = ctx.getImageData(0, 0, 224, 224);
+              const bytes = imgData.data;
+              let binary = '';
+              for (let i = 0; i < bytes.byteLength; i++) {
+                binary += String.fromCharCode(bytes[i]);
+              }
+              const rgba_b64 = btoa(binary);
+
+              fetch('/api/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ rgba_b64: rgba_b64, filename: data.filename || ('idrid_' + grade + '.png') })
+              })
+              .then(res => res.json())
+              .then(analysis => {
+                renderAnalysis(analysis);
+                drawGradCAMCanvas(analysis.gradcam || { cx: 120, cy: 110, radius: 45 });
+                document.getElementById('loader').classList.add('hidden');
+              })
+              .catch(err => {
+                console.error('Analysis error:', err);
+                document.getElementById('loader').classList.add('hidden');
+              });
+            };
+            img.src = 'data:image/png;base64,' + data.image_b64;
+          } else {
+            loadSamplePreset(grade);
+          }
+        })
+        .catch(err => {
+          console.error('Failed to load IDRiD sample, falling back:', err);
+          loadSamplePreset(grade);
+        });
+    }
 
     function initDragAndDrop() {
       const dropZone = document.getElementById('dropZone');
@@ -566,35 +638,7 @@ HTML_UI = """<!DOCTYPE html>
     }
 
     function loadSamplePreset(stage) {
-      document.getElementById('loader').classList.remove('hidden');
-      const canvas = document.getElementById('fundusCanvas');
-      const ctx = canvas.getContext('2d');
-      drawProceduralFundus(ctx, stage);
-
-      // Extract raw RGBA bytes from canvas
-      const imgData = ctx.getImageData(0, 0, 224, 224);
-      const bytes = imgData.data;
-      let binary = '';
-      const len = bytes.byteLength;
-      for (let i = 0; i < len; i++) {
-        binary += String.fromCharCode(bytes[i]);
-      }
-      const rgba_b64 = btoa(binary);
-
-      fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rgba_b64: rgba_b64, filename: 'sample_stage_' + stage + '.png' })
-      })
-      .then(res => res.json())
-      .then(data => {
-        renderAnalysis(data);
-        drawGradCAMCanvas(data.gradcam || { cx: 120, cy: 110, radius: 45 });
-        document.getElementById('loader').classList.add('hidden');
-      })
-      .catch(err => {
-        document.getElementById('loader').classList.add('hidden');
-      });
+      loadRealIdridSample(stage);
     }
 
     function drawProceduralFundus(ctx, stage) {
@@ -801,6 +845,42 @@ class ClinicalWorkstationHandler(SimpleHTTPRequestHandler):
             self.wfile.write(HTML_UI.encode("utf-8"))
             return
 
+        if parsed.path == "/api/idrid_sample":
+            query = urllib.parse.parse_qs(parsed.query)
+            grade_str = query.get("grade", ["0"])[0]
+            try:
+                grade = int(grade_str)
+            except ValueError:
+                grade = 0
+
+            # Map grade to web sample file
+            sample_map = {
+                0: ("IDRiD_118", "idrid_grade_0_IDRiD_118.png"),
+                1: ("IDRiD_021", "idrid_grade_1_IDRiD_021.png"),
+                2: ("IDRiD_003", "idrid_grade_2_IDRiD_003.png"),
+                3: ("IDRiD_001", "idrid_grade_3_IDRiD_001.png"),
+                4: ("IDRiD_005", "idrid_grade_4_IDRiD_005.png")
+            }
+            img_id, fname = sample_map.get(grade, ("IDRiD_118", "idrid_grade_0_IDRiD_118.png"))
+            full_path = os.path.join(PROJECT_ROOT, "data", "idrid", "web_samples", fname)
+            
+            b64_str = ""
+            if os.path.exists(full_path):
+                with open(full_path, "rb") as f:
+                    b64_str = base64.b64encode(f.read()).decode("utf-8")
+
+            res_payload = {
+                "grade": grade,
+                "image_id": img_id,
+                "filename": fname,
+                "image_b64": b64_str
+            }
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(json.dumps(res_payload).encode("utf-8"))
+            return
+
         super().do_GET()
 
     def do_POST(self):
@@ -810,18 +890,29 @@ class ClinicalWorkstationHandler(SimpleHTTPRequestHandler):
             try:
                 data = json.loads(body)
                 rgba_b64 = data.get("rgba_b64")
+                filename = data.get("filename", "")
                 if rgba_b64:
                     raw_bytes = base64.b64decode(rgba_b64)
                     img_rgb = np.frombuffer(raw_bytes, dtype=np.uint8).reshape((224, 224, 4))[:, :, :3]
                 else:
                     img_rgb = np.full((224, 224, 3), [180, 75, 30], dtype=np.uint8)
 
-                # Real Image Quality Assessment
+                # 1. Real Image Quality Assessment (IQA)
                 iqa = assess_image_quality(img_rgb)
 
-                # Real Retinal Biomarker & Deep Learning Analysis
-                pred = analyze_retinal_image_biomarkers(img_rgb)
+                # 2. ResNet-152 Deep Learning Forward Inference
+                pred = predict_dr(img_rgb)
                 pred["iqa"] = iqa
+                pred["sourceFile"] = filename
+
+                # 3. Genuine PyTorch Grad-CAM Saliency
+                gcam = compute_gradcam(img_rgb, target_class=pred["stageCode"])
+                pred["justification"] = gcam["clinicalJustification"]
+                if gcam.get("boundingBoxes"):
+                    b = gcam["boundingBoxes"][0]
+                    pred["gradcam"] = {"cx": b["x"] + b["w"] // 2, "cy": b["y"] + b["h"] // 2, "radius": 48}
+                else:
+                    pred["gradcam"] = {"cx": 112, "cy": 112, "radius": 35}
 
                 response_json = json.dumps(pred)
             except Exception as e:

@@ -19,8 +19,8 @@
     "visualizations_dir": "results/visualizations"
   },
   "dataset": {
-    "supported_datasets": ["APTOS", "EyePACS", "IDRiD", "Messidor"],
-    "active_dataset": "APTOS",
+    "supported_datasets": ["IDRiD", "APTOS", "EyePACS", "Messidor"],
+    "active_dataset": "IDRiD",
     "split_ratios": {
       "train": 0.70,
       "validation": 0.15,

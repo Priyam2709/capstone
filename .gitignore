@@ -27,3 +27,16 @@ transfer_learning_model.*
 prototype_transfer_learning.*
 prototype_result.html
 documentation/PROTOTYPE_DEMO_GUIDE.md
+
+# Large Archives & Datasets (>100MB restricted by GitHub)
+*.zip
+*.tar
+*.gz
+data/idrid/*
+!data/idrid/web_samples/
+!data/idrid/web_samples/*
+*.pth
+*.pt
+models/checkpoints/
+
+

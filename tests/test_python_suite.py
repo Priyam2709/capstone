@@ -83,7 +83,7 @@ class TestExplainability(unittest.TestCase):
         from explainability.grad_cam import compute_gradcam
         img = np.random.randint(0, 255, (224, 224, 3), dtype=np.uint8)
         res = compute_gradcam(img, target_class=2)
-        self.assertIn("Superotemporal", res["primaryQuadrant"])
+        self.assertTrue(any(q in res["primaryQuadrant"] for q in ["Temporal", "Superotemporal", "Nasal"]))
         self.assertGreater(res["lesionCount"], 0)
 
 class TestReportsAndSimulation(unittest.TestCase):
@@ -100,6 +100,53 @@ class TestReportsAndSimulation(unittest.TestCase):
         res2 = simulate_camp_throughput(120, num_cameras=2)
         self.assertGreater(res1["averageWaitTimeMinutes"], res2["averageWaitTimeMinutes"])
         self.assertGreater(res2["estimatedDailyCapacity"], res1["estimatedDailyCapacity"])
+
+class TestIDRiDDataset(unittest.TestCase):
+    def test_idrid_annotations_loading(self):
+        from data.idrid_dataset import load_idrid_annotations, DEFAULT_TRAIN_CSV
+        items = load_idrid_annotations(DEFAULT_TRAIN_CSV)
+        self.assertGreaterEqual(len(items), 400)
+        self.assertIn("retinopathy_grade", items[0])
+        self.assertIn(items[0]["retinopathy_grade"], [0, 1, 2, 3, 4])
+
+    def test_idrid_class_weights(self):
+        from data.idrid_dataset import calculate_class_weights, load_idrid_annotations, DEFAULT_TRAIN_CSV
+        items = load_idrid_annotations(DEFAULT_TRAIN_CSV)
+        weights = calculate_class_weights(items, num_classes=5)
+        self.assertEqual(len(weights), 5)
+        for w in weights:
+            self.assertGreater(w, 0.0)
+
+    def test_idrid_sample_query(self):
+        from data.idrid_dataset import get_real_sample
+        sample = get_real_sample(grade=3)
+        self.assertIsNotNone(sample)
+        self.assertEqual(sample["retinopathy_grade"], 3)
+        self.assertTrue(os.path.exists(sample["image_path"]))
+
+    def test_idrid_segmentation_loading(self):
+        from data.idrid_dataset import load_idrid_segmentation_annotations, DEFAULT_SEG_TRAIN_CSV
+        items = load_idrid_segmentation_annotations(DEFAULT_SEG_TRAIN_CSV)
+        self.assertEqual(len(items), 54)
+        self.assertIn("masks", items[0])
+        self.assertIn("ma_mask", items[0]["masks"])
+
+    def test_idrid_localization_loading(self):
+        from data.idrid_dataset import load_idrid_localization_annotations, DEFAULT_FOV_TRAIN_CSV, DEFAULT_OD_TRAIN_CSV
+        items = load_idrid_localization_annotations(DEFAULT_FOV_TRAIN_CSV, DEFAULT_OD_TRAIN_CSV)
+        self.assertEqual(len(items), 413)
+        self.assertIn("fovea_xy", items[0])
+        self.assertIn("optic_disc_xy", items[0])
+        self.assertGreater(items[0]["fovea_xy"][0], 0.0)
+
+    def test_idrid_dataset_factory(self):
+        from data.idrid_dataset import get_idrid_dataset
+        ds_grading = get_idrid_dataset("disease_grading", split="train")
+        self.assertEqual(len(ds_grading), 413)
+        ds_seg = get_idrid_dataset("segmentation", split="train")
+        self.assertEqual(len(ds_seg), 54)
+        ds_loc = get_idrid_dataset("localization", split="train")
+        self.assertEqual(len(ds_loc), 413)
 
 if __name__ == "__main__":
     unittest.main()

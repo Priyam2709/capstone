@@ -7,8 +7,8 @@ Master Python Unified Entry Point and CLI Orchestrator.
 Usage:
     python main.py                     # Runs the ResNet-152 prototype
     python main.py --mode prototype    # Runs the transfer learning prototype
-    python main.py --mode predict --image data/raw/aptos/aptos_02_1.png
-    python main.py --mode quality --image data/raw/aptos/aptos_02_1.png
+    python main.py --mode predict --image "data/idrid/disease_grading/original_images/a. Training Set/IDRiD_001.jpg"
+    python main.py --mode quality --image "data/idrid/disease_grading/original_images/a. Training Set/IDRiD_001.jpg"
     python main.py --mode simulate --cameras 2
     python main.py --mode fhir --patient PAT-2026-0042
 """
@@ -47,7 +47,7 @@ def main():
             import transfer_learning_model
         except ImportError:
             from classification.predict_dr import predict_dr
-            default_image = args.image or os.path.join("data", "raw", "aptos", "aptos_02_1.png")
+            default_image = args.image or os.path.join("data", "idrid", "disease_grading", "original_images", "a. Training Set", "IDRiD_001.jpg")
             print(f"Running DRISHTI-AI {args.architecture.upper()} on: {default_image}")
             res = predict_dr(default_image, architecture=args.architecture)
             print(f"  Diagnosis          : {res['stageName']}")
@@ -57,7 +57,7 @@ def main():
             print(f"  Action Protocol    : {res['actionProtocol']}")
         return
 
-    default_image = args.image or os.path.join("data", "raw", "aptos", "aptos_02_1.png")
+    default_image = args.image or os.path.join("data", "idrid", "disease_grading", "original_images", "a. Training Set", "IDRiD_001.jpg")
 
     if args.mode == "predict":
         from classification.predict_dr import predict_dr

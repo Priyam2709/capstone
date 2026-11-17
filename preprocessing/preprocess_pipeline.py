@@ -7,8 +7,12 @@ Converts raw, variable-exposure fundus captures into normalized, lesion-enhanced
 
 from typing import Dict, Any, Tuple
 import numpy as np
-from .apply_clahe import apply_clahe
-from .correct_illumination import correct_illumination
+try:
+    from .apply_clahe import apply_clahe
+    from .correct_illumination import correct_illumination
+except ImportError:
+    from apply_clahe import apply_clahe
+    from correct_illumination import correct_illumination
 
 def preprocess_pipeline(image: np.ndarray, target_size: Tuple[int, int] = (224, 224)) -> Dict[str, Any]:
     """
