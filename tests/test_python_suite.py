@@ -100,6 +100,35 @@ class TestReportsAndSimulation(unittest.TestCase):
         res2 = simulate_camp_throughput(120, num_cameras=2)
         self.assertGreater(res1["averageWaitTimeMinutes"], res2["averageWaitTimeMinutes"])
         self.assertGreater(res2["estimatedDailyCapacity"], res1["estimatedDailyCapacity"])
+        self.assertIn("hourlyTimeline", res1)
+        self.assertEqual(len(res1["hourlyTimeline"]), 8)
+        self.assertGreater(res1["waitReductionPct"], 50.0)
+
+class TestLandmarkLocalization(unittest.TestCase):
+    def test_landmark_localization_synthetic(self):
+        from localization.localize_landmarks import localize_retinal_landmarks
+        dummy = np.random.randint(40, 200, (224, 224, 3), dtype=np.uint8)
+        res = localize_retinal_landmarks(dummy, target_size=(224, 224))
+        self.assertEqual(res["status"], "SUCCESS")
+        self.assertIn("optic_disc", res)
+        self.assertIn("fovea", res)
+        self.assertGreater(res["optic_disc"]["radius"], 0)
+        self.assertGreater(res["disc_to_fovea_distance_px"], 0.0)
+
+    def test_landmark_localization_idrid(self):
+        from localization.localize_landmarks import localize_retinal_landmarks
+        img_p = os.path.join(os.path.dirname(__file__), "..", "data", "idrid", "disease_grading", "original_images", "a. Training Set", "IDRiD_001.jpg")
+        if os.path.exists(img_p):
+            res = localize_retinal_landmarks(img_p, image_id="IDRiD_001")
+            self.assertEqual(res["status"], "SUCCESS")
+            try:
+                from PIL import Image
+                has_img_lib = True
+            except ImportError:
+                has_img_lib = False
+            if has_img_lib and "ground_truth" in res:
+                self.assertLess(res["ground_truth"]["optic_disc_error_px"], 20.0)
+                self.assertLess(res["ground_truth"]["fovea_error_px"], 20.0)
 
 class TestIDRiDDataset(unittest.TestCase):
     def test_idrid_annotations_loading(self):

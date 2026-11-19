@@ -22,7 +22,7 @@ def main():
     parser = argparse.ArgumentParser(
         description="DRISHTI-AI: Explainable AI Retinal Screening System (SIH26038)"
     )
-    parser.add_argument("--mode", choices=["prototype", "predict", "quality", "simulate", "fhir", "ui"],
+    parser.add_argument("--mode", choices=["prototype", "predict", "quality", "simulate", "fhir", "ui", "localize"],
                         default="ui", help="Execution mode (default: ui)")
     parser.add_argument("--image", type=str, default=None,
                         help="Path to retinal fundus image for prediction/quality")
@@ -96,6 +96,20 @@ def main():
         print(f"  Bundle Resource Type   : {out['resourceType']}")
         print(f"  Diagnostic Report ID   : {out['entry'][0]['resource']['id']}")
         print(f"  Conclusion             : {out['entry'][0]['resource']['conclusion']}")
+
+    elif args.mode == "localize":
+        from localization.localize_landmarks import localize_retinal_landmarks
+        print(f"Executing Track C Landmark Localization on: {default_image}")
+        res = localize_retinal_landmarks(default_image, target_size=(224, 224))
+        od = res["optic_disc"]
+        fov = res["fovea"]
+        print(f"  Eye Laterality         : {res['eye_side']}")
+        print(f"  Optic Disc Center      : ({od['x']}, {od['y']}) px [Radius: {od['radius']} px]")
+        print(f"  Cup-to-Disc Ratio (CDR): {od['cup_to_disc_ratio']} ({od['cdr_verdict']})")
+        print(f"  Fovea Centralis        : ({fov['x']}, {fov['y']}) px [FAZ Radius: {fov['radius']} px]")
+        print(f"  Disc-to-Fovea Distance : {res['disc_to_fovea_distance_px']} px (~{res['disc_to_fovea_distance_mm']} mm)")
+        print(f"  Macular Edema Threat   : {res['macular_threat']}")
+        print(f"  Macular Assessment     : {res['macular_status']}")
 
     elif args.mode == "ui":
         from app import launch_server
