@@ -12,15 +12,42 @@ __pycache__/
 *.py[cod]
 *$py.class
 .pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.swp
+*~
+*.sublime-project
+*.sublime-workspace
 
 # System & OS files
 .DS_Store
 Thumbs.db
 desktop.ini
+*.lnk
 
-# Scratch / temporary test directories
+# Scratch, logs & temporary test directories
 results/scratch_tests/
 *.tmp
+*.bak
+*.log
+
+# Loose root documents (official report is in documentation/PROJECT_PROPOSAL_REPORT.pdf)
+/*.pdf
+/*.docx
+/*.pptx
 
 # Prototype scripts excluded from repository
 transfer_learning_model.*
@@ -32,11 +59,13 @@ documentation/PROTOTYPE_DEMO_GUIDE.md
 *.zip
 *.tar
 *.gz
+*.rar
+*.7z
 data/idrid/*
 !data/idrid/web_samples/
 !data/idrid/web_samples/*
 *.pth
 *.pt
-models/checkpoints/
-
-
+*.onnx
+models/checkpoints/*.pt
+models/checkpoints/*.pth
