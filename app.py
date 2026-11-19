@@ -48,11 +48,30 @@ CONFERENCE_UI = """<!DOCTYPE html>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DRISHTI-AI | Academic & Conference Retinal Screening Workstation</title>
+  <title>DRISHTI-AI | Retinal Screening & Diagnostic Workstation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            medical: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            }
+          }
+        }
+      }
+    }
+  </script>
   <style>
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -68,14 +87,16 @@ CONFERENCE_UI = """<!DOCTYPE html>
     }
     .print-only { display: none; }
     .custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
-    .custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
-    .custom-scroll::-webkit-scrollbar-track { background: #0c1017; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
     .slider-track {
       -webkit-appearance: none;
       height: 4px;
       border-radius: 2px;
-      background: #334155;
+      background: #cbd5e1;
       outline: none;
+    }
+    .dark .slider-track {
+      background: #334155;
     }
     .slider-track::-webkit-slider-thumb {
       -webkit-appearance: none;
@@ -83,19 +104,21 @@ CONFERENCE_UI = """<!DOCTYPE html>
       width: 14px;
       height: 14px;
       border-radius: 50%;
-      background: #38bdf8;
+      background: #0284c7;
       cursor: pointer;
-      box-shadow: 0 0 5px rgba(56, 189, 248, 0.5);
+      box-shadow: 0 0 4px rgba(2, 132, 199, 0.5);
+    }
+    .canvas-flipped {
+      transform: scaleX(-1);
     }
   </style>
 </head>
-<body class="bg-[#0c1017] text-slate-100 min-h-screen antialiased custom-scroll selection:bg-sky-500/30 selection:text-sky-200">
+<body class="bg-slate-100 text-slate-800 min-h-screen antialiased custom-scroll transition-colors duration-200">
 
-  <!-- TOP CLINICAL NAVIGATION BAR -->
-  <header class="no-print bg-[#111622] border-b border-slate-800/90 px-5 py-2.5 flex items-center justify-between sticky top-0 z-40 shadow-sm">
+  <!-- TOP CLINICAL NAVIGATION BAR (HOSPITAL SAPPHIRE) -->
+  <header class="no-print bg-[#1e3a8a] text-white px-5 py-2.5 flex items-center justify-between sticky top-0 z-40 shadow-md">
     <div class="flex items-center space-x-3">
-      <!-- Minimalist Clinical Emblem -->
-      <div class="h-8 w-8 rounded-lg bg-slate-800 border border-slate-700/80 flex items-center justify-center text-sky-400">
+      <div class="h-8 w-8 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center text-white shadow-sm">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
           <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -103,169 +126,190 @@ CONFERENCE_UI = """<!DOCTYPE html>
       </div>
       <div>
         <div class="flex items-center space-x-2">
-          <span class="font-semibold text-sm tracking-tight text-white">DRISHTI-AI</span>
-          <span class="text-[10px] text-slate-500 font-normal">|</span>
-          <span class="text-xs text-slate-300 font-medium">Academic &amp; Tele-Screening Workstation</span>
-          <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">v1.2</span>
+          <span class="font-bold text-sm tracking-tight text-white">DRISHTI-AI</span>
+          <span class="text-[10px] text-blue-200/60 font-normal">|</span>
+          <span class="text-xs text-blue-100 font-medium">Clinical Retinal Screening Workstation</span>
+          <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-950/60 text-blue-200 border border-blue-400/30">v1.2</span>
         </div>
-        <div class="text-[11px] text-slate-400">SIH26038 &bull; Deep Retinal Pathology Classification &bull; Primary Health Care Decision Support</div>
+        <div class="text-[11px] text-blue-200/80">SIH26038 &bull; Deep Retinal Pathology Classification &bull; Tele-Ophthalmology Decision Flow</div>
       </div>
     </div>
 
-    <!-- ACTION BUTTON GROUP -->
+    <!-- WORKSTATION CONTROLS & ACTION BUTTON GROUP -->
     <div class="flex items-center space-x-2">
+      <!-- Layout Orientation Switcher -->
+      <div class="hidden md:flex items-center bg-blue-950/80 rounded-md p-0.5 border border-blue-400/30 text-xs">
+        <button onclick="setLayoutOrientation('split')" id="btnOrientSplit" class="px-2.5 py-1 rounded bg-blue-700 text-white font-medium text-[11px] transition" title="Side-by-Side: Image on Left, Diagnosis on Right">
+          Horizontal (Split)
+        </button>
+        <button onclick="setLayoutOrientation('console')" id="btnOrientConsole" class="px-2.5 py-1 rounded text-blue-200 hover:text-white font-medium text-[11px] transition" title="3-Column PACS Workstation Console">
+          3-Column (PACS)
+        </button>
+        <button onclick="setLayoutOrientation('flow')" id="btnOrientFlow" class="px-2.5 py-1 rounded text-blue-200 hover:text-white font-medium text-[11px] transition" title="Sequential Vertical Clinical Report Flow">
+          Vertical Flow
+        </button>
+      </div>
+
+      <!-- Theme Switcher (Light / Dark) -->
+      <button onclick="toggleColorTheme()" id="btnThemeToggle" class="px-2.5 py-1.5 rounded-md bg-blue-900/60 hover:bg-blue-800 border border-blue-400/30 text-xs font-medium text-blue-100 transition flex items-center space-x-1 shadow-sm" title="Toggle Clinical Light / Darkroom Mode">
+        <span id="themeIcon">&#9728;</span>
+        <span id="themeLabel">Light</span>
+      </button>
+
       <!-- Doctor's Portal Button -->
-      <a href="/doctor" class="px-3 py-1.5 rounded-md bg-indigo-950/70 hover:bg-indigo-900 border border-indigo-700/70 text-xs font-medium text-indigo-200 transition flex items-center space-x-1.5 shadow-sm">
-        <svg class="w-3.5 h-3.5 text-indigo-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <a href="/doctor" class="px-3 py-1.5 rounded-md bg-indigo-700 hover:bg-indigo-600 border border-indigo-500/50 text-xs font-semibold text-white transition flex items-center space-x-1.5 shadow-sm">
+        <svg class="w-3.5 h-3.5 text-indigo-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5a4 4 0 008 0V4M8 13v2a4 4 0 004 4h1a4 4 0 004-4v-1.5M19 16a2 2 0 100-4 2 2 0 000 4z"/>
         </svg>
         <span>Doctor's View</span>
       </a>
 
       <!-- Camp Simulation Button -->
-      <button onclick="openCampSimulationModal()" class="px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200 transition flex items-center space-x-1.5 shadow-sm">
-        <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <button onclick="openCampSimulationModal()" class="px-3 py-1.5 rounded-md bg-emerald-700 hover:bg-emerald-600 border border-emerald-500/50 text-xs font-semibold text-white transition flex items-center space-x-1.5 shadow-sm">
+        <svg class="w-3.5 h-3.5 text-emerald-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
         </svg>
         <span>Camp Simulator</span>
       </button>
 
       <!-- Print Summary Button -->
-      <button onclick="window.print()" class="px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200 transition flex items-center space-x-1.5 shadow-sm">
-        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <button onclick="window.print()" class="px-3 py-1.5 rounded-md bg-white text-blue-900 hover:bg-blue-50 text-xs font-semibold transition flex items-center space-x-1.5 shadow-sm">
+        <svg class="w-3.5 h-3.5 text-blue-900" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
         </svg>
         <span>Print Summary</span>
       </button>
 
       <!-- Export FHIR Button -->
-      <button onclick="downloadFhirJson()" id="btnFhir" class="px-3 py-1.5 rounded-md bg-sky-700 hover:bg-sky-600 border border-sky-600/80 text-xs font-medium text-white transition flex items-center space-x-1.5 shadow-sm">
-        <svg class="w-3.5 h-3.5 text-sky-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <button onclick="downloadFhirJson()" id="btnFhir" class="px-3 py-1.5 rounded-md bg-blue-950 hover:bg-blue-900 text-xs font-medium text-white transition flex items-center space-x-1.5 shadow-sm">
+        <svg class="w-3.5 h-3.5 text-blue-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
         </svg>
-        <span>Export FHIR</span>
+        <span>ABDM FHIR</span>
       </button>
     </div>
   </header>
 
-  <!-- TECHNICAL BENCHMARK & SYSTEM STATUS RIBBON -->
-  <div class="no-print bg-[#0e131d] border-b border-slate-800/80 px-5 py-1.5 text-[11px] text-slate-400 flex items-center justify-between overflow-x-auto gap-4">
+  <!-- CLINICAL STATUS STRIP -->
+  <div class="no-print bg-white border-b border-slate-200 px-5 py-1.5 text-[11px] text-slate-600 flex items-center justify-between overflow-x-auto gap-4 shadow-xs">
     <div class="flex items-center space-x-6 shrink-0">
-      <div><span class="text-slate-400">Backbone:</span> <span class="text-slate-200 font-medium">ResNet-152 (58.2M Params)</span></div>
-      <div><span class="text-slate-400">Latency:</span> <span class="text-emerald-400 font-mono font-medium">42.5 ms (CPU Edge)</span></div>
-      <div><span class="text-slate-400">Agreement Metric:</span> <span class="text-amber-300 font-mono font-medium">Quadratic Weighted Kappa &ge; 0.90</span></div>
-      <div><span class="text-slate-400">Landmarks:</span> <span class="text-sky-300 font-medium">100% Optic Disc &bull; 90% Fovea</span></div>
-      <div><span class="text-slate-400">Benchmark:</span> <span class="text-slate-300 font-medium">IDRiD Consensus (516 Images)</span></div>
+      <div><span class="text-slate-500 font-medium">Model:</span> <span class="text-slate-800 font-semibold">ResNet-152 (58.2M Params)</span></div>
+      <div><span class="text-slate-500 font-medium">Latency:</span> <span class="text-emerald-700 font-mono font-semibold">42.5 ms (CPU Edge)</span></div>
+      <div><span class="text-slate-500 font-medium">Reliability:</span> <span class="text-amber-700 font-mono font-semibold">Quadratic Kappa &ge; 0.90</span></div>
+      <div><span class="text-slate-500 font-medium">Landmarks:</span> <span class="text-blue-700 font-semibold">100% Optic Disc &bull; 90% Fovea (PCK)</span></div>
+      <div><span class="text-slate-500 font-medium">Cohort:</span> <span class="text-slate-800 font-semibold">IDRiD Benchmark (516 Scans)</span></div>
     </div>
-    <div class="shrink-0 flex items-center space-x-1.5 text-[11px] text-slate-300">
-      <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
-      <span class="font-mono text-[10px]">LOCAL INFERENCE READY</span>
+    <div class="shrink-0 flex items-center space-x-1.5 text-[11px] text-emerald-800 font-medium">
+      <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+      <span class="font-mono text-[10px] uppercase">Clinical Edge Active</span>
     </div>
   </div>
 
-  <!-- MAIN WORKSPACE: 3-COLUMN CLINICAL DIAGNOSTIC CONSOLE -->
-  <main class="max-w-[1560px] mx-auto p-3.5 md:p-4">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-3.5">
+  <!-- MAIN WORKSPACE -->
+  <main class="max-w-[1580px] mx-auto p-3.5 md:p-4">
+    
+    <!-- DYNAMIC WORKSPACE GRID (ORIENTATION SWITCHABLE) -->
+    <div id="workspaceGrid" class="grid grid-cols-1 lg:grid-cols-12 gap-4">
 
       <!-- ============================================================== -->
-      <!-- COLUMN 1 (LEFT, 3 COLS): PATIENT CASES, IMAGE INPUT & QUALITY  -->
+      <!-- COLUMN 1: PATIENT CASES, IMAGE INGESTION & QUALITY (IQA)       -->
       <!-- ============================================================== -->
-      <div class="lg:col-span-3 space-y-3.5">
+      <div id="colStudy" class="lg:col-span-3 space-y-3.5">
 
-        <!-- PATIENT STUDY METADATA -->
-        <div class="panel-card bg-[#111622] border border-slate-800/90 rounded-xl p-3.5 shadow-sm space-y-2.5">
-          <div class="flex items-center justify-between text-xs pb-1.5 border-b border-slate-800">
-            <span class="font-semibold text-slate-200 uppercase tracking-wider text-[10px]">Study Demographics</span>
+        <!-- PATIENT STUDY DEMOGRAPHICS -->
+        <div class="panel-card bg-white border border-slate-200 rounded-xl p-3.5 shadow-sm space-y-2.5">
+          <div class="flex items-center justify-between text-xs pb-1.5 border-b border-slate-100">
+            <span class="font-bold text-slate-800 uppercase tracking-wider text-[10px]">Patient Study Info</span>
             <span id="printDate" class="text-[10px] text-slate-400 font-mono"></span>
           </div>
 
           <div class="space-y-2 text-xs">
             <div>
-              <label class="text-[10px] uppercase font-semibold text-slate-400 block tracking-wider">Patient ID</label>
-              <input type="text" id="patientId" value="PAT-IDRiD_003" class="bg-transparent border-b border-slate-700 hover:border-slate-500 py-0.5 text-xs font-semibold text-slate-100 w-full focus:border-sky-500 focus:outline-none font-mono">
+              <label class="text-[10px] uppercase font-semibold text-slate-500 block tracking-wider">Patient ID</label>
+              <input type="text" id="patientId" value="PAT-IDRiD_003" class="bg-transparent border-b border-slate-300 hover:border-slate-400 py-0.5 text-xs font-semibold text-slate-900 w-full focus:border-blue-500 focus:outline-none font-mono">
             </div>
             <div>
-              <label class="text-[10px] uppercase font-semibold text-slate-400 block tracking-wider">Patient Name</label>
-              <input type="text" id="patientName" value="IDRiD Patient 003" class="bg-transparent border-b border-slate-700 hover:border-slate-500 py-0.5 text-xs font-semibold text-slate-100 w-full focus:border-sky-500 focus:outline-none">
+              <label class="text-[10px] uppercase font-semibold text-slate-500 block tracking-wider">Patient Name</label>
+              <input type="text" id="patientName" value="IDRiD Patient 003" class="bg-transparent border-b border-slate-300 hover:border-slate-400 py-0.5 text-xs font-semibold text-slate-900 w-full focus:border-blue-500 focus:outline-none">
             </div>
             <div class="grid grid-cols-2 gap-2">
               <div>
-                <label class="text-[10px] uppercase font-semibold text-slate-400 block tracking-wider">Demographics</label>
-                <input type="text" id="patientAgeGender" value="56 Y / F" class="bg-transparent border-b border-slate-700 hover:border-slate-500 py-0.5 text-xs font-semibold text-slate-100 w-full focus:border-sky-500 focus:outline-none">
+                <label class="text-[10px] uppercase font-semibold text-slate-500 block tracking-wider">Demographics</label>
+                <input type="text" id="patientAgeGender" value="56 Y / Female" class="bg-transparent border-b border-slate-300 hover:border-slate-400 py-0.5 text-xs font-semibold text-slate-900 w-full focus:border-blue-500 focus:outline-none">
               </div>
               <div>
-                <label class="text-[10px] uppercase font-semibold text-slate-400 block tracking-wider">Modality</label>
-                <span class="text-xs font-mono text-slate-300 block pt-0.5">CFP (45&deg;)</span>
+                <label class="text-[10px] uppercase font-semibold text-slate-500 block tracking-wider">Modality</label>
+                <span class="text-xs font-mono text-slate-700 block pt-0.5 font-medium">CFP (45&deg;)</span>
               </div>
             </div>
             <div>
-              <label class="text-[10px] uppercase font-semibold text-slate-400 block tracking-wider">Facility</label>
-              <input type="text" id="screeningCenter" value="Primary Health Centre - Camp #1" class="bg-transparent border-b border-slate-700 hover:border-slate-500 py-0.5 text-xs font-semibold text-slate-100 w-full focus:border-sky-500 focus:outline-none">
+              <label class="text-[10px] uppercase font-semibold text-slate-500 block tracking-wider">Facility</label>
+              <input type="text" id="screeningCenter" value="Primary Health Centre - Camp #1" class="bg-transparent border-b border-slate-300 hover:border-slate-400 py-0.5 text-xs font-semibold text-slate-900 w-full focus:border-blue-500 focus:outline-none">
             </div>
           </div>
         </div>
 
-        <!-- REFERENCE PATIENT CASES (IDRiD COHORT) -->
-        <div class="panel-card bg-[#111622] border border-slate-800/90 rounded-xl p-3.5 shadow-sm space-y-2">
-          <div class="flex items-center justify-between text-xs pb-1 border-b border-slate-800">
-            <span class="font-semibold text-slate-200 uppercase tracking-wider text-[10px]">Reference Cases (IDRiD)</span>
-            <span class="text-[9px] text-slate-400 font-mono">Consensus</span>
+        <!-- REFERENCE CASES (IDRiD COHORT WITH CLINICAL COLOR CODING) -->
+        <div class="panel-card bg-white border border-slate-200 rounded-xl p-3.5 shadow-sm space-y-2">
+          <div class="flex items-center justify-between text-xs pb-1 border-b border-slate-100">
+            <span class="font-bold text-slate-800 uppercase tracking-wider text-[10px]">Reference Cases (IDRiD)</span>
+            <span class="text-[9px] text-slate-500 font-mono">Consensus</span>
           </div>
           <div class="grid grid-cols-5 gap-1 pt-0.5">
-            <button onclick="loadRealIdridSample(0)" id="sampleBtn0" class="px-1 py-1.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[10px] font-medium text-emerald-400 transition text-center truncate" title="IDRiD_118 (Grade 0: Normal)">
+            <button onclick="loadRealIdridSample(0)" id="sampleBtn0" class="px-1 py-1.5 rounded bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[10px] font-semibold text-emerald-700 transition text-center truncate" title="IDRiD_118 (Grade 0: Normal)">
               0: Norm
             </button>
-            <button onclick="loadRealIdridSample(1)" id="sampleBtn1" class="px-1 py-1.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[10px] font-medium text-sky-400 transition text-center truncate" title="IDRiD_021 (Grade 1: Mild NPDR)">
+            <button onclick="loadRealIdridSample(1)" id="sampleBtn1" class="px-1 py-1.5 rounded bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[10px] font-semibold text-sky-700 transition text-center truncate" title="IDRiD_021 (Grade 1: Mild NPDR)">
               1: Mild
             </button>
-            <button onclick="loadRealIdridSample(2)" id="sampleBtn2" class="px-1 py-1.5 rounded bg-amber-950/70 border border-amber-600 text-[10px] font-semibold text-amber-200 transition text-center truncate" title="IDRiD_003 (Grade 2: Moderate NPDR)">
+            <button onclick="loadRealIdridSample(2)" id="sampleBtn2" class="px-1 py-1.5 rounded bg-amber-50 border border-amber-300 text-[10px] font-bold text-amber-900 transition text-center truncate" title="IDRiD_003 (Grade 2: Moderate NPDR)">
               2: Mod
             </button>
-            <button onclick="loadRealIdridSample(3)" id="sampleBtn3" class="px-1 py-1.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[10px] font-medium text-orange-400 transition text-center truncate" title="IDRiD_001 (Grade 3: Severe NPDR)">
+            <button onclick="loadRealIdridSample(3)" id="sampleBtn3" class="px-1 py-1.5 rounded bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[10px] font-semibold text-orange-700 transition text-center truncate" title="IDRiD_001 (Grade 3: Severe NPDR)">
               3: Sev
             </button>
-            <button onclick="loadRealIdridSample(4)" id="sampleBtn4" class="px-1 py-1.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[10px] font-medium text-rose-400 transition text-center truncate" title="IDRiD_005 (Grade 4: PDR)">
+            <button onclick="loadRealIdridSample(4)" id="sampleBtn4" class="px-1 py-1.5 rounded bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[10px] font-semibold text-rose-700 transition text-center truncate" title="IDRiD_005 (Grade 4: PDR)">
               4: PDR
             </button>
           </div>
         </div>
 
-        <!-- IMAGE INGESTION / DROPZONE -->
-        <div id="dropZone" class="no-print border border-dashed border-slate-700 hover:border-sky-500 bg-slate-900/40 rounded-xl p-3 text-center cursor-pointer transition flex items-center justify-center space-x-2.5">
+        <!-- IMAGE UPLOAD DROPZONE -->
+        <div id="dropZone" class="no-print border border-dashed border-slate-300 hover:border-blue-500 bg-white rounded-xl p-3 text-center cursor-pointer transition flex items-center justify-center space-x-2.5 shadow-sm">
           <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="handleFileInputChange(event)">
-          <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
           </svg>
           <div class="text-left">
-            <div class="text-xs text-slate-300 font-medium">Upload local fundus image</div>
-            <div class="text-[10px] text-slate-500">Supports JPG, PNG, TIFF</div>
+            <div class="text-xs text-slate-800 font-semibold">Upload Local Fundus Scan</div>
+            <div class="text-[10px] text-slate-500">JPG, PNG, TIFF &bull; Drag &amp; Drop</div>
           </div>
         </div>
 
-        <!-- OPTICAL IMAGE QUALITY GATE (IQA) -->
-        <div class="panel-card bg-[#111622] border border-slate-800/90 rounded-xl p-3.5 shadow-sm space-y-2">
-          <div class="flex items-center justify-between text-xs pb-1 border-b border-slate-800">
-            <span class="font-semibold text-slate-200 uppercase tracking-wider text-[10px]">Quality Gate (IQA)</span>
-            <span id="iqaBadge" class="text-[10px] font-medium px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-300 border border-emerald-800/80">Good (93.1 / 100)</span>
+        <!-- OPTICAL QUALITY ASSESSMENT (IQA) -->
+        <div class="panel-card bg-white border border-slate-200 rounded-xl p-3.5 shadow-sm space-y-2">
+          <div class="flex items-center justify-between text-xs pb-1 border-b border-slate-100">
+            <span class="font-bold text-slate-800 uppercase tracking-wider text-[10px]">Optical Quality Gate</span>
+            <span id="iqaBadge" class="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">Good (93.1 / 100)</span>
           </div>
 
           <div class="grid grid-cols-3 gap-1.5 text-center text-xs">
-            <div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
-              <div class="text-[9px] text-slate-400">Sharpness</div>
-              <div id="metricBlur" class="font-semibold text-slate-100 text-xs mt-0.5">Optimal</div>
+            <div class="bg-slate-50 p-1.5 rounded border border-slate-200">
+              <div class="text-[9px] text-slate-500">Sharpness</div>
+              <div id="metricBlur" class="font-bold text-slate-900 text-xs mt-0.5">Optimal</div>
             </div>
-            <div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
-              <div class="text-[9px] text-slate-400">Illumination</div>
-              <div id="metricBrightness" class="font-semibold text-slate-100 text-xs mt-0.5">Balanced</div>
+            <div class="bg-slate-50 p-1.5 rounded border border-slate-200">
+              <div class="text-[9px] text-slate-500">Illumination</div>
+              <div id="metricBrightness" class="font-bold text-slate-900 text-xs mt-0.5">Balanced</div>
             </div>
-            <div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
-              <div class="text-[9px] text-slate-400">Contrast</div>
-              <div id="metricContrast" class="font-semibold text-slate-100 text-xs mt-0.5">High</div>
+            <div class="bg-slate-50 p-1.5 rounded border border-slate-200">
+              <div class="text-[9px] text-slate-500">Contrast</div>
+              <div id="metricContrast" class="font-bold text-slate-900 text-xs mt-0.5">High</div>
             </div>
           </div>
 
-          <p id="iqaAction" class="text-[11px] text-slate-400 leading-relaxed pt-0.5">
+          <p id="iqaAction" class="text-[11px] text-slate-600 leading-relaxed pt-0.5">
             Image optical quality verified: illumination uniform, fovea and vascular arcade sharpness optimal for deep classification.
           </p>
         </div>
@@ -273,98 +317,118 @@ CONFERENCE_UI = """<!DOCTYPE html>
       </div>
 
       <!-- ============================================================== -->
-      <!-- COLUMN 2 (CENTER, 5 COLS): RETINAL VIEWPORT & CALIPER OVERLAYS -->
+      <!-- COLUMN 2: PRIMARY RETINAL VIEWPORT & CALIPERS                  -->
       <!-- ============================================================== -->
-      <div class="lg:col-span-5 space-y-3.5">
+      <div id="colViewport" class="lg:col-span-5 space-y-3.5">
 
-        <div class="panel-card bg-[#111622] border border-slate-800/90 rounded-xl p-4 shadow-sm space-y-3">
+        <div class="panel-card bg-white border border-slate-200 rounded-xl p-4 shadow-sm space-y-3">
           
           <!-- Viewport Header -->
-          <div class="flex items-center justify-between text-xs pb-1 border-b border-slate-800">
-            <span class="font-semibold text-slate-200">Retinal Fundus Viewport</span>
-            <span class="text-[10px] text-slate-400 font-mono">224 &times; 224 px &bull; Calibrated View</span>
+          <div class="flex items-center justify-between text-xs pb-1 border-b border-slate-100">
+            <span class="font-bold text-slate-800">Retinal Fundus Photography</span>
+            <div class="flex items-center space-x-2 text-[10px] font-mono">
+              <span id="viewportEyeSide" class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 font-semibold border border-slate-200">OS (Left Eye)</span>
+              <span class="text-slate-500">224 &times; 224 Color</span>
+            </div>
           </div>
 
           <!-- PACS-STYLE DARKROOM CANVAS ENCLOSURE -->
-          <div class="relative bg-[#080b11] rounded-lg overflow-hidden border border-slate-800/80 flex items-center justify-center min-h-[300px] shadow-inner">
+          <div class="relative bg-black rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center min-h-[300px] shadow-inner">
             
-            <!-- Viewport Corner Annotations -->
-            <div class="absolute top-2 left-2 text-[9px] font-mono text-slate-400 z-10 pointer-events-none bg-black/60 px-1.5 py-0.5 rounded">
+            <!-- Corner Annotations -->
+            <div class="absolute top-2 left-2 text-[9px] font-mono text-slate-300 z-10 pointer-events-none bg-black/70 px-1.5 py-0.5 rounded">
               IDRiD-003 &bull; CFP
             </div>
-            <div class="absolute top-2 right-2 text-[9px] font-mono text-slate-400 z-10 pointer-events-none bg-black/60 px-1.5 py-0.5 rounded" id="viewportEyeSide">
-              OS (Left Eye)
-            </div>
-            <div class="absolute bottom-2 left-2 text-[9px] font-mono text-slate-400 z-10 pointer-events-none bg-black/60 px-1.5 py-0.5 rounded">
+            <div class="absolute top-2 right-2 text-[9px] font-mono text-slate-300 z-10 pointer-events-none bg-black/70 px-1.5 py-0.5 rounded">
               FOV: 45&deg;
             </div>
-            <div class="absolute bottom-2 right-2 text-[9px] font-mono text-slate-400 z-10 pointer-events-none bg-black/60 px-1.5 py-0.5 rounded">
+            <div class="absolute bottom-2 left-2 text-[9px] font-mono text-slate-300 z-10 pointer-events-none bg-black/70 px-1.5 py-0.5 rounded">
+              224 &times; 224 px
+            </div>
+            <div class="absolute bottom-2 right-2 text-[9px] font-mono text-slate-300 z-10 pointer-events-none bg-black/70 px-1.5 py-0.5 rounded">
               ResNet-152 Saliency
             </div>
 
             <!-- Canvas Layers -->
-            <canvas id="fundusCanvas" width="224" height="224" class="w-full max-w-[280px] h-auto object-contain"></canvas>
-            <canvas id="gradcamCanvas" width="224" height="224" class="absolute w-full max-w-[280px] h-auto object-contain pointer-events-none opacity-0 transition-opacity duration-200"></canvas>
-            <canvas id="landmarksCanvas" width="224" height="224" class="absolute w-full max-w-[280px] h-auto object-contain pointer-events-none opacity-0 transition-opacity duration-200"></canvas>
+            <canvas id="fundusCanvas" width="224" height="224" class="w-full max-w-[280px] h-auto object-contain transition-transform duration-200"></canvas>
+            <canvas id="gradcamCanvas" width="224" height="224" class="absolute w-full max-w-[280px] h-auto object-contain pointer-events-none opacity-0 transition-all duration-200"></canvas>
+            <canvas id="landmarksCanvas" width="224" height="224" class="absolute w-full max-w-[280px] h-auto object-contain pointer-events-none opacity-0 transition-all duration-200"></canvas>
             
             <!-- Inference Spinner -->
-            <div id="loader" class="hidden absolute inset-0 bg-slate-950/80 backdrop-blur-sm flex flex-col items-center justify-center space-y-2 z-20">
-              <div class="h-7 w-7 border-2 border-sky-400 border-t-transparent rounded-full animate-spin"></div>
-              <span class="text-xs font-medium text-slate-200">Processing ResNet-152 &amp; Landmarks...</span>
+            <div id="loader" class="hidden absolute inset-0 bg-slate-900/80 backdrop-blur-sm flex flex-col items-center justify-center space-y-2 z-20">
+              <div class="h-7 w-7 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+              <span class="text-xs font-semibold text-white">Running ResNet-152 &amp; Landmarks...</span>
             </div>
           </div>
 
-          <!-- VIEWPORT CONTROLS TOOLBAR -->
+          <!-- IMAGE ORIENTATION & COLOR FILTER CONTROLS -->
+          <div class="no-print grid grid-cols-2 gap-2 text-xs pt-1">
+            <!-- Laterality / Orientation Flip -->
+            <button onclick="toggleImageFlip()" id="btnFlipImage" class="p-2 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-semibold text-[11px] flex items-center justify-center space-x-1 transition">
+              <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+              </svg>
+              <span id="flipLabel">Orientation: Standard (OS)</span>
+            </button>
+
+            <!-- Color Palette / Filter Selector -->
+            <button onclick="cycleColorFilter()" id="btnFilterColor" class="p-2 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-semibold text-[11px] flex items-center justify-center space-x-1 transition">
+              <span class="h-2.5 w-2.5 rounded-full bg-gradient-to-r from-blue-500 via-amber-400 to-red-500 inline-block"></span>
+              <span id="filterLabel">Colormap: Thermal</span>
+            </button>
+          </div>
+
+          <!-- VIEWPORT OVERLAY CONTROLS -->
           <div class="no-print space-y-2 pt-1">
             <!-- Grad-CAM Opacity Slider -->
-            <div class="bg-slate-900/80 border border-slate-800 rounded-lg p-2.5 flex items-center justify-between text-xs">
-              <span class="text-slate-300 font-medium flex items-center space-x-1.5">
-                <svg class="w-3.5 h-3.5 text-sky-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <div class="bg-slate-50 border border-slate-200 rounded-lg p-2.5 flex items-center justify-between text-xs">
+              <span class="text-slate-800 font-semibold flex items-center space-x-1.5">
+                <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
                 </svg>
-                <span>Lesion Heatmap (Grad-CAM):</span>
+                <span>Lesion Saliency (Grad-CAM):</span>
               </span>
               <div class="flex items-center space-x-2">
                 <input type="range" id="heatmapOpacity" min="0" max="100" value="0" oninput="updateOpacity(this.value)" class="slider-track w-28 cursor-pointer">
-                <span id="heatmapOpacityVal" class="text-[10px] font-mono text-slate-400 w-8 text-right">0%</span>
+                <span id="heatmapOpacityVal" class="text-[10px] font-mono font-bold text-slate-700 w-8 text-right">0%</span>
               </div>
             </div>
 
             <!-- Track C Landmarks Toggle -->
-            <div class="bg-slate-900/80 border border-slate-800 rounded-lg p-2.5 flex items-center justify-between text-xs">
+            <div class="bg-slate-50 border border-slate-200 rounded-lg p-2.5 flex items-center justify-between text-xs">
               <label class="flex items-center space-x-2 cursor-pointer">
-                <input type="checkbox" id="toggleLandmarks" onchange="toggleLandmarksView(this.checked)" class="accent-sky-500 h-3.5 w-3.5 rounded cursor-pointer">
-                <span class="text-slate-300 font-medium">Track C Landmarks (Optic Disc &amp; Fovea)</span>
+                <input type="checkbox" id="toggleLandmarks" onchange="toggleLandmarksView(this.checked)" class="accent-blue-600 h-3.5 w-3.5 rounded cursor-pointer">
+                <span class="text-slate-800 font-semibold">Track C Calipers (OD &amp; Fovea)</span>
               </label>
               <div class="flex items-center space-x-2 text-[10px] font-mono">
-                <span class="text-cyan-400 flex items-center gap-1"><span class="h-1.5 w-1.5 rounded-full bg-cyan-400 inline-block"></span>OD</span>
-                <span class="text-amber-400 flex items-center gap-1"><span class="h-1.5 w-1.5 rounded-full bg-amber-400 inline-block"></span>Fovea</span>
+                <span class="text-cyan-700 font-semibold flex items-center gap-1"><span class="h-1.5 w-1.5 rounded-full bg-cyan-500 inline-block"></span>OD</span>
+                <span class="text-amber-700 font-semibold flex items-center gap-1"><span class="h-1.5 w-1.5 rounded-full bg-amber-500 inline-block"></span>Fovea</span>
                 <span id="landmarksBadge" class="hidden">OD + Fovea</span>
               </div>
             </div>
           </div>
 
           <!-- QUICK BIOMARKER METRICS STRIP -->
-          <div class="pt-1 border-t border-slate-800">
+          <div class="pt-1 border-t border-slate-100">
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-              <div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-                <div class="text-[10px] text-slate-400">Optic Disc</div>
-                <div id="odCoords" class="font-mono text-cyan-300 text-xs font-semibold mt-0.5">(143, 138) px</div>
+              <div class="bg-slate-50 p-2 rounded border border-slate-200">
+                <div class="text-[10px] text-slate-500">Optic Disc</div>
+                <div id="odCoords" class="font-mono text-cyan-800 text-xs font-bold mt-0.5">(143, 138) px</div>
                 <div id="odRadiusText" class="text-[10px] text-slate-500 font-mono">Radius: 21 px</div>
               </div>
-              <div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-                <div class="text-[10px] text-slate-400">Cup-to-Disc (CDR)</div>
-                <div id="cdrValue" class="font-mono text-slate-100 text-xs font-semibold mt-0.5">0.42</div>
-                <div id="cdrStatus" class="text-[10px] text-emerald-400 font-medium">Normal (&lt; 0.50)</div>
+              <div class="bg-slate-50 p-2 rounded border border-slate-200">
+                <div class="text-[10px] text-slate-500">Cup-to-Disc (CDR)</div>
+                <div id="cdrValue" class="font-mono text-slate-900 text-xs font-bold mt-0.5">0.42</div>
+                <div id="cdrStatus" class="text-[10px] text-emerald-700 font-semibold">Normal (&lt; 0.50)</div>
               </div>
-              <div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-                <div class="text-[10px] text-slate-400">Fovea Centralis</div>
-                <div id="foveaCoords" class="font-mono text-amber-300 text-xs font-semibold mt-0.5">(76, 149) px</div>
+              <div class="bg-slate-50 p-2 rounded border border-slate-200">
+                <div class="text-[10px] text-slate-500">Fovea Centralis</div>
+                <div id="foveaCoords" class="font-mono text-amber-800 text-xs font-bold mt-0.5">(76, 149) px</div>
                 <div id="fazRadiusText" class="text-[10px] text-slate-500 font-mono">FAZ: 12 px</div>
               </div>
-              <div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-                <div class="text-[10px] text-slate-400">Disc-to-Fovea</div>
-                <div id="odFovDist" class="font-mono text-purple-300 text-xs font-semibold mt-0.5">67.9 px</div>
+              <div class="bg-slate-50 p-2 rounded border border-slate-200">
+                <div class="text-[10px] text-slate-500">Disc-to-Fovea</div>
+                <div id="odFovDist" class="font-mono text-purple-800 text-xs font-bold mt-0.5">67.9 px</div>
                 <div id="odFovDistMm" class="text-[10px] text-slate-500 font-mono">~2.42 mm</div>
               </div>
             </div>
@@ -375,82 +439,82 @@ CONFERENCE_UI = """<!DOCTYPE html>
       </div>
 
       <!-- ============================================================== -->
-      <!-- COLUMN 3 (RIGHT, 4 COLS): DIAGNOSIS, PROTOCOL & EXPLAINABILITY -->
+      <!-- COLUMN 3: DIAGNOSTIC FINDINGS, PROTOCOL & EXPLAINABILITY       -->
       <!-- ============================================================== -->
-      <div class="lg:col-span-4 space-y-3.5">
+      <div id="colDiagnosis" class="lg:col-span-4 space-y-3.5">
 
-        <!-- PRIMARY DIAGNOSTIC FINDING CARD -->
-        <div class="panel-card bg-[#111622] border border-slate-800/90 rounded-xl p-4 shadow-sm space-y-3">
-          <div class="flex items-start justify-between flex-wrap gap-2 pb-2.5 border-b border-slate-800">
+        <!-- PRIMARY DIAGNOSTIC FINDING CARD (ICDR SEVERITY STANDARD) -->
+        <div class="panel-card bg-white border border-slate-200 rounded-xl p-4 shadow-sm space-y-3">
+          <div class="flex items-start justify-between flex-wrap gap-2 pb-2.5 border-b border-slate-100">
             <div>
-              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block">Diagnostic Finding</span>
-              <h2 id="diagStageName" class="text-lg font-bold text-amber-400 tracking-tight mt-0.5">Stage 2: Moderate Non-Proliferative DR</h2>
-              <div class="text-[11px] text-slate-400 mt-0.5">Latency: <span id="diagLatency" class="text-slate-200 font-mono">42.5 ms</span></div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">Diagnostic Classification</span>
+              <h2 id="diagStageName" class="text-xl font-black text-amber-700 tracking-tight mt-0.5">Stage 2: Moderate Non-Proliferative DR</h2>
+              <div class="text-[11px] text-slate-500 mt-0.5">ICDR Clinical Standard &bull; Latency: <span id="diagLatency" class="text-slate-800 font-mono font-bold">42.5 ms</span></div>
             </div>
             <div class="text-right">
-              <div class="text-xl font-bold text-white font-mono" id="diagConfidence">81.3%</div>
-              <div class="text-[10px] uppercase font-semibold text-slate-400">Confidence</div>
+              <div class="text-2xl font-black text-slate-900 font-mono" id="diagConfidence">81.3%</div>
+              <div class="text-[10px] uppercase font-bold text-slate-400">Confidence</div>
             </div>
           </div>
 
-          <p id="diagDescription" class="text-xs text-slate-300 leading-relaxed bg-slate-900/70 p-2.5 rounded-lg border border-slate-800">
+          <p id="diagDescription" class="text-xs text-slate-700 leading-relaxed bg-slate-50 p-2.5 rounded-lg border border-slate-200">
             Moderate NPDR: Multiple retinal microaneurysms, scattered intraretinal blot hemorrhages, and distinct yellowish lipid exudates detected in macula vicinity.
           </p>
 
           <!-- 5-STAGE POSTERIOR PROBABILITY BARS -->
           <div class="space-y-1.5 pt-1">
-            <div class="text-[11px] font-semibold text-slate-200 flex justify-between">
+            <div class="text-[11px] font-bold text-slate-800 flex justify-between">
               <span>Posterior Class Distribution</span>
-              <span class="text-[10px] text-slate-400 font-normal">5 Classes</span>
+              <span class="text-[10px] text-slate-500 font-normal">5 ICDR Classes</span>
             </div>
 
             <div class="space-y-1.5 text-xs">
               <div>
-                <div class="flex justify-between text-slate-300 mb-0.5 text-[10px]">
-                  <span>0: No DR</span>
-                  <span id="prob0Text" class="font-mono text-slate-400">2.1%</span>
+                <div class="flex justify-between text-slate-700 mb-0.5 text-[10px]">
+                  <span>Stage 0: No DR</span>
+                  <span id="prob0Text" class="font-mono font-bold text-slate-500">2.1%</span>
                 </div>
-                <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200">
                   <div id="prob0Bar" class="h-full bg-emerald-500 rounded-full transition-all duration-300" style="width: 2.1%"></div>
                 </div>
               </div>
 
               <div>
-                <div class="flex justify-between text-slate-300 mb-0.5 text-[10px]">
-                  <span>1: Mild NPDR</span>
-                  <span id="prob1Text" class="font-mono text-slate-400">8.4%</span>
+                <div class="flex justify-between text-slate-700 mb-0.5 text-[10px]">
+                  <span>Stage 1: Mild NPDR</span>
+                  <span id="prob1Text" class="font-mono font-bold text-slate-500">8.4%</span>
                 </div>
-                <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
-                  <div id="prob1Bar" class="h-full bg-sky-400 rounded-full transition-all duration-300" style="width: 8.4%"></div>
-                </div>
-              </div>
-
-              <div>
-                <div class="flex justify-between text-amber-300 font-medium mb-0.5 text-[10px]">
-                  <span>2: Moderate NPDR (Predicted)</span>
-                  <span id="prob2Text" class="font-mono font-bold text-amber-300">81.3%</span>
-                </div>
-                <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
-                  <div id="prob2Bar" class="h-full bg-amber-400 rounded-full transition-all duration-300" style="width: 81.3%"></div>
+                <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                  <div id="prob1Bar" class="h-full bg-sky-500 rounded-full transition-all duration-300" style="width: 8.4%"></div>
                 </div>
               </div>
 
               <div>
-                <div class="flex justify-between text-slate-300 mb-0.5 text-[10px]">
-                  <span>3: Severe NPDR</span>
-                  <span id="prob3Text" class="font-mono text-slate-400">6.7%</span>
+                <div class="flex justify-between text-amber-900 font-bold mb-0.5 text-[10px]">
+                  <span>Stage 2: Moderate NPDR (Predicted)</span>
+                  <span id="prob2Text" class="font-mono font-bold text-amber-700">81.3%</span>
                 </div>
-                <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                  <div id="prob2Bar" class="h-full bg-amber-500 rounded-full transition-all duration-300" style="width: 81.3%"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-slate-700 mb-0.5 text-[10px]">
+                  <span>Stage 3: Severe NPDR</span>
+                  <span id="prob3Text" class="font-mono font-bold text-slate-500">6.7%</span>
+                </div>
+                <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200">
                   <div id="prob3Bar" class="h-full bg-orange-500 rounded-full transition-all duration-300" style="width: 6.7%"></div>
                 </div>
               </div>
 
               <div>
-                <div class="flex justify-between text-slate-300 mb-0.5 text-[10px]">
-                  <span>4: Proliferative DR</span>
-                  <span id="prob4Text" class="font-mono text-slate-400">1.5%</span>
+                <div class="flex justify-between text-slate-700 mb-0.5 text-[10px]">
+                  <span>Stage 4: Proliferative DR</span>
+                  <span id="prob4Text" class="font-mono font-bold text-slate-500">1.5%</span>
                 </div>
-                <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200">
                   <div id="prob4Bar" class="h-full bg-rose-500 rounded-full transition-all duration-300" style="width: 1.5%"></div>
                 </div>
               </div>
@@ -459,47 +523,47 @@ CONFERENCE_UI = """<!DOCTYPE html>
         </div>
 
         <!-- CLINICAL REFERRAL & TRIAGE PROTOCOL -->
-        <div class="panel-card bg-[#111622] border border-slate-800/90 rounded-xl p-3.5 shadow-sm space-y-2.5">
-          <div class="flex items-center justify-between text-xs pb-1 border-b border-slate-800">
-            <span class="font-semibold text-slate-200 uppercase tracking-wider text-[10px]">Referral Protocol</span>
-            <span id="triageBadge" class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-rose-950/80 text-rose-300 border border-rose-800/80">
+        <div class="panel-card bg-white border border-slate-200 rounded-xl p-3.5 shadow-sm space-y-2.5">
+          <div class="flex items-center justify-between text-xs pb-1 border-b border-slate-100">
+            <span class="font-bold text-slate-800 uppercase tracking-wider text-[10px]">Clinical Triage Protocol</span>
+            <span id="triageBadge" class="px-2.5 py-0.5 rounded text-[10px] font-bold uppercase bg-rose-50 text-rose-700 border border-rose-200">
               Referral Required
             </span>
           </div>
 
           <div class="space-y-1.5 text-xs">
-            <div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-              <span class="text-slate-400 text-[10px] uppercase font-semibold block">Urgency Timeline</span>
-              <div id="triageUrgency" class="text-slate-100 font-semibold mt-0.5">Non-Urgent Tele-Ophthalmology (Within 30 Days)</div>
+            <div class="bg-slate-50 p-2 rounded border border-slate-200">
+              <span class="text-slate-500 text-[10px] uppercase font-bold block">Urgency Timeline</span>
+              <div id="triageUrgency" class="text-slate-900 font-bold mt-0.5">Non-Urgent Tele-Ophthalmology (Within 30 Days)</div>
             </div>
-            <div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-              <span class="text-slate-400 text-[10px] uppercase font-semibold block">Destination</span>
-              <div id="triageDest" class="text-slate-100 font-semibold mt-0.5">District Hospital Tele-Eye Care Center</div>
+            <div class="bg-slate-50 p-2 rounded border border-slate-200">
+              <span class="text-slate-500 text-[10px] uppercase font-bold block">Destination</span>
+              <div id="triageDest" class="text-slate-900 font-bold mt-0.5">District Hospital Tele-Eye Care Center</div>
             </div>
           </div>
 
-          <div class="bg-slate-900/60 border border-slate-800 rounded p-2 text-xs text-slate-300 leading-relaxed">
-            <strong class="text-slate-200">Directive: </strong>
+          <div class="bg-slate-50 border border-slate-200 rounded p-2 text-xs text-slate-700 leading-relaxed">
+            <strong class="text-slate-900">Directive: </strong>
             <span id="triageAction">Transmit clinical summary and Grad-CAM saliency map to District Tele-Ophthalmology network for confirmatory biomicroscopy and optical coherence tomography (OCT).</span>
           </div>
         </div>
 
         <!-- MACULAR THREAT & EXPLAINABILITY -->
-        <div class="panel-card bg-[#111622] border border-slate-800/90 rounded-xl p-3.5 shadow-sm space-y-2.5">
-          <div class="flex items-center justify-between text-xs pb-1 border-b border-slate-800">
-            <span class="font-semibold text-slate-200 uppercase tracking-wider text-[10px]">Macular Status &amp; Saliency</span>
-            <span id="maculaThreatBadge" class="text-[10px] font-medium px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-300 border border-emerald-800/80">FAZ Intact</span>
+        <div class="panel-card bg-white border border-slate-200 rounded-xl p-3.5 shadow-sm space-y-2.5">
+          <div class="flex items-center justify-between text-xs pb-1 border-b border-slate-100">
+            <span class="font-bold text-slate-800 uppercase tracking-wider text-[10px]">Macular Status &amp; Saliency</span>
+            <span id="maculaThreatBadge" class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">FAZ Intact</span>
           </div>
 
-          <div id="csmeAlertBox" class="bg-slate-900/60 border border-slate-800 rounded p-2 text-xs text-slate-300 leading-relaxed flex items-center justify-between">
+          <div id="csmeAlertBox" class="bg-slate-50 border border-slate-200 rounded p-2 text-xs text-slate-700 leading-relaxed flex items-center justify-between">
             <div>
-              <strong class="text-slate-200">Macula: </strong>
+              <strong class="text-slate-900">Macula: </strong>
               <span id="csmeAlertText">Macular Avascular Zone Clear</span>
             </div>
-            <span id="eyeLateralityBadge" class="text-[10px] font-mono text-slate-300 bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700">OS</span>
+            <span id="eyeLateralityBadge" class="text-[10px] font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">OS</span>
           </div>
 
-          <p id="gradcamText" class="text-xs text-slate-400 leading-relaxed bg-slate-900/60 p-2 rounded border border-slate-800">
+          <p id="gradcamText" class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-2 rounded border border-slate-200">
             Grad-CAM activation highlights dense focal attention concentrated around the superior and temporal vascular arcades, corresponding directly to clinical microvascular abnormalities.
           </p>
         </div>
@@ -510,104 +574,104 @@ CONFERENCE_UI = """<!DOCTYPE html>
   </main>
 
   <!-- RURAL CAMP SIMULATION MODAL -->
-  <div id="campModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-[#111622] border border-slate-700 w-full max-w-3xl rounded-xl shadow-2xl p-5 space-y-4 custom-scroll max-h-[92vh] overflow-y-auto">
+  <div id="campModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-300 w-full max-w-3xl rounded-xl shadow-2xl p-5 space-y-4 custom-scroll max-h-[92vh] overflow-y-auto text-slate-800">
       
-      <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-2.5">
         <div>
-          <h2 class="text-sm font-semibold text-white">Rural Camp Screening Queue &amp; Capacity Simulation</h2>
-          <p class="text-xs text-slate-400">Discrete-event M/M/c queueing theory model for mobile screening logistics</p>
+          <h2 class="text-sm font-bold text-slate-900">Rural Camp Screening Queue &amp; Capacity Simulation</h2>
+          <p class="text-xs text-slate-500">Discrete-event M/M/c queueing theory model for mobile screening logistics</p>
         </div>
-        <button onclick="closeCampSimulationModal()" class="text-slate-400 hover:text-white text-lg font-bold p-1">&times;</button>
+        <button onclick="closeCampSimulationModal()" class="text-slate-400 hover:text-slate-700 text-lg font-bold p-1">&times;</button>
       </div>
 
       <!-- Parameter Sliders -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-900/80 p-3 rounded-lg border border-slate-800 text-xs">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs">
         <div>
-          <div class="flex justify-between font-medium text-slate-300 mb-1">
+          <div class="flex justify-between font-bold text-slate-700 mb-1">
             <span>Patients Screened:</span>
-            <span id="simPatientsVal" class="text-sky-400 font-mono">120</span>
+            <span id="simPatientsVal" class="text-blue-700 font-mono">120</span>
           </div>
           <input type="range" id="simPatients" min="40" max="300" step="10" value="120" oninput="runCampSimulation()" class="slider-track w-full cursor-pointer">
-          <div class="flex justify-between text-[10px] text-slate-500 mt-0.5 font-mono"><span>40</span><span>300</span></div>
+          <div class="flex justify-between text-[10px] text-slate-400 mt-0.5 font-mono"><span>40</span><span>300</span></div>
         </div>
 
         <div>
-          <div class="flex justify-between font-medium text-slate-300 mb-1">
+          <div class="flex justify-between font-bold text-slate-700 mb-1">
             <span>Fundus Cameras:</span>
-            <span id="simCamerasVal" class="text-emerald-400 font-mono">1 Camera</span>
+            <span id="simCamerasVal" class="text-emerald-700 font-mono">1 Camera</span>
           </div>
           <div class="grid grid-cols-2 gap-1.5 mt-1">
-            <button id="btnCam1" onclick="setCameraCount(1)" class="py-1 px-2 rounded bg-sky-700 text-white text-[11px] font-medium transition">1 Camera</button>
-            <button id="btnCam2" onclick="setCameraCount(2)" class="py-1 px-2 rounded bg-slate-800 text-slate-400 text-[11px] font-medium hover:bg-slate-700 transition">2 Cameras</button>
+            <button id="btnCam1" onclick="setCameraCount(1)" class="py-1 px-2 rounded bg-blue-700 text-white text-[11px] font-bold transition">1 Camera</button>
+            <button id="btnCam2" onclick="setCameraCount(2)" class="py-1 px-2 rounded bg-slate-200 text-slate-700 text-[11px] font-bold hover:bg-slate-300 transition">2 Cameras</button>
           </div>
         </div>
 
         <div>
-          <div class="flex justify-between font-medium text-slate-300 mb-1">
+          <div class="flex justify-between font-bold text-slate-700 mb-1">
             <span>Shift Duration:</span>
-            <span id="simHoursVal" class="text-amber-400 font-mono">8.0 Hours</span>
+            <span id="simHoursVal" class="text-amber-700 font-mono">8.0 Hours</span>
           </div>
           <input type="range" id="simHours" min="4" max="10" step="1" value="8" oninput="runCampSimulation()" class="slider-track w-full cursor-pointer">
-          <div class="flex justify-between text-[10px] text-slate-500 mt-0.5 font-mono"><span>4h</span><span>10h</span></div>
+          <div class="flex justify-between text-[10px] text-slate-400 mt-0.5 font-mono"><span>4h</span><span>10h</span></div>
         </div>
       </div>
 
       <!-- KPI Metrics -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center text-xs">
-        <div class="bg-slate-900/80 p-2.5 rounded border border-slate-800">
-          <div class="text-[10px] text-slate-400">Average Wait Time</div>
-          <div id="simAvgWait" class="text-base font-bold text-amber-300 font-mono mt-0.5">24.5 min</div>
+        <div class="bg-slate-50 p-2.5 rounded border border-slate-200">
+          <div class="text-[10px] text-slate-500">Average Wait Time</div>
+          <div id="simAvgWait" class="text-base font-bold text-amber-700 font-mono mt-0.5">24.5 min</div>
           <div id="simP95Wait" class="text-[9px] text-slate-500 font-mono">P95: 56.4 min</div>
         </div>
-        <div class="bg-slate-900/80 p-2.5 rounded border border-slate-800">
-          <div class="text-[10px] text-slate-400">Camera Utilization</div>
-          <div id="simUtil" class="text-base font-bold text-slate-200 font-mono mt-0.5">87.5%</div>
-          <div id="simUtilStatus" class="text-[9px] text-slate-400 font-medium">Elevated Queue</div>
+        <div class="bg-slate-50 p-2.5 rounded border border-slate-200">
+          <div class="text-[10px] text-slate-500">Camera Utilization</div>
+          <div id="simUtil" class="text-base font-bold text-slate-900 font-mono mt-0.5">87.5%</div>
+          <div id="simUtilStatus" class="text-[9px] text-slate-500 font-bold">Elevated Queue</div>
         </div>
-        <div class="bg-slate-900/80 p-2.5 rounded border border-slate-800">
-          <div class="text-[10px] text-slate-400">Estimated Daily Capacity</div>
-          <div id="simCapacity" class="text-base font-bold text-emerald-400 font-mono mt-0.5">123 pts</div>
+        <div class="bg-slate-50 p-2.5 rounded border border-slate-200">
+          <div class="text-[10px] text-slate-500">Estimated Daily Capacity</div>
+          <div id="simCapacity" class="text-base font-bold text-emerald-700 font-mono mt-0.5">123 pts</div>
           <div class="text-[9px] text-slate-500 font-mono">8-hour shift</div>
         </div>
-        <div class="bg-slate-900/80 p-2.5 rounded border border-slate-800">
-          <div class="text-[10px] text-slate-400">Edge AI Workload</div>
-          <div id="simAiLoad" class="text-base font-bold text-sky-400 font-mono mt-0.5">2.4%</div>
+        <div class="bg-slate-50 p-2.5 rounded border border-slate-200">
+          <div class="text-[10px] text-slate-500">Edge AI Workload</div>
+          <div id="simAiLoad" class="text-base font-bold text-blue-700 font-mono mt-0.5">2.4%</div>
           <div class="text-[9px] text-slate-500 font-mono">&lt; 50ms latency</div>
         </div>
       </div>
 
       <!-- Dual Camera Benefit Banner -->
-      <div id="simBenefitBanner" class="bg-slate-900/70 border border-slate-800 rounded p-2.5 text-xs text-slate-300 flex items-center justify-between">
+      <div id="simBenefitBanner" class="bg-emerald-50 border border-emerald-200 rounded p-2.5 text-xs text-emerald-900 flex items-center justify-between">
         <div>
-          <strong class="text-slate-100">Operational Insight: </strong>
+          <strong class="text-emerald-950">Operational Insight: </strong>
           <span id="simBenefitText">Adding a second camera reduces patient wait time by 96.7% and doubles screening capacity.</span>
         </div>
-        <span class="text-[10px] bg-slate-800 text-slate-300 font-mono px-2 py-0.5 rounded border border-slate-700">M/M/c Model</span>
+        <span class="text-[10px] bg-emerald-100 text-emerald-800 font-mono px-2 py-0.5 rounded border border-emerald-300 font-bold">M/M/c Model</span>
       </div>
 
       <!-- Hourly Timeline Bar Chart -->
-      <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800 space-y-1.5">
+      <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 space-y-1.5">
         <div class="flex justify-between items-center text-xs">
-          <span class="font-medium text-slate-300 text-[11px]">Hourly Patient Arrivals &amp; Queue Progression</span>
+          <span class="font-bold text-slate-800 text-[11px]">Hourly Patient Arrivals &amp; Queue Progression</span>
           <span class="text-[10px] text-slate-500 font-mono">Blue = Arrivals &bull; Amber = Backlog</span>
         </div>
         <div id="simTimelineBars" class="grid grid-cols-8 gap-1.5 pt-1"></div>
       </div>
 
       <!-- Resource Requirements -->
-      <div class="bg-slate-900/80 p-3 rounded-lg border border-slate-800 text-xs space-y-1.5">
-        <div class="font-medium text-slate-300 text-[11px]">Recommended Camp Staffing Allocation:</div>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-slate-400">
-          <div>Optometrists: <strong id="recOptom" class="text-slate-200">1</strong></div>
-          <div>Field Workers (ASHA): <strong id="recAsha" class="text-slate-200">2</strong></div>
-          <div>Fundus Cameras: <strong id="recCameras" class="text-slate-200">1</strong></div>
-          <div>AI Edge Nodes: <strong class="text-slate-200">1 Laptop</strong></div>
+      <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs space-y-1.5">
+        <div class="font-bold text-slate-800 text-[11px]">Recommended Camp Staffing Allocation:</div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-slate-600">
+          <div>Optometrists: <strong id="recOptom" class="text-slate-900">1</strong></div>
+          <div>Field Workers (ASHA): <strong id="recAsha" class="text-slate-900">2</strong></div>
+          <div>Fundus Cameras: <strong id="recCameras" class="text-slate-900">1</strong></div>
+          <div>AI Edge Nodes: <strong class="text-slate-900">1 Laptop</strong></div>
         </div>
       </div>
 
       <div class="flex justify-end pt-1">
-        <button onclick="closeCampSimulationModal()" class="px-4 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 transition">Close</button>
+        <button onclick="closeCampSimulationModal()" class="px-4 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-white transition">Close</button>
       </div>
     </div>
   </div>
@@ -615,6 +679,9 @@ CONFERENCE_UI = """<!DOCTYPE html>
   <script>
     let currentAnalysis = null;
     let simCamCount = 1;
+    let isFlipped = false;
+    let colorFilterMode = 0; // 0: Thermal, 1: Red Hotspot, 2: Red-Free (Green contrast)
+    let isDarkTheme = false;
 
     window.addEventListener('DOMContentLoaded', () => {
       const dtElem = document.getElementById('printDate');
@@ -623,25 +690,132 @@ CONFERENCE_UI = """<!DOCTYPE html>
       loadRealIdridSample(2);
     });
 
+    // 1. WORKSTATION LAYOUT ORIENTATION SWITCHER
+    function setLayoutOrientation(mode) {
+      const colStudy = document.getElementById('colStudy');
+      const colViewport = document.getElementById('colViewport');
+      const colDiagnosis = document.getElementById('colDiagnosis');
+      const btnSplit = document.getElementById('btnOrientSplit');
+      const btnConsole = document.getElementById('btnOrientConsole');
+      const btnFlow = document.getElementById('btnOrientFlow');
+
+      [btnSplit, btnConsole, btnFlow].forEach(b => {
+        b.className = 'px-2.5 py-1 rounded text-blue-200 hover:text-white font-medium text-[11px] transition';
+      });
+
+      if (mode === 'split') {
+        // Horizontal Split: 50% Image & Quality on Left, 50% Diagnosis & Report on Right
+        btnSplit.className = 'px-2.5 py-1 rounded bg-blue-700 text-white font-bold text-[11px] transition';
+        colStudy.className = 'lg:col-span-4 space-y-3.5';
+        colViewport.className = 'lg:col-span-4 space-y-3.5';
+        colDiagnosis.className = 'lg:col-span-4 space-y-3.5';
+      } else if (mode === 'console') {
+        // 3-Column PACS Console: 25% Inputs, 42% Center Viewport, 33% Decision
+        btnConsole.className = 'px-2.5 py-1 rounded bg-blue-700 text-white font-bold text-[11px] transition';
+        colStudy.className = 'lg:col-span-3 space-y-3.5';
+        colViewport.className = 'lg:col-span-5 space-y-3.5';
+        colDiagnosis.className = 'lg:col-span-4 space-y-3.5';
+      } else if (mode === 'flow') {
+        // Vertical Sequential Flow: Full Width Flow
+        btnFlow.className = 'px-2.5 py-1 rounded bg-blue-700 text-white font-bold text-[11px] transition';
+        colStudy.className = 'lg:col-span-12 grid grid-cols-1 sm:grid-cols-3 gap-3.5';
+        colViewport.className = 'lg:col-span-6 space-y-3.5';
+        colDiagnosis.className = 'lg:col-span-6 space-y-3.5';
+      }
+    }
+
+    // 2. THEME SWITCHER (CLINICAL LIGHT VS DARKROOM PACS)
+    function toggleColorTheme() {
+      isDarkTheme = !isDarkTheme;
+      const body = document.body;
+      const themeIcon = document.getElementById('themeIcon');
+      const themeLabel = document.getElementById('themeLabel');
+
+      if (isDarkTheme) {
+        body.classList.add('dark');
+        body.className = 'bg-[#0b0f19] text-slate-100 min-h-screen antialiased custom-scroll dark transition-colors duration-200';
+        themeIcon.innerHTML = '&#9790;';
+        themeLabel.textContent = 'Dark';
+        document.querySelectorAll('.panel-card').forEach(p => {
+          p.classList.remove('bg-white', 'border-slate-200');
+          p.classList.add('bg-[#111622]', 'border-slate-800');
+        });
+      } else {
+        body.classList.remove('dark');
+        body.className = 'bg-slate-100 text-slate-800 min-h-screen antialiased custom-scroll transition-colors duration-200';
+        themeIcon.innerHTML = '&#9728;';
+        themeLabel.textContent = 'Light';
+        document.querySelectorAll('.panel-card').forEach(p => {
+          p.classList.remove('bg-[#111622]', 'border-slate-800');
+          p.classList.add('bg-white', 'border-slate-200');
+        });
+      }
+    }
+
+    // 3. IMAGE ORIENTATION FLIP (LATERALITY OS VS OD)
+    function toggleImageFlip() {
+      isFlipped = !isFlipped;
+      const fundus = document.getElementById('fundusCanvas');
+      const gradcam = document.getElementById('gradcamCanvas');
+      const landmarks = document.getElementById('landmarksCanvas');
+      const label = document.getElementById('flipLabel');
+      const vpEye = document.getElementById('viewportEyeSide');
+
+      if (isFlipped) {
+        fundus.classList.add('canvas-flipped');
+        gradcam.classList.add('canvas-flipped');
+        landmarks.classList.add('canvas-flipped');
+        label.textContent = 'Orientation: Flipped (OD)';
+        if (vpEye) vpEye.textContent = 'OD (Right Eye - Flipped)';
+      } else {
+        fundus.classList.remove('canvas-flipped');
+        gradcam.classList.remove('canvas-flipped');
+        landmarks.classList.remove('canvas-flipped');
+        label.textContent = 'Orientation: Standard (OS)';
+        if (vpEye) vpEye.textContent = 'OS (Left Eye)';
+      }
+    }
+
+    // 4. COLOR FILTER / HEATMAP COLORMAP SELECTOR
+    function cycleColorFilter() {
+      colorFilterMode = (colorFilterMode + 1) % 3;
+      const label = document.getElementById('filterLabel');
+      const fundus = document.getElementById('fundusCanvas');
+
+      if (colorFilterMode === 0) {
+        label.textContent = 'Colormap: Thermal';
+        fundus.style.filter = 'none';
+      } else if (colorFilterMode === 1) {
+        label.textContent = 'Colormap: Red Focus';
+        fundus.style.filter = 'contrast(1.15) saturate(1.2)';
+      } else {
+        label.textContent = 'Colormap: Red-Free (Green)';
+        fundus.style.filter = 'hue-rotate(90deg) saturate(1.4) contrast(1.2)';
+      }
+
+      if (currentAnalysis && currentAnalysis.gradcam) {
+        drawGradCAMCanvas(currentAnalysis.gradcam);
+      }
+    }
+
     function loadRealIdridSample(grade) {
       document.getElementById('loader').classList.remove('hidden');
 
-      // Update button active state
-      const gradeClasses = {
-        0: 'bg-emerald-950/70 border-emerald-600 text-emerald-200',
-        1: 'bg-sky-950/70 border-sky-600 text-sky-200',
-        2: 'bg-amber-950/70 border-amber-600 text-amber-200',
-        3: 'bg-orange-950/70 border-orange-600 text-orange-200',
-        4: 'bg-rose-950/70 border-rose-600 text-rose-200'
+      const btnActiveClasses = {
+        0: 'bg-emerald-50 text-emerald-800 border-emerald-300 font-bold',
+        1: 'bg-sky-50 text-sky-800 border-sky-300 font-bold',
+        2: 'bg-amber-50 text-amber-900 border-amber-300 font-bold',
+        3: 'bg-orange-50 text-orange-900 border-orange-300 font-bold',
+        4: 'bg-rose-50 text-rose-900 border-rose-300 font-bold'
       };
 
       for (let i = 0; i <= 4; i++) {
         const btn = document.getElementById('sampleBtn' + i);
         if (btn) {
           if (i === grade) {
-            btn.className = 'px-1 py-1.5 rounded border text-[10px] font-semibold transition text-center truncate ' + gradeClasses[i];
+            btn.className = 'px-1 py-1.5 rounded border text-[10px] transition text-center truncate ' + btnActiveClasses[i];
           } else {
-            btn.className = 'px-1 py-1.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[10px] font-medium text-slate-300 transition text-center truncate';
+            btn.className = 'px-1 py-1.5 rounded bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[10px] font-semibold text-slate-700 transition text-center truncate';
           }
         }
       }
@@ -704,14 +878,14 @@ CONFERENCE_UI = """<!DOCTYPE html>
         dropZone.addEventListener(name, (e) => {
           e.preventDefault();
           e.stopPropagation();
-          dropZone.classList.add('border-sky-500', 'bg-sky-500/10');
+          dropZone.classList.add('border-blue-500', 'bg-blue-50');
         });
       });
       ['dragleave', 'drop'].forEach(name => {
         dropZone.addEventListener(name, (e) => {
           e.preventDefault();
           e.stopPropagation();
-          dropZone.classList.remove('border-sky-500', 'bg-sky-500/10');
+          dropZone.classList.remove('border-blue-500', 'bg-blue-50');
         });
       });
       dropZone.addEventListener('drop', (e) => {
@@ -798,11 +972,25 @@ CONFERENCE_UI = """<!DOCTYPE html>
       const r = gcam.radius || 48;
 
       const grad = ctx.createRadialGradient(cx, cy, 5, cx, cy, r);
-      grad.addColorStop(0.0, 'rgba(239, 68, 68, 0.85)');
-      grad.addColorStop(0.35, 'rgba(249, 115, 22, 0.70)');
-      grad.addColorStop(0.65, 'rgba(234, 179, 8, 0.50)');
-      grad.addColorStop(0.85, 'rgba(16, 185, 129, 0.25)');
-      grad.addColorStop(1.0, 'rgba(59, 130, 246, 0.0)');
+
+      if (colorFilterMode === 1) {
+        // Red Hotspot mode
+        grad.addColorStop(0.0, 'rgba(239, 68, 68, 0.90)');
+        grad.addColorStop(0.5, 'rgba(249, 115, 22, 0.60)');
+        grad.addColorStop(1.0, 'rgba(239, 68, 68, 0.0)');
+      } else if (colorFilterMode === 2) {
+        // Green-Contrast mode
+        grad.addColorStop(0.0, 'rgba(16, 185, 129, 0.90)');
+        grad.addColorStop(0.5, 'rgba(6, 182, 212, 0.60)');
+        grad.addColorStop(1.0, 'rgba(16, 185, 129, 0.0)');
+      } else {
+        // Standard Thermal Jet spectrum
+        grad.addColorStop(0.0, 'rgba(220, 38, 38, 0.85)');
+        grad.addColorStop(0.35, 'rgba(249, 115, 22, 0.70)');
+        grad.addColorStop(0.65, 'rgba(234, 179, 8, 0.50)');
+        grad.addColorStop(0.85, 'rgba(16, 185, 129, 0.25)');
+        grad.addColorStop(1.0, 'rgba(59, 130, 246, 0.0)');
+      }
 
       ctx.fillStyle = grad;
       ctx.beginPath();
@@ -823,7 +1011,7 @@ CONFERENCE_UI = """<!DOCTYPE html>
       // Connecting Vector
       ctx.beginPath();
       ctx.setLineDash([3, 3]);
-      ctx.strokeStyle = 'rgba(168, 85, 247, 0.75)';
+      ctx.strokeStyle = 'rgba(147, 51, 234, 0.85)';
       ctx.lineWidth = 1.5;
       ctx.moveTo(od.x, od.y);
       ctx.lineTo(fov.x, fov.y);
@@ -833,14 +1021,14 @@ CONFERENCE_UI = """<!DOCTYPE html>
       // Optic Disc Ring
       ctx.beginPath();
       ctx.setLineDash([3, 3]);
-      ctx.strokeStyle = '#22d3ee';
+      ctx.strokeStyle = '#0891b2';
       ctx.lineWidth = 1.8;
       ctx.arc(od.x, od.y, od.radius, 0, Math.PI * 2);
       ctx.stroke();
       ctx.setLineDash([]);
 
       // Center crosshair
-      ctx.strokeStyle = '#22d3ee';
+      ctx.strokeStyle = '#0891b2';
       ctx.lineWidth = 1.2;
       ctx.beginPath();
       ctx.moveTo(od.x - 4, od.y); ctx.lineTo(od.x + 4, od.y);
@@ -849,18 +1037,18 @@ CONFERENCE_UI = """<!DOCTYPE html>
 
       if (od.cup_radius) {
         ctx.beginPath();
-        ctx.fillStyle = 'rgba(34, 211, 238, 0.15)';
+        ctx.fillStyle = 'rgba(8, 145, 178, 0.2)';
         ctx.arc(od.x, od.y, od.cup_radius, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      ctx.fillStyle = '#22d3ee';
-      ctx.font = '500 9px monospace';
+      ctx.fillStyle = '#0891b2';
+      ctx.font = '600 9px monospace';
       ctx.fillText('OD (' + od.x + ',' + od.y + ')', Math.max(5, od.x - 25), Math.max(12, od.y - od.radius - 4));
 
       // Fovea Centralis Ring
       ctx.beginPath();
-      ctx.strokeStyle = '#fbbf24';
+      ctx.strokeStyle = '#d97706';
       ctx.lineWidth = 1.8;
       ctx.arc(fov.x, fov.y, fov.radius || 12, 0, Math.PI * 2);
       ctx.stroke();
@@ -868,27 +1056,27 @@ CONFERENCE_UI = """<!DOCTYPE html>
       // Outer FAZ guidance
       ctx.beginPath();
       ctx.setLineDash([2, 3]);
-      ctx.strokeStyle = 'rgba(251, 191, 36, 0.45)';
+      ctx.strokeStyle = 'rgba(217, 119, 6, 0.5)';
       ctx.lineWidth = 1;
       ctx.arc(fov.x, fov.y, (od.radius * 1.4), 0, Math.PI * 2);
       ctx.stroke();
       ctx.setLineDash([]);
 
-      ctx.strokeStyle = '#fbbf24';
+      ctx.strokeStyle = '#d97706';
       ctx.lineWidth = 1.2;
       ctx.beginPath();
       ctx.moveTo(fov.x - 4, fov.y); ctx.lineTo(fov.x + 4, fov.y);
       ctx.moveTo(fov.x, fov.y - 4); ctx.lineTo(fov.x, fov.y + 4);
       ctx.stroke();
 
-      ctx.fillStyle = '#fbbf24';
-      ctx.font = '500 9px monospace';
+      ctx.fillStyle = '#d97706';
+      ctx.font = '600 9px monospace';
       ctx.fillText('FOV (' + fov.x + ',' + fov.y + ')', Math.max(5, fov.x - 22), Math.min(220, fov.y + (fov.radius || 12) + 11));
 
       if (landmarks.macular_threat) {
         ctx.beginPath();
-        ctx.strokeStyle = 'rgba(239, 68, 68, 0.85)';
-        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = 'rgba(220, 38, 38, 0.9)';
+        ctx.lineWidth = 1.6;
         ctx.setLineDash([3, 2]);
         ctx.arc(fov.x, fov.y, od.radius * 2.0, 0, Math.PI * 2);
         ctx.stroke();
@@ -900,18 +1088,17 @@ CONFERENCE_UI = """<!DOCTYPE html>
       currentAnalysis = data;
       const stageCode = data.stageCode;
       
-      // Clinical Traffic-Light Color Coding for Stages
       const stageColors = {
-        0: 'text-emerald-400',
-        1: 'text-sky-400',
-        2: 'text-amber-400',
-        3: 'text-orange-400',
-        4: 'text-rose-400'
+        0: 'text-emerald-700',
+        1: 'text-sky-700',
+        2: 'text-amber-700',
+        3: 'text-orange-700',
+        4: 'text-rose-700'
       };
 
       const titleElem = document.getElementById('diagStageName');
       titleElem.textContent = data.stageName;
-      titleElem.className = 'text-lg font-bold tracking-tight mt-0.5 ' + (stageColors[stageCode] || 'text-white');
+      titleElem.className = 'text-xl font-black tracking-tight mt-0.5 ' + (stageColors[stageCode] || 'text-slate-900');
 
       document.getElementById('diagConfidence').textContent = (data.confidencePercent || 90.0) + '%';
       document.getElementById('diagLatency').textContent = (data.inferenceLatencyMs || 42.5).toFixed(1) + ' ms';
@@ -926,10 +1113,10 @@ CONFERENCE_UI = """<!DOCTYPE html>
 
       const triageBadge = document.getElementById('triageBadge');
       if (data.referralRequired) {
-        triageBadge.className = 'px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-rose-950/80 text-rose-300 border border-rose-800/80';
+        triageBadge.className = 'px-2.5 py-0.5 rounded text-[10px] font-bold uppercase bg-rose-50 text-rose-700 border border-rose-200';
         triageBadge.textContent = 'Referral Required';
       } else {
-        triageBadge.className = 'px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-emerald-950/80 text-emerald-300 border border-emerald-800/80';
+        triageBadge.className = 'px-2.5 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-50 text-emerald-800 border border-emerald-200';
         triageBadge.textContent = 'Routine Surveillance';
       }
 
@@ -942,11 +1129,11 @@ CONFERENCE_UI = """<!DOCTYPE html>
         const iqaBadge = document.getElementById('iqaBadge');
         iqaBadge.textContent = iqa.verdict + ' (' + iqa.overallScore.toFixed(1) + ' / 100)';
         if (iqa.verdict === 'Good') {
-          iqaBadge.className = 'text-[10px] font-medium px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-300 border border-emerald-800/80';
+          iqaBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200';
         } else if (iqa.verdict === 'Usable') {
-          iqaBadge.className = 'text-[10px] font-medium px-2 py-0.5 rounded bg-amber-950/70 text-amber-300 border border-amber-800/80';
+          iqaBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200';
         } else {
-          iqaBadge.className = 'text-[10px] font-medium px-2 py-0.5 rounded bg-rose-950/70 text-rose-300 border border-rose-800/80';
+          iqaBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-rose-50 text-rose-800 border border-rose-200';
         }
 
         if (iqa.metrics) {
@@ -978,20 +1165,20 @@ CONFERENCE_UI = """<!DOCTYPE html>
         if (lm.eye_side) {
           document.getElementById('eyeLateralityBadge').textContent = lm.eye_side;
           const vpEye = document.getElementById('viewportEyeSide');
-          if (vpEye) vpEye.textContent = lm.eye_side;
+          if (vpEye && !isFlipped) vpEye.textContent = lm.eye_side;
         }
         const macBadge = document.getElementById('maculaThreatBadge');
         const csmeBox = document.getElementById('csmeAlertBox');
         const csmeText = document.getElementById('csmeAlertText');
         if (lm.macular_threat) {
-          macBadge.className = 'text-[10px] font-semibold px-2 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-800/80';
+          macBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-rose-50 text-rose-800 border border-rose-200';
           macBadge.textContent = 'CSME Threat';
-          csmeBox.className = 'bg-rose-950/40 border border-rose-800/80 rounded p-2 text-xs text-rose-200 leading-relaxed flex items-center justify-between';
+          csmeBox.className = 'bg-rose-50 border border-rose-200 rounded p-2 text-xs text-rose-900 leading-relaxed flex items-center justify-between';
           csmeText.textContent = lm.macular_status;
         } else {
-          macBadge.className = 'text-[10px] font-medium px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-300 border border-emerald-800/80';
+          macBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200';
           macBadge.textContent = 'FAZ Intact';
-          csmeBox.className = 'bg-slate-900/60 border border-slate-800 rounded p-2 text-xs text-slate-300 leading-relaxed flex items-center justify-between';
+          csmeBox.className = 'bg-slate-50 border border-slate-200 rounded p-2 text-xs text-slate-700 leading-relaxed flex items-center justify-between';
           csmeText.textContent = lm.macular_status || 'Macular Avascular Zone Clear';
         }
       }
@@ -1011,12 +1198,12 @@ CONFERENCE_UI = """<!DOCTYPE html>
       const b1 = document.getElementById('btnCam1');
       const b2 = document.getElementById('btnCam2');
       if (c === 1) {
-        b1.className = 'py-1 px-2 rounded bg-sky-700 text-white text-[11px] font-medium transition';
-        b2.className = 'py-1 px-2 rounded bg-slate-800 text-slate-400 text-[11px] font-medium hover:bg-slate-700 transition';
+        b1.className = 'py-1 px-2 rounded bg-blue-700 text-white text-[11px] font-bold transition';
+        b2.className = 'py-1 px-2 rounded bg-slate-200 text-slate-700 text-[11px] font-bold hover:bg-slate-300 transition';
         document.getElementById('simCamerasVal').textContent = '1 Camera';
       } else {
-        b2.className = 'py-1 px-2 rounded bg-sky-700 text-white text-[11px] font-medium transition';
-        b1.className = 'py-1 px-2 rounded bg-slate-800 text-slate-400 text-[11px] font-medium hover:bg-slate-700 transition';
+        b2.className = 'py-1 px-2 rounded bg-blue-700 text-white text-[11px] font-bold transition';
+        b1.className = 'py-1 px-2 rounded bg-slate-200 text-slate-700 text-[11px] font-bold hover:bg-slate-300 transition';
         document.getElementById('simCamerasVal').textContent = '2 Cameras';
       }
       runCampSimulation();
@@ -1040,17 +1227,17 @@ CONFERENCE_UI = """<!DOCTYPE html>
           const utilElem = document.getElementById('simUtil');
           const utilStatus = document.getElementById('simUtilStatus');
           if (res.cameraUtilizationPercent > 85.0) {
-            utilElem.className = 'text-base font-bold text-rose-400 font-mono mt-0.5';
+            utilElem.className = 'text-base font-bold text-rose-700 font-mono mt-0.5';
             utilStatus.textContent = 'Elevated Backlog';
-            utilStatus.className = 'text-[9px] text-rose-400 font-medium';
+            utilStatus.className = 'text-[9px] text-rose-700 font-bold';
           } else if (res.cameraUtilizationPercent > 65.0) {
-            utilElem.className = 'text-base font-bold text-amber-300 font-mono mt-0.5';
+            utilElem.className = 'text-base font-bold text-amber-700 font-mono mt-0.5';
             utilStatus.textContent = 'Moderate Load';
-            utilStatus.className = 'text-[9px] text-amber-300 font-medium';
+            utilStatus.className = 'text-[9px] text-amber-700 font-bold';
           } else {
-            utilElem.className = 'text-base font-bold text-emerald-400 font-mono mt-0.5';
+            utilElem.className = 'text-base font-bold text-emerald-700 font-mono mt-0.5';
             utilStatus.textContent = 'Optimal Flow';
-            utilStatus.className = 'text-[9px] text-emerald-400 font-medium';
+            utilStatus.className = 'text-[9px] text-emerald-700 font-bold';
           }
 
           const benefitBanner = document.getElementById('simBenefitBanner');
@@ -1072,11 +1259,11 @@ CONFERENCE_UI = """<!DOCTYPE html>
               const col = document.createElement('div');
               col.className = 'flex flex-col items-center space-y-1 text-center';
               col.innerHTML = `
-                <div class="h-14 w-full flex items-end justify-center gap-1 bg-slate-950 rounded p-1 border border-slate-800">
-                  <div class="w-2.5 bg-sky-500 rounded-t" style="height: ${Math.max(4, hArrival)}px" title="Arrivals: ${t.arrivals}"></div>
-                  <div class="w-2.5 ${t.queueLength > 5 ? 'bg-rose-500' : 'bg-amber-400'} rounded-t" style="height: ${Math.max(2, hQueue)}px" title="Queue Backlog: ${t.queueLength}"></div>
+                <div class="h-14 w-full flex items-end justify-center gap-1 bg-slate-100 rounded p-1 border border-slate-200">
+                  <div class="w-2.5 bg-blue-600 rounded-t" style="height: ${Math.max(4, hArrival)}px" title="Arrivals: ${t.arrivals}"></div>
+                  <div class="w-2.5 ${t.queueLength > 5 ? 'bg-rose-600' : 'bg-amber-500'} rounded-t" style="height: ${Math.max(2, hQueue)}px" title="Queue Backlog: ${t.queueLength}"></div>
                 </div>
-                <span class="text-[9px] text-slate-400 font-mono">${t.label}</span>
+                <span class="text-[9px] text-slate-600 font-mono font-bold">${t.label}</span>
                 <span class="text-[8px] text-slate-500 font-mono">${t.estimatedWaitMin}m</span>
               `;
               barsContainer.appendChild(col);
