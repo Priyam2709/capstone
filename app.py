@@ -111,6 +111,128 @@ CONFERENCE_UI = """<!DOCTYPE html>
     .canvas-flipped {
       transform: scaleX(-1);
     }
+    /* ============================================================== */
+    /* HIGH-CONTRAST PROFESSIONAL DARKROOM PACS STYLES                 */
+    /* ============================================================== */
+    body.dark {
+      background-color: #0b0f19 !important;
+      color: #f1f5f9 !important;
+    }
+    body.dark .panel-card,
+    body.dark .bg-white {
+      background-color: #111622 !important;
+      border-color: #1e293b !important;
+      color: #f1f5f9 !important;
+    }
+    body.dark .bg-slate-50 {
+      background-color: #0d121c !important;
+      border-color: #1e293b !important;
+      color: #e2e8f0 !important;
+    }
+    body.dark .bg-slate-100 {
+      background-color: #0a0d14 !important;
+      border-color: #1e293b !important;
+      color: #e2e8f0 !important;
+    }
+    body.dark .bg-slate-200 {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+      color: #f1f5f9 !important;
+    }
+    body.dark .border-slate-100,
+    body.dark .border-slate-200,
+    body.dark .border-slate-300 {
+      border-color: #1e293b !important;
+    }
+    body.dark .text-slate-900,
+    body.dark .text-slate-800,
+    body.dark .text-slate-700 {
+      color: #f8fafc !important;
+    }
+    body.dark .text-slate-600,
+    body.dark .text-slate-500 {
+      color: #94a3b8 !important;
+    }
+    body.dark .text-slate-400 {
+      color: #64748b !important;
+    }
+    body.dark input[type="text"],
+    body.dark textarea {
+      color: #f8fafc !important;
+      background-color: transparent !important;
+      border-color: #334155 !important;
+    }
+    body.dark input[type="text"]:focus,
+    body.dark textarea:focus {
+      border-color: #2dd4bf !important;
+      background-color: #0d121c !important;
+    }
+    /* Dynamic Severity Badges in Dark Mode */
+    body.dark .bg-emerald-50 {
+      background-color: rgba(6, 78, 59, 0.45) !important;
+      color: #34d399 !important;
+      border-color: rgba(52, 211, 153, 0.35) !important;
+    }
+    body.dark .text-emerald-700,
+    body.dark .text-emerald-800 {
+      color: #34d399 !important;
+    }
+    body.dark .bg-sky-50 {
+      background-color: rgba(12, 74, 110, 0.45) !important;
+      color: #38bdf8 !important;
+      border-color: rgba(56, 189, 248, 0.35) !important;
+    }
+    body.dark .text-sky-700,
+    body.dark .text-sky-800 {
+      color: #38bdf8 !important;
+    }
+    body.dark .bg-amber-50 {
+      background-color: rgba(120, 53, 15, 0.45) !important;
+      color: #fbbf24 !important;
+      border-color: rgba(251, 191, 36, 0.35) !important;
+    }
+    body.dark .text-amber-700,
+    body.dark .text-amber-800,
+    body.dark .text-amber-900 {
+      color: #fbbf24 !important;
+    }
+    body.dark .bg-orange-50 {
+      background-color: rgba(124, 45, 18, 0.45) !important;
+      color: #fb923c !important;
+      border-color: rgba(251, 146, 60, 0.35) !important;
+    }
+    body.dark .text-orange-700,
+    body.dark .text-orange-800,
+    body.dark .text-orange-900 {
+      color: #fb923c !important;
+    }
+    body.dark .bg-rose-50 {
+      background-color: rgba(136, 19, 55, 0.45) !important;
+      color: #f43f5e !important;
+      border-color: rgba(244, 63, 94, 0.35) !important;
+    }
+    body.dark .text-rose-700,
+    body.dark .text-rose-800,
+    body.dark .text-rose-900 {
+      color: #f43f5e !important;
+    }
+    body.dark .text-cyan-800 {
+      color: #22d3ee !important;
+    }
+    body.dark .text-purple-800 {
+      color: #c084fc !important;
+    }
+    /* Modal in Dark Mode */
+    body.dark #campModal > div {
+      background-color: #111622 !important;
+      border-color: #334155 !important;
+      color: #f1f5f9 !important;
+    }
+    body.dark #campModal .bg-slate-50 {
+      background-color: #0d121c !important;
+      border-color: #1e293b !important;
+    }
+
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen antialiased custom-scroll transition-colors duration-200">
@@ -713,6 +835,7 @@ CONFERENCE_UI = """<!DOCTYPE html>
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      try { const st = localStorage.getItem('drishti_theme'); if (st === 'dark') toggleColorTheme(); } catch(e){}
       try { const saved = localStorage.getItem('drishti_console_theme'); if (saved) setConsoleTheme(saved); } catch(e){}
       const dtElem = document.getElementById('printDate');
       if (dtElem) dtElem.textContent = new Date().toLocaleDateString();
@@ -763,22 +886,14 @@ CONFERENCE_UI = """<!DOCTYPE html>
 
       if (isDarkTheme) {
         body.classList.add('dark');
-        body.className = 'bg-[#0b0f19] text-slate-100 min-h-screen antialiased custom-scroll dark transition-colors duration-200';
         themeIcon.innerHTML = '&#9790;';
         themeLabel.textContent = 'Dark';
-        document.querySelectorAll('.panel-card').forEach(p => {
-          p.classList.remove('bg-white', 'border-slate-200');
-          p.classList.add('bg-[#111622]', 'border-slate-800');
-        });
+        try { localStorage.setItem('drishti_theme', 'dark'); } catch(e){}
       } else {
         body.classList.remove('dark');
-        body.className = 'bg-slate-100 text-slate-800 min-h-screen antialiased custom-scroll transition-colors duration-200';
         themeIcon.innerHTML = '&#9728;';
         themeLabel.textContent = 'Light';
-        document.querySelectorAll('.panel-card').forEach(p => {
-          p.classList.remove('bg-[#111622]', 'border-slate-800');
-          p.classList.add('bg-white', 'border-slate-200');
-        });
+        try { localStorage.setItem('drishti_theme', 'light'); } catch(e){}
       }
     }
 
