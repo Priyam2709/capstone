@@ -116,7 +116,7 @@ CONFERENCE_UI = """<!DOCTYPE html>
 <body class="bg-slate-100 text-slate-800 min-h-screen antialiased custom-scroll transition-colors duration-200">
 
   <!-- TOP CLINICAL NAVIGATION BAR (HOSPITAL SAPPHIRE) -->
-  <header class="no-print bg-[#1e3a8a] text-white px-5 py-2.5 flex items-center justify-between sticky top-0 z-40 shadow-md">
+  <header id="consoleHeader" class="no-print bg-[#0f766e] text-white px-5 py-2.5 flex items-center justify-between sticky top-0 z-40 shadow-md transition-colors duration-200">
     <div class="flex items-center space-x-3">
       <div class="h-8 w-8 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center text-white shadow-sm">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -138,20 +138,30 @@ CONFERENCE_UI = """<!DOCTYPE html>
     <!-- WORKSTATION CONTROLS & ACTION BUTTON GROUP -->
     <div class="flex items-center space-x-2">
       <!-- Layout Orientation Switcher -->
-      <div class="hidden md:flex items-center bg-blue-950/80 rounded-md p-0.5 border border-blue-400/30 text-xs">
-        <button onclick="setLayoutOrientation('split')" id="btnOrientSplit" class="px-2.5 py-1 rounded bg-blue-700 text-white font-medium text-[11px] transition" title="Side-by-Side: Image on Left, Diagnosis on Right">
+      <div class="hidden md:flex items-center bg-teal-950/80 rounded-md p-0.5 border border-teal-400/30 text-xs">
+        <button onclick="setLayoutOrientation('split')" id="btnOrientSplit" class="px-2.5 py-1 rounded bg-teal-600 text-white font-bold text-[11px] transition" title="Side-by-Side: Image on Left, Diagnosis on Right">
           Horizontal (Split)
         </button>
-        <button onclick="setLayoutOrientation('console')" id="btnOrientConsole" class="px-2.5 py-1 rounded text-blue-200 hover:text-white font-medium text-[11px] transition" title="3-Column PACS Workstation Console">
+        <button onclick="setLayoutOrientation('console')" id="btnOrientConsole" class="px-2.5 py-1 rounded text-teal-100 hover:text-white font-medium text-[11px] transition" title="3-Column PACS Workstation Console">
           3-Column (PACS)
         </button>
-        <button onclick="setLayoutOrientation('flow')" id="btnOrientFlow" class="px-2.5 py-1 rounded text-blue-200 hover:text-white font-medium text-[11px] transition" title="Sequential Vertical Clinical Report Flow">
+        <button onclick="setLayoutOrientation('flow')" id="btnOrientFlow" class="px-2.5 py-1 rounded text-teal-100 hover:text-white font-medium text-[11px] transition" title="Sequential Vertical Clinical Report Flow">
           Vertical Flow
         </button>
       </div>
 
+      <!-- Console Color Palette Selector -->
+      <div class="hidden xl:flex items-center space-x-1.5 bg-black/25 px-2.5 py-1 rounded-md border border-white/20 text-xs">
+        <span class="text-teal-100 font-medium text-[11px] mr-0.5">Color:</span>
+        <button onclick="setConsoleTheme('teal')" class="w-3.5 h-3.5 rounded-full bg-teal-500 border border-white hover:scale-125 transition" title="Surgical Teal (Default)"></button>
+        <button onclick="setConsoleTheme('slate')" class="w-3.5 h-3.5 rounded-full bg-slate-700 border border-white hover:scale-125 transition" title="Titanium Slate"></button>
+        <button onclick="setConsoleTheme('emerald')" class="w-3.5 h-3.5 rounded-full bg-emerald-600 border border-white hover:scale-125 transition" title="Clinical Emerald"></button>
+        <button onclick="setConsoleTheme('indigo')" class="w-3.5 h-3.5 rounded-full bg-indigo-700 border border-white hover:scale-125 transition" title="Academic Indigo"></button>
+        <button onclick="setConsoleTheme('sapphire')" class="w-3.5 h-3.5 rounded-full bg-blue-700 border border-white hover:scale-125 transition" title="Royal Sapphire"></button>
+      </div>
+
       <!-- Theme Switcher (Light / Dark) -->
-      <button onclick="toggleColorTheme()" id="btnThemeToggle" class="px-2.5 py-1.5 rounded-md bg-blue-900/60 hover:bg-blue-800 border border-blue-400/30 text-xs font-medium text-blue-100 transition flex items-center space-x-1 shadow-sm" title="Toggle Clinical Light / Darkroom Mode">
+      <button onclick="toggleColorTheme()" id="btnThemeToggle" class="px-2.5 py-1.5 rounded-md bg-teal-900/60 hover:bg-teal-800 border border-teal-400/30 text-xs font-medium text-teal-100 transition flex items-center space-x-1 shadow-sm" title="Toggle Clinical Light / Darkroom Mode">
         <span id="themeIcon">&#9728;</span>
         <span id="themeLabel">Light</span>
       </button>
@@ -173,16 +183,16 @@ CONFERENCE_UI = """<!DOCTYPE html>
       </button>
 
       <!-- Print Summary Button -->
-      <button onclick="window.print()" class="px-3 py-1.5 rounded-md bg-white text-blue-900 hover:bg-blue-50 text-xs font-semibold transition flex items-center space-x-1.5 shadow-sm">
-        <svg class="w-3.5 h-3.5 text-blue-900" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <button onclick="window.print()" class="px-3 py-1.5 rounded-md bg-white text-teal-900 hover:bg-teal-50 text-xs font-semibold transition flex items-center space-x-1.5 shadow-sm">
+        <svg class="w-3.5 h-3.5 text-teal-900" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
         </svg>
         <span>Print Summary</span>
       </button>
 
       <!-- Export FHIR Button -->
-      <button onclick="downloadFhirJson()" id="btnFhir" class="px-3 py-1.5 rounded-md bg-blue-950 hover:bg-blue-900 text-xs font-medium text-white transition flex items-center space-x-1.5 shadow-sm">
-        <svg class="w-3.5 h-3.5 text-blue-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <button onclick="downloadFhirJson()" id="btnFhir" class="px-3 py-1.5 rounded-md bg-teal-950 hover:bg-teal-900 text-xs font-medium text-white transition flex items-center space-x-1.5 shadow-sm">
+        <svg class="w-3.5 h-3.5 text-teal-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
         </svg>
         <span>ABDM FHIR</span>
@@ -683,7 +693,27 @@ CONFERENCE_UI = """<!DOCTYPE html>
     let colorFilterMode = 0; // 0: Thermal, 1: Red Hotspot, 2: Red-Free (Green contrast)
     let isDarkTheme = false;
 
+    
+    function setConsoleTheme(palette) {
+      const hdr = document.getElementById('consoleHeader');
+      if (!hdr) return;
+      hdr.classList.remove('bg-[#0f766e]', 'bg-[#1e293b]', 'bg-[#065f46]', 'bg-[#312e81]', 'bg-[#1e3a8a]');
+      if (palette === 'slate') {
+        hdr.classList.add('bg-[#1e293b]');
+      } else if (palette === 'emerald') {
+        hdr.classList.add('bg-[#065f46]');
+      } else if (palette === 'indigo') {
+        hdr.classList.add('bg-[#312e81]');
+      } else if (palette === 'sapphire') {
+        hdr.classList.add('bg-[#1e3a8a]');
+      } else {
+        hdr.classList.add('bg-[#0f766e]');
+      }
+      try { localStorage.setItem('drishti_console_theme', palette); } catch(e){}
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
+      try { const saved = localStorage.getItem('drishti_console_theme'); if (saved) setConsoleTheme(saved); } catch(e){}
       const dtElem = document.getElementById('printDate');
       if (dtElem) dtElem.textContent = new Date().toLocaleDateString();
       initDragAndDrop();
@@ -700,7 +730,7 @@ CONFERENCE_UI = """<!DOCTYPE html>
       const btnFlow = document.getElementById('btnOrientFlow');
 
       [btnSplit, btnConsole, btnFlow].forEach(b => {
-        b.className = 'px-2.5 py-1 rounded text-blue-200 hover:text-white font-medium text-[11px] transition';
+        b.className = 'px-2.5 py-1 rounded text-teal-100 hover:text-white font-medium text-[11px] transition';
       });
 
       if (mode === 'split') {
@@ -1402,9 +1432,9 @@ DOCTOR_UI = """<!DOCTYPE html>
 
     <!-- ACTION BUTTON GROUP -->
     <div class="flex items-center space-x-2">
-      <!-- Full Research View Button -->
-      <a href="/" class="px-3 py-1.5 rounded-md bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-medium text-white transition flex items-center space-x-1.5 shadow-sm">
-        <svg class="w-3.5 h-3.5 text-blue-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <!-- Full Research View Button (Teal Clinical Badge) -->
+      <a href="/" class="px-3 py-1.5 rounded-md bg-teal-800 hover:bg-teal-700 border border-teal-500/50 text-xs font-semibold text-white transition flex items-center space-x-1.5 shadow-sm">
+        <svg class="w-3.5 h-3.5 text-teal-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
           <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
         </svg>
@@ -1412,16 +1442,16 @@ DOCTOR_UI = """<!DOCTYPE html>
       </a>
 
       <!-- Print Clinical Summary Button -->
-      <button onclick="window.print()" class="px-3.5 py-1.5 rounded-md bg-white text-blue-900 hover:bg-blue-50 text-xs font-semibold transition flex items-center space-x-1.5 shadow-sm">
-        <svg class="w-3.5 h-3.5 text-blue-900" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <button onclick="window.print()" class="px-3.5 py-1.5 rounded-md bg-white text-teal-900 hover:bg-teal-50 text-xs font-semibold transition flex items-center space-x-1.5 shadow-sm">
+        <svg class="w-3.5 h-3.5 text-teal-900" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
         </svg>
         <span>Print Consultation Sheet (A4)</span>
       </button>
 
       <!-- FHIR Export Button -->
-      <button onclick="downloadDoctorFhir()" class="px-3 py-1.5 rounded-md bg-blue-950 hover:bg-blue-900 text-xs font-medium text-white transition flex items-center space-x-1.5 shadow-sm">
-        <svg class="w-3.5 h-3.5 text-blue-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <button onclick="downloadDoctorFhir()" class="px-3 py-1.5 rounded-md bg-teal-950 hover:bg-teal-900 text-xs font-medium text-white transition flex items-center space-x-1.5 shadow-sm">
+        <svg class="w-3.5 h-3.5 text-teal-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
         </svg>
         <span>ABDM FHIR</span>
@@ -1623,6 +1653,7 @@ DOCTOR_UI = """<!DOCTYPE html>
   <script>
     let currentDocAnalysis = null;
 
+    
     window.addEventListener('DOMContentLoaded', () => {
       const dt = document.getElementById('docPrintDate');
       if (dt) dt.textContent = new Date().toLocaleDateString();
