@@ -69,7 +69,7 @@ CONFERENCE_UI = """<!DOCTYPE html>
     .print-only { display: none; }
     .custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
     .custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
-    .custom-scroll::-webkit-scrollbar-track { background: #0b0f19; }
+    .custom-scroll::-webkit-scrollbar-track { background: #0c1017; }
     .slider-track {
       -webkit-appearance: none;
       height: 4px;
@@ -85,16 +85,16 @@ CONFERENCE_UI = """<!DOCTYPE html>
       border-radius: 50%;
       background: #38bdf8;
       cursor: pointer;
-      box-shadow: 0 0 4px rgba(56, 189, 248, 0.5);
+      box-shadow: 0 0 5px rgba(56, 189, 248, 0.5);
     }
   </style>
 </head>
-<body class="bg-[#0b0f19] text-slate-100 min-h-screen antialiased custom-scroll selection:bg-sky-500/30 selection:text-sky-200">
+<body class="bg-[#0c1017] text-slate-100 min-h-screen antialiased custom-scroll selection:bg-sky-500/30 selection:text-sky-200">
 
-  <!-- TOP CLINICAL APP BAR -->
-  <header class="no-print bg-[#111827]/95 border-b border-slate-800/80 px-5 py-2.5 flex items-center justify-between sticky top-0 z-40 backdrop-blur-md">
+  <!-- TOP CLINICAL NAVIGATION BAR -->
+  <header class="no-print bg-[#111622] border-b border-slate-800/90 px-5 py-2.5 flex items-center justify-between sticky top-0 z-40 shadow-sm">
     <div class="flex items-center space-x-3">
-      <!-- Minimalist Clinical Cross / Eye Emblem -->
+      <!-- Minimalist Clinical Emblem -->
       <div class="h-8 w-8 rounded-lg bg-slate-800 border border-slate-700/80 flex items-center justify-center text-sky-400">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -104,7 +104,7 @@ CONFERENCE_UI = """<!DOCTYPE html>
       <div>
         <div class="flex items-center space-x-2">
           <span class="font-semibold text-sm tracking-tight text-white">DRISHTI-AI</span>
-          <span class="text-[10px] text-slate-400 font-normal">|</span>
+          <span class="text-[10px] text-slate-500 font-normal">|</span>
           <span class="text-xs text-slate-300 font-medium">Academic &amp; Tele-Screening Workstation</span>
           <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">v1.2</span>
         </div>
@@ -112,10 +112,10 @@ CONFERENCE_UI = """<!DOCTYPE html>
       </div>
     </div>
 
-    <!-- ACTION BUTTON GROUP WITH CLEAN SVGs -->
+    <!-- ACTION BUTTON GROUP -->
     <div class="flex items-center space-x-2">
       <!-- Doctor's Portal Button -->
-      <a href="/doctor" class="px-3 py-1.5 rounded-md bg-indigo-900/60 hover:bg-indigo-800/80 border border-indigo-700/70 text-xs font-medium text-indigo-100 transition flex items-center space-x-1.5 shadow-sm">
+      <a href="/doctor" class="px-3 py-1.5 rounded-md bg-indigo-950/70 hover:bg-indigo-900 border border-indigo-700/70 text-xs font-medium text-indigo-200 transition flex items-center space-x-1.5 shadow-sm">
         <svg class="w-3.5 h-3.5 text-indigo-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5a4 4 0 008 0V4M8 13v2a4 4 0 004 4h1a4 4 0 004-4v-1.5M19 16a2 2 0 100-4 2 2 0 000 4z"/>
         </svg>
@@ -123,7 +123,7 @@ CONFERENCE_UI = """<!DOCTYPE html>
       </a>
 
       <!-- Camp Simulation Button -->
-      <button onclick="openCampSimulationModal()" class="px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700/90 border border-slate-700 text-xs font-medium text-slate-200 transition flex items-center space-x-1.5 shadow-sm">
+      <button onclick="openCampSimulationModal()" class="px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200 transition flex items-center space-x-1.5 shadow-sm">
         <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
         </svg>
@@ -131,14 +131,14 @@ CONFERENCE_UI = """<!DOCTYPE html>
       </button>
 
       <!-- Print Summary Button -->
-      <button onclick="window.print()" class="px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700/90 border border-slate-700 text-xs font-medium text-slate-200 transition flex items-center space-x-1.5 shadow-sm">
+      <button onclick="window.print()" class="px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200 transition flex items-center space-x-1.5 shadow-sm">
         <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
         </svg>
         <span>Print Summary</span>
       </button>
 
-      <!-- ABDM FHIR Button -->
+      <!-- Export FHIR Button -->
       <button onclick="downloadFhirJson()" id="btnFhir" class="px-3 py-1.5 rounded-md bg-sky-700 hover:bg-sky-600 border border-sky-600/80 text-xs font-medium text-white transition flex items-center space-x-1.5 shadow-sm">
         <svg class="w-3.5 h-3.5 text-sky-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
@@ -149,13 +149,13 @@ CONFERENCE_UI = """<!DOCTYPE html>
   </header>
 
   <!-- TECHNICAL BENCHMARK & SYSTEM STATUS RIBBON -->
-  <div class="no-print bg-[#0f1422] border-b border-slate-800/80 px-5 py-1.5 text-[11px] text-slate-400 flex items-center justify-between overflow-x-auto gap-4">
+  <div class="no-print bg-[#0e131d] border-b border-slate-800/80 px-5 py-1.5 text-[11px] text-slate-400 flex items-center justify-between overflow-x-auto gap-4">
     <div class="flex items-center space-x-6 shrink-0">
       <div><span class="text-slate-400">Backbone:</span> <span class="text-slate-200 font-medium">ResNet-152 (58.2M Params)</span></div>
       <div><span class="text-slate-400">Latency:</span> <span class="text-emerald-400 font-mono font-medium">42.5 ms (CPU Edge)</span></div>
       <div><span class="text-slate-400">Agreement Metric:</span> <span class="text-amber-300 font-mono font-medium">Quadratic Weighted Kappa &ge; 0.90</span></div>
       <div><span class="text-slate-400">Landmarks:</span> <span class="text-sky-300 font-medium">100% Optic Disc &bull; 90% Fovea</span></div>
-      <div><span class="text-slate-400">Dataset:</span> <span class="text-slate-300 font-medium">IDRiD Benchmark (516 Images)</span></div>
+      <div><span class="text-slate-400">Benchmark:</span> <span class="text-slate-300 font-medium">IDRiD Consensus (516 Images)</span></div>
     </div>
     <div class="shrink-0 flex items-center space-x-1.5 text-[11px] text-slate-300">
       <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
@@ -163,58 +163,132 @@ CONFERENCE_UI = """<!DOCTYPE html>
     </div>
   </div>
 
-  <!-- MAIN WORKSPACE -->
-  <main class="max-w-7xl mx-auto p-4 md:p-5 space-y-4">
+  <!-- MAIN WORKSPACE: 3-COLUMN CLINICAL DIAGNOSTIC CONSOLE -->
+  <main class="max-w-[1560px] mx-auto p-3.5 md:p-4">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-3.5">
 
-    <!-- CLINICAL STUDY & PATIENT CONTEXT STRIP -->
-    <div class="panel-card bg-[#111827] border border-slate-800/90 rounded-xl p-3.5 shadow-sm">
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 flex-1">
-          <div>
-            <label class="text-[10px] uppercase font-semibold text-slate-400 block tracking-wider">Patient ID</label>
-            <input type="text" id="patientId" value="PAT-IDRiD_003" class="bg-transparent border-b border-slate-700 hover:border-slate-500 py-0.5 text-xs font-semibold text-slate-100 w-full focus:border-sky-500 focus:outline-none font-mono">
+      <!-- ============================================================== -->
+      <!-- COLUMN 1 (LEFT, 3 COLS): PATIENT CASES, IMAGE INPUT & QUALITY  -->
+      <!-- ============================================================== -->
+      <div class="lg:col-span-3 space-y-3.5">
+
+        <!-- PATIENT STUDY METADATA -->
+        <div class="panel-card bg-[#111622] border border-slate-800/90 rounded-xl p-3.5 shadow-sm space-y-2.5">
+          <div class="flex items-center justify-between text-xs pb-1.5 border-b border-slate-800">
+            <span class="font-semibold text-slate-200 uppercase tracking-wider text-[10px]">Study Demographics</span>
+            <span id="printDate" class="text-[10px] text-slate-400 font-mono"></span>
           </div>
-          <div>
-            <label class="text-[10px] uppercase font-semibold text-slate-400 block tracking-wider">Patient Name</label>
-            <input type="text" id="patientName" value="IDRiD Patient 003" class="bg-transparent border-b border-slate-700 hover:border-slate-500 py-0.5 text-xs font-semibold text-slate-100 w-full focus:border-sky-500 focus:outline-none">
-          </div>
-          <div>
-            <label class="text-[10px] uppercase font-semibold text-slate-400 block tracking-wider">Demographics</label>
-            <input type="text" id="patientAgeGender" value="56 Y / Female" class="bg-transparent border-b border-slate-700 hover:border-slate-500 py-0.5 text-xs font-semibold text-slate-100 w-full focus:border-sky-500 focus:outline-none">
-          </div>
-          <div>
-            <label class="text-[10px] uppercase font-semibold text-slate-400 block tracking-wider">Screening Facility</label>
-            <input type="text" id="screeningCenter" value="Primary Health Centre - Camp #1" class="bg-transparent border-b border-slate-700 hover:border-slate-500 py-0.5 text-xs font-semibold text-slate-100 w-full focus:border-sky-500 focus:outline-none">
+
+          <div class="space-y-2 text-xs">
+            <div>
+              <label class="text-[10px] uppercase font-semibold text-slate-400 block tracking-wider">Patient ID</label>
+              <input type="text" id="patientId" value="PAT-IDRiD_003" class="bg-transparent border-b border-slate-700 hover:border-slate-500 py-0.5 text-xs font-semibold text-slate-100 w-full focus:border-sky-500 focus:outline-none font-mono">
+            </div>
+            <div>
+              <label class="text-[10px] uppercase font-semibold text-slate-400 block tracking-wider">Patient Name</label>
+              <input type="text" id="patientName" value="IDRiD Patient 003" class="bg-transparent border-b border-slate-700 hover:border-slate-500 py-0.5 text-xs font-semibold text-slate-100 w-full focus:border-sky-500 focus:outline-none">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-[10px] uppercase font-semibold text-slate-400 block tracking-wider">Demographics</label>
+                <input type="text" id="patientAgeGender" value="56 Y / F" class="bg-transparent border-b border-slate-700 hover:border-slate-500 py-0.5 text-xs font-semibold text-slate-100 w-full focus:border-sky-500 focus:outline-none">
+              </div>
+              <div>
+                <label class="text-[10px] uppercase font-semibold text-slate-400 block tracking-wider">Modality</label>
+                <span class="text-xs font-mono text-slate-300 block pt-0.5">CFP (45&deg;)</span>
+              </div>
+            </div>
+            <div>
+              <label class="text-[10px] uppercase font-semibold text-slate-400 block tracking-wider">Facility</label>
+              <input type="text" id="screeningCenter" value="Primary Health Centre - Camp #1" class="bg-transparent border-b border-slate-700 hover:border-slate-500 py-0.5 text-xs font-semibold text-slate-100 w-full focus:border-sky-500 focus:outline-none">
+            </div>
           </div>
         </div>
-        <div class="shrink-0 flex items-center space-x-2 text-[11px] text-slate-400 pt-1 md:pt-0">
-          <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono border border-slate-700/80">Modality: CFP (45&deg;)</span>
-          <span id="printDate" class="text-slate-400 font-mono text-[10px]"></span>
+
+        <!-- REFERENCE PATIENT CASES (IDRiD COHORT) -->
+        <div class="panel-card bg-[#111622] border border-slate-800/90 rounded-xl p-3.5 shadow-sm space-y-2">
+          <div class="flex items-center justify-between text-xs pb-1 border-b border-slate-800">
+            <span class="font-semibold text-slate-200 uppercase tracking-wider text-[10px]">Reference Cases (IDRiD)</span>
+            <span class="text-[9px] text-slate-400 font-mono">Consensus</span>
+          </div>
+          <div class="grid grid-cols-5 gap-1 pt-0.5">
+            <button onclick="loadRealIdridSample(0)" id="sampleBtn0" class="px-1 py-1.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[10px] font-medium text-emerald-400 transition text-center truncate" title="IDRiD_118 (Grade 0: Normal)">
+              0: Norm
+            </button>
+            <button onclick="loadRealIdridSample(1)" id="sampleBtn1" class="px-1 py-1.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[10px] font-medium text-sky-400 transition text-center truncate" title="IDRiD_021 (Grade 1: Mild NPDR)">
+              1: Mild
+            </button>
+            <button onclick="loadRealIdridSample(2)" id="sampleBtn2" class="px-1 py-1.5 rounded bg-amber-950/70 border border-amber-600 text-[10px] font-semibold text-amber-200 transition text-center truncate" title="IDRiD_003 (Grade 2: Moderate NPDR)">
+              2: Mod
+            </button>
+            <button onclick="loadRealIdridSample(3)" id="sampleBtn3" class="px-1 py-1.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[10px] font-medium text-orange-400 transition text-center truncate" title="IDRiD_001 (Grade 3: Severe NPDR)">
+              3: Sev
+            </button>
+            <button onclick="loadRealIdridSample(4)" id="sampleBtn4" class="px-1 py-1.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[10px] font-medium text-rose-400 transition text-center truncate" title="IDRiD_005 (Grade 4: PDR)">
+              4: PDR
+            </button>
+          </div>
         </div>
+
+        <!-- IMAGE INGESTION / DROPZONE -->
+        <div id="dropZone" class="no-print border border-dashed border-slate-700 hover:border-sky-500 bg-slate-900/40 rounded-xl p-3 text-center cursor-pointer transition flex items-center justify-center space-x-2.5">
+          <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="handleFileInputChange(event)">
+          <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          <div class="text-left">
+            <div class="text-xs text-slate-300 font-medium">Upload local fundus image</div>
+            <div class="text-[10px] text-slate-500">Supports JPG, PNG, TIFF</div>
+          </div>
+        </div>
+
+        <!-- OPTICAL IMAGE QUALITY GATE (IQA) -->
+        <div class="panel-card bg-[#111622] border border-slate-800/90 rounded-xl p-3.5 shadow-sm space-y-2">
+          <div class="flex items-center justify-between text-xs pb-1 border-b border-slate-800">
+            <span class="font-semibold text-slate-200 uppercase tracking-wider text-[10px]">Quality Gate (IQA)</span>
+            <span id="iqaBadge" class="text-[10px] font-medium px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-300 border border-emerald-800/80">Good (93.1 / 100)</span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-1.5 text-center text-xs">
+            <div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
+              <div class="text-[9px] text-slate-400">Sharpness</div>
+              <div id="metricBlur" class="font-semibold text-slate-100 text-xs mt-0.5">Optimal</div>
+            </div>
+            <div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
+              <div class="text-[9px] text-slate-400">Illumination</div>
+              <div id="metricBrightness" class="font-semibold text-slate-100 text-xs mt-0.5">Balanced</div>
+            </div>
+            <div class="bg-slate-900/80 p-1.5 rounded border border-slate-800">
+              <div class="text-[9px] text-slate-400">Contrast</div>
+              <div id="metricContrast" class="font-semibold text-slate-100 text-xs mt-0.5">High</div>
+            </div>
+          </div>
+
+          <p id="iqaAction" class="text-[11px] text-slate-400 leading-relaxed pt-0.5">
+            Image optical quality verified: illumination uniform, fovea and vascular arcade sharpness optimal for deep classification.
+          </p>
+        </div>
+
       </div>
-    </div>
 
-    <!-- WORKBENCH TWO-COLUMN GRID -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <!-- ============================================================== -->
+      <!-- COLUMN 2 (CENTER, 5 COLS): RETINAL VIEWPORT & CALIPER OVERLAYS -->
+      <!-- ============================================================== -->
+      <div class="lg:col-span-5 space-y-3.5">
 
-      <!-- LEFT COLUMN: RETINAL VIEWPORT, CONTROLS & IQA (5 COLS) -->
-      <div class="lg:col-span-5 space-y-4">
-
-        <!-- RETINAL VIEWPORT & CONTROLS -->
-        <div class="panel-card bg-[#111827] border border-slate-800/90 rounded-xl p-4 shadow-sm space-y-3">
+        <div class="panel-card bg-[#111622] border border-slate-800/90 rounded-xl p-4 shadow-sm space-y-3">
           
           <!-- Viewport Header -->
           <div class="flex items-center justify-between text-xs pb-1 border-b border-slate-800">
-            <span class="font-semibold text-slate-200 flex items-center space-x-1.5">
-              <span>Fundus Image Viewport</span>
-            </span>
-            <span class="text-[10px] text-slate-400 font-mono">224 &times; 224 px &bull; sRGB</span>
+            <span class="font-semibold text-slate-200">Retinal Fundus Viewport</span>
+            <span class="text-[10px] text-slate-400 font-mono">224 &times; 224 px &bull; Calibrated View</span>
           </div>
 
-          <!-- PACS-STYLE RETINAL CANVAS CONTAINER -->
-          <div class="relative bg-black rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center min-h-[250px] shadow-inner">
+          <!-- PACS-STYLE DARKROOM CANVAS ENCLOSURE -->
+          <div class="relative bg-[#080b11] rounded-lg overflow-hidden border border-slate-800/80 flex items-center justify-center min-h-[300px] shadow-inner">
             
-            <!-- Viewport Corner Annotations (PACS Style) -->
+            <!-- Viewport Corner Annotations -->
             <div class="absolute top-2 left-2 text-[9px] font-mono text-slate-400 z-10 pointer-events-none bg-black/60 px-1.5 py-0.5 rounded">
               IDRiD-003 &bull; CFP
             </div>
@@ -229,18 +303,18 @@ CONFERENCE_UI = """<!DOCTYPE html>
             </div>
 
             <!-- Canvas Layers -->
-            <canvas id="fundusCanvas" width="224" height="224" class="w-full max-w-[260px] h-auto object-contain"></canvas>
-            <canvas id="gradcamCanvas" width="224" height="224" class="absolute w-full max-w-[260px] h-auto object-contain pointer-events-none opacity-0 transition-opacity duration-200"></canvas>
-            <canvas id="landmarksCanvas" width="224" height="224" class="absolute w-full max-w-[260px] h-auto object-contain pointer-events-none opacity-0 transition-opacity duration-200"></canvas>
+            <canvas id="fundusCanvas" width="224" height="224" class="w-full max-w-[280px] h-auto object-contain"></canvas>
+            <canvas id="gradcamCanvas" width="224" height="224" class="absolute w-full max-w-[280px] h-auto object-contain pointer-events-none opacity-0 transition-opacity duration-200"></canvas>
+            <canvas id="landmarksCanvas" width="224" height="224" class="absolute w-full max-w-[280px] h-auto object-contain pointer-events-none opacity-0 transition-opacity duration-200"></canvas>
             
-            <!-- Loader Spinner -->
+            <!-- Inference Spinner -->
             <div id="loader" class="hidden absolute inset-0 bg-slate-950/80 backdrop-blur-sm flex flex-col items-center justify-center space-y-2 z-20">
               <div class="h-7 w-7 border-2 border-sky-400 border-t-transparent rounded-full animate-spin"></div>
-              <span class="text-xs font-medium text-slate-200">Evaluating ResNet-152 &amp; Landmarks...</span>
+              <span class="text-xs font-medium text-slate-200">Processing ResNet-152 &amp; Landmarks...</span>
             </div>
           </div>
 
-          <!-- VIEWPORT OVERLAY CONTROLS -->
+          <!-- VIEWPORT CONTROLS TOOLBAR -->
           <div class="no-print space-y-2 pt-1">
             <!-- Grad-CAM Opacity Slider -->
             <div class="bg-slate-900/80 border border-slate-800 rounded-lg p-2.5 flex items-center justify-between text-xs">
@@ -248,7 +322,7 @@ CONFERENCE_UI = """<!DOCTYPE html>
                 <svg class="w-3.5 h-3.5 text-sky-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
                 </svg>
-                <span>Lesion Saliency (Grad-CAM):</span>
+                <span>Lesion Heatmap (Grad-CAM):</span>
               </span>
               <div class="flex items-center space-x-2">
                 <input type="range" id="heatmapOpacity" min="0" max="100" value="0" oninput="updateOpacity(this.value)" class="slider-track w-28 cursor-pointer">
@@ -270,152 +344,114 @@ CONFERENCE_UI = """<!DOCTYPE html>
             </div>
           </div>
 
-          <!-- IDRiD CLINICAL COHORT PRESETS -->
-          <div class="no-print space-y-1.5 pt-1">
-            <div class="flex items-center justify-between text-[11px] text-slate-400">
-              <span class="font-medium text-slate-300">Reference Clinical Cases (IDRiD Cohort):</span>
-              <span class="text-[10px] text-slate-400 font-mono">Expert Consensus</span>
-            </div>
-            <div class="grid grid-cols-5 gap-1.5">
-              <button onclick="loadRealIdridSample(0)" id="sampleBtn0" class="px-2 py-1.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[11px] font-medium text-slate-300 transition text-center truncate" title="IDRiD_118 (Grade 0: Normal)">
-                0: Normal
-              </button>
-              <button onclick="loadRealIdridSample(1)" id="sampleBtn1" class="px-2 py-1.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[11px] font-medium text-slate-300 transition text-center truncate" title="IDRiD_021 (Grade 1: Mild NPDR)">
-                1: Mild
-              </button>
-              <button onclick="loadRealIdridSample(2)" id="sampleBtn2" class="px-2 py-1.5 rounded bg-sky-950/70 border border-sky-600 text-[11px] font-semibold text-sky-200 transition text-center truncate" title="IDRiD_003 (Grade 2: Moderate NPDR)">
-                2: Mod
-              </button>
-              <button onclick="loadRealIdridSample(3)" id="sampleBtn3" class="px-2 py-1.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[11px] font-medium text-slate-300 transition text-center truncate" title="IDRiD_001 (Grade 3: Severe NPDR)">
-                3: Severe
-              </button>
-              <button onclick="loadRealIdridSample(4)" id="sampleBtn4" class="px-2 py-1.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[11px] font-medium text-slate-300 transition text-center truncate" title="IDRiD_005 (Grade 4: PDR)">
-                4: PDR
-              </button>
-            </div>
-          </div>
-
-          <!-- IMAGE UPLOAD DROPZONE -->
-          <div id="dropZone" class="no-print border border-dashed border-slate-700 hover:border-sky-500 bg-slate-900/40 rounded-lg p-3 text-center cursor-pointer transition flex items-center justify-center space-x-3">
-            <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="handleFileInputChange(event)">
-            <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
-            <div class="text-left">
-              <div class="text-xs text-slate-300 font-medium">Upload local fundus image <span class="text-slate-500 text-[11px] font-normal">(or drag &amp; drop)</span></div>
-              <div class="text-[10px] text-slate-500">Supports JPG, PNG, TIFF &bull; Automated 224&times;224 normalization</div>
+          <!-- QUICK BIOMARKER METRICS STRIP -->
+          <div class="pt-1 border-t border-slate-800">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+              <div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+                <div class="text-[10px] text-slate-400">Optic Disc</div>
+                <div id="odCoords" class="font-mono text-cyan-300 text-xs font-semibold mt-0.5">(143, 138) px</div>
+                <div id="odRadiusText" class="text-[10px] text-slate-500 font-mono">Radius: 21 px</div>
+              </div>
+              <div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+                <div class="text-[10px] text-slate-400">Cup-to-Disc (CDR)</div>
+                <div id="cdrValue" class="font-mono text-slate-100 text-xs font-semibold mt-0.5">0.42</div>
+                <div id="cdrStatus" class="text-[10px] text-emerald-400 font-medium">Normal (&lt; 0.50)</div>
+              </div>
+              <div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+                <div class="text-[10px] text-slate-400">Fovea Centralis</div>
+                <div id="foveaCoords" class="font-mono text-amber-300 text-xs font-semibold mt-0.5">(76, 149) px</div>
+                <div id="fazRadiusText" class="text-[10px] text-slate-500 font-mono">FAZ: 12 px</div>
+              </div>
+              <div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+                <div class="text-[10px] text-slate-400">Disc-to-Fovea</div>
+                <div id="odFovDist" class="font-mono text-purple-300 text-xs font-semibold mt-0.5">67.9 px</div>
+                <div id="odFovDistMm" class="text-[10px] text-slate-500 font-mono">~2.42 mm</div>
+              </div>
             </div>
           </div>
 
-        </div>
-
-        <!-- OPTICAL IMAGE QUALITY ASSESSMENT (IQA) -->
-        <div class="panel-card bg-[#111827] border border-slate-800/90 rounded-xl p-4 shadow-sm space-y-2.5">
-          <div class="flex items-center justify-between text-xs pb-1 border-b border-slate-800">
-            <span class="font-semibold text-slate-200">Image Quality Assessment (IQA)</span>
-            <span id="iqaBadge" class="text-[11px] font-medium px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-300 border border-emerald-800/80">Good (93.1 / 100)</span>
-          </div>
-
-          <div class="grid grid-cols-3 gap-2 text-center text-xs">
-            <div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-              <div class="text-[10px] text-slate-400">Sharpness</div>
-              <div id="metricBlur" class="font-semibold text-slate-100 mt-0.5">Optimal</div>
-            </div>
-            <div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-              <div class="text-[10px] text-slate-400">Illumination</div>
-              <div id="metricBrightness" class="font-semibold text-slate-100 mt-0.5">Balanced</div>
-            </div>
-            <div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-              <div class="text-[10px] text-slate-400">Contrast</div>
-              <div id="metricContrast" class="font-semibold text-slate-100 mt-0.5">High</div>
-            </div>
-          </div>
-
-          <p id="iqaAction" class="text-[11px] text-slate-400 leading-relaxed">
-            Image optical quality verified: illumination uniform, fovea and vascular arcade sharpness optimal for deep classification.
-          </p>
         </div>
 
       </div>
 
-      <!-- RIGHT COLUMN: DIAGNOSTIC ANALYSIS, TRIAGE & REPORT (7 COLS) -->
-      <div class="lg:col-span-7 space-y-4">
+      <!-- ============================================================== -->
+      <!-- COLUMN 3 (RIGHT, 4 COLS): DIAGNOSIS, PROTOCOL & EXPLAINABILITY -->
+      <!-- ============================================================== -->
+      <div class="lg:col-span-4 space-y-3.5">
 
         <!-- PRIMARY DIAGNOSTIC FINDING CARD -->
-        <div class="panel-card bg-[#111827] border border-slate-800/90 rounded-xl p-5 shadow-sm space-y-4">
-          <div class="flex items-start justify-between flex-wrap gap-2 pb-3 border-b border-slate-800">
+        <div class="panel-card bg-[#111622] border border-slate-800/90 rounded-xl p-4 shadow-sm space-y-3">
+          <div class="flex items-start justify-between flex-wrap gap-2 pb-2.5 border-b border-slate-800">
             <div>
-              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block">Diagnostic Classification</span>
-              <h2 id="diagStageName" class="text-xl font-bold text-amber-300 tracking-tight mt-0.5">Stage 2: Moderate Non-Proliferative DR</h2>
-              <div class="text-xs text-slate-400 mt-0.5">ICDR Clinical Severity Scale &bull; Latency: <span id="diagLatency" class="text-slate-200 font-mono">42.5 ms</span></div>
+              <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block">Diagnostic Finding</span>
+              <h2 id="diagStageName" class="text-lg font-bold text-amber-400 tracking-tight mt-0.5">Stage 2: Moderate Non-Proliferative DR</h2>
+              <div class="text-[11px] text-slate-400 mt-0.5">Latency: <span id="diagLatency" class="text-slate-200 font-mono">42.5 ms</span></div>
             </div>
             <div class="text-right">
-              <div class="text-2xl font-bold text-white font-mono" id="diagConfidence">81.3%</div>
+              <div class="text-xl font-bold text-white font-mono" id="diagConfidence">81.3%</div>
               <div class="text-[10px] uppercase font-semibold text-slate-400">Confidence</div>
             </div>
           </div>
 
-          <!-- Clinical Pathologic Description -->
-          <p id="diagDescription" class="text-xs text-slate-300 leading-relaxed bg-slate-900/70 p-3 rounded-lg border border-slate-800">
+          <p id="diagDescription" class="text-xs text-slate-300 leading-relaxed bg-slate-900/70 p-2.5 rounded-lg border border-slate-800">
             Moderate NPDR: Multiple retinal microaneurysms, scattered intraretinal blot hemorrhages, and distinct yellowish lipid exudates detected in macula vicinity.
           </p>
 
-          <!-- 5-STAGE POSTERIOR PROBABILITY DISTRIBUTION -->
-          <div class="space-y-2.5 pt-1">
-            <div class="text-xs font-semibold text-slate-200 flex justify-between">
-              <span>Class Posterior Probability Distribution</span>
-              <span class="text-[10px] text-slate-400 font-normal">5 ICDR Clinical Classes</span>
+          <!-- 5-STAGE POSTERIOR PROBABILITY BARS -->
+          <div class="space-y-1.5 pt-1">
+            <div class="text-[11px] font-semibold text-slate-200 flex justify-between">
+              <span>Posterior Class Distribution</span>
+              <span class="text-[10px] text-slate-400 font-normal">5 Classes</span>
             </div>
 
             <div class="space-y-1.5 text-xs">
               <div>
-                <div class="flex justify-between text-slate-300 mb-0.5 text-[11px]">
-                  <span>Stage 0: No Diabetic Retinopathy</span>
+                <div class="flex justify-between text-slate-300 mb-0.5 text-[10px]">
+                  <span>0: No DR</span>
                   <span id="prob0Text" class="font-mono text-slate-400">2.1%</span>
                 </div>
-                <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
-                  <div id="prob0Bar" class="h-full bg-slate-400 rounded-full transition-all duration-300" style="width: 2.1%"></div>
+                <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                  <div id="prob0Bar" class="h-full bg-emerald-500 rounded-full transition-all duration-300" style="width: 2.1%"></div>
                 </div>
               </div>
 
               <div>
-                <div class="flex justify-between text-slate-300 mb-0.5 text-[11px]">
-                  <span>Stage 1: Mild NPDR (Microaneurysms only)</span>
+                <div class="flex justify-between text-slate-300 mb-0.5 text-[10px]">
+                  <span>1: Mild NPDR</span>
                   <span id="prob1Text" class="font-mono text-slate-400">8.4%</span>
                 </div>
-                <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
-                  <div id="prob1Bar" class="h-full bg-slate-400 rounded-full transition-all duration-300" style="width: 8.4%"></div>
+                <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                  <div id="prob1Bar" class="h-full bg-sky-400 rounded-full transition-all duration-300" style="width: 8.4%"></div>
                 </div>
               </div>
 
               <div>
-                <div class="flex justify-between text-amber-300 font-medium mb-0.5 text-[11px]">
-                  <span>Stage 2: Moderate NPDR (Predicted)</span>
+                <div class="flex justify-between text-amber-300 font-medium mb-0.5 text-[10px]">
+                  <span>2: Moderate NPDR (Predicted)</span>
                   <span id="prob2Text" class="font-mono font-bold text-amber-300">81.3%</span>
                 </div>
-                <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
                   <div id="prob2Bar" class="h-full bg-amber-400 rounded-full transition-all duration-300" style="width: 81.3%"></div>
                 </div>
               </div>
 
               <div>
-                <div class="flex justify-between text-slate-300 mb-0.5 text-[11px]">
-                  <span>Stage 3: Severe NPDR (4-2-1 Rule)</span>
+                <div class="flex justify-between text-slate-300 mb-0.5 text-[10px]">
+                  <span>3: Severe NPDR</span>
                   <span id="prob3Text" class="font-mono text-slate-400">6.7%</span>
                 </div>
-                <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
-                  <div id="prob3Bar" class="h-full bg-slate-400 rounded-full transition-all duration-300" style="width: 6.7%"></div>
+                <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                  <div id="prob3Bar" class="h-full bg-orange-500 rounded-full transition-all duration-300" style="width: 6.7%"></div>
                 </div>
               </div>
 
               <div>
-                <div class="flex justify-between text-slate-300 mb-0.5 text-[11px]">
-                  <span>Stage 4: Proliferative DR (Neovascularization)</span>
+                <div class="flex justify-between text-slate-300 mb-0.5 text-[10px]">
+                  <span>4: Proliferative DR</span>
                   <span id="prob4Text" class="font-mono text-slate-400">1.5%</span>
                 </div>
-                <div class="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
-                  <div id="prob4Bar" class="h-full bg-slate-400 rounded-full transition-all duration-300" style="width: 1.5%"></div>
+                <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                  <div id="prob4Bar" class="h-full bg-rose-500 rounded-full transition-all duration-300" style="width: 1.5%"></div>
                 </div>
               </div>
             </div>
@@ -423,90 +459,59 @@ CONFERENCE_UI = """<!DOCTYPE html>
         </div>
 
         <!-- CLINICAL REFERRAL & TRIAGE PROTOCOL -->
-        <div class="panel-card bg-[#111827] border border-slate-800/90 rounded-xl p-4 shadow-sm space-y-3">
+        <div class="panel-card bg-[#111622] border border-slate-800/90 rounded-xl p-3.5 shadow-sm space-y-2.5">
           <div class="flex items-center justify-between text-xs pb-1 border-b border-slate-800">
-            <span class="font-semibold text-slate-200">Clinical Referral Protocol (ICDR Standard)</span>
-            <span id="triageBadge" class="px-2.5 py-0.5 rounded text-[11px] font-semibold uppercase bg-rose-950/80 text-rose-300 border border-rose-800/80">
+            <span class="font-semibold text-slate-200 uppercase tracking-wider text-[10px]">Referral Protocol</span>
+            <span id="triageBadge" class="px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-rose-950/80 text-rose-300 border border-rose-800/80">
               Referral Required
             </span>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div class="bg-slate-900/80 p-2.5 rounded border border-slate-800 space-y-0.5">
-              <span class="text-slate-400 text-[10px] uppercase font-semibold">Recommended Timeframe</span>
-              <div id="triageUrgency" class="text-slate-100 font-semibold">Non-Urgent Tele-Ophthalmology (Within 30 Days)</div>
+          <div class="space-y-1.5 text-xs">
+            <div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+              <span class="text-slate-400 text-[10px] uppercase font-semibold block">Urgency Timeline</span>
+              <div id="triageUrgency" class="text-slate-100 font-semibold mt-0.5">Non-Urgent Tele-Ophthalmology (Within 30 Days)</div>
             </div>
-            <div class="bg-slate-900/80 p-2.5 rounded border border-slate-800 space-y-0.5">
-              <span class="text-slate-400 text-[10px] uppercase font-semibold">Referral Destination</span>
-              <div id="triageDest" class="text-slate-100 font-semibold">District Hospital Tele-Eye Care Center</div>
+            <div class="bg-slate-900/80 p-2 rounded border border-slate-800">
+              <span class="text-slate-400 text-[10px] uppercase font-semibold block">Destination</span>
+              <div id="triageDest" class="text-slate-100 font-semibold mt-0.5">District Hospital Tele-Eye Care Center</div>
             </div>
           </div>
 
-          <div class="bg-slate-900/60 border border-slate-800 rounded p-2.5 text-xs text-slate-300 leading-relaxed">
-            <strong class="text-slate-200">Management Directive: </strong>
+          <div class="bg-slate-900/60 border border-slate-800 rounded p-2 text-xs text-slate-300 leading-relaxed">
+            <strong class="text-slate-200">Directive: </strong>
             <span id="triageAction">Transmit clinical summary and Grad-CAM saliency map to District Tele-Ophthalmology network for confirmatory biomicroscopy and optical coherence tomography (OCT).</span>
           </div>
         </div>
 
-        <!-- GRAD-CAM EXPLAINABILITY JUSTIFICATION -->
-        <div class="panel-card bg-[#111827] border border-slate-800/90 rounded-xl p-4 shadow-sm space-y-2">
+        <!-- MACULAR THREAT & EXPLAINABILITY -->
+        <div class="panel-card bg-[#111622] border border-slate-800/90 rounded-xl p-3.5 shadow-sm space-y-2.5">
           <div class="flex items-center justify-between text-xs pb-1 border-b border-slate-800">
-            <span class="font-semibold text-slate-200">Spatial Explainability (Grad-CAM Saliency)</span>
-            <span class="text-[10px] text-slate-400 font-mono">Layer 4 Attention</span>
+            <span class="font-semibold text-slate-200 uppercase tracking-wider text-[10px]">Macular Status &amp; Saliency</span>
+            <span id="maculaThreatBadge" class="text-[10px] font-medium px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-300 border border-emerald-800/80">FAZ Intact</span>
           </div>
-          <p id="gradcamText" class="text-xs text-slate-300 leading-relaxed bg-slate-900/60 p-2.5 rounded border border-slate-800">
+
+          <div id="csmeAlertBox" class="bg-slate-900/60 border border-slate-800 rounded p-2 text-xs text-slate-300 leading-relaxed flex items-center justify-between">
+            <div>
+              <strong class="text-slate-200">Macula: </strong>
+              <span id="csmeAlertText">Macular Avascular Zone Clear</span>
+            </div>
+            <span id="eyeLateralityBadge" class="text-[10px] font-mono text-slate-300 bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700">OS</span>
+          </div>
+
+          <p id="gradcamText" class="text-xs text-slate-400 leading-relaxed bg-slate-900/60 p-2 rounded border border-slate-800">
             Grad-CAM activation highlights dense focal attention concentrated around the superior and temporal vascular arcades, corresponding directly to clinical microvascular abnormalities.
           </p>
-        </div>
-
-        <!-- TRACK C ANATOMICAL LANDMARKS (OPTIC DISC & FOVEA) -->
-        <div class="panel-card bg-[#111827] border border-slate-800/90 rounded-xl p-4 shadow-sm space-y-3">
-          <div class="flex items-center justify-between text-xs pb-1 border-b border-slate-800">
-            <span class="font-semibold text-slate-200">Anatomical Landmarks (Optic Disc &amp; Fovea)</span>
-            <span id="maculaThreatBadge" class="text-[11px] font-medium px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-300 border border-emerald-800/80">FAZ Intact</span>
-          </div>
-
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-            <div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-              <div class="text-[10px] text-slate-400">Optic Disc</div>
-              <div id="odCoords" class="font-mono text-cyan-300 text-xs font-semibold mt-0.5">(143, 138) px</div>
-              <div id="odRadiusText" class="text-[10px] text-slate-500 font-mono">Radius: 21 px</div>
-            </div>
-            <div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-              <div class="text-[10px] text-slate-400">Cup-to-Disc (CDR)</div>
-              <div id="cdrValue" class="font-mono text-slate-100 text-xs font-semibold mt-0.5">0.42</div>
-              <div id="cdrStatus" class="text-[10px] text-emerald-400 font-medium">Normal (&lt; 0.50)</div>
-            </div>
-            <div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-              <div class="text-[10px] text-slate-400">Fovea Centralis</div>
-              <div id="foveaCoords" class="font-mono text-amber-300 text-xs font-semibold mt-0.5">(76, 149) px</div>
-              <div id="fazRadiusText" class="text-[10px] text-slate-500 font-mono">FAZ: 12 px</div>
-            </div>
-            <div class="bg-slate-900/80 p-2 rounded border border-slate-800">
-              <div class="text-[10px] text-slate-400">Disc-to-Fovea</div>
-              <div id="odFovDist" class="font-mono text-purple-300 text-xs font-semibold mt-0.5">67.9 px</div>
-              <div id="odFovDistMm" class="text-[10px] text-slate-500 font-mono">~2.42 mm</div>
-            </div>
-          </div>
-
-          <div id="csmeAlertBox" class="bg-slate-900/60 border border-slate-800 rounded p-2.5 text-xs text-slate-300 leading-relaxed flex items-center justify-between">
-            <div>
-              <strong class="text-slate-200">Macular Assessment: </strong>
-              <span id="csmeAlertText">Macular Avascular Zone Clear (Zero Exudative Encroachment)</span>
-            </div>
-            <span id="eyeLateralityBadge" class="text-[10px] font-mono text-slate-300 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">Left Eye (OS)</span>
-          </div>
         </div>
 
       </div>
 
     </div>
-
   </main>
 
-  <!-- RURAL CAMP OPERATIONS QUEUE SIMULATION MODAL -->
+  <!-- RURAL CAMP SIMULATION MODAL -->
   <div id="campModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-[#111827] border border-slate-700 w-full max-w-3xl rounded-xl shadow-2xl p-5 space-y-4 custom-scroll max-h-[92vh] overflow-y-auto">
+    <div class="bg-[#111622] border border-slate-700 w-full max-w-3xl rounded-xl shadow-2xl p-5 space-y-4 custom-scroll max-h-[92vh] overflow-y-auto">
       
       <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
         <div>
@@ -622,13 +627,21 @@ CONFERENCE_UI = """<!DOCTYPE html>
       document.getElementById('loader').classList.remove('hidden');
 
       // Update button active state
+      const gradeClasses = {
+        0: 'bg-emerald-950/70 border-emerald-600 text-emerald-200',
+        1: 'bg-sky-950/70 border-sky-600 text-sky-200',
+        2: 'bg-amber-950/70 border-amber-600 text-amber-200',
+        3: 'bg-orange-950/70 border-orange-600 text-orange-200',
+        4: 'bg-rose-950/70 border-rose-600 text-rose-200'
+      };
+
       for (let i = 0; i <= 4; i++) {
         const btn = document.getElementById('sampleBtn' + i);
         if (btn) {
           if (i === grade) {
-            btn.className = 'px-2 py-1.5 rounded bg-sky-950/70 border border-sky-600 text-[11px] font-semibold text-sky-200 transition text-center truncate';
+            btn.className = 'px-1 py-1.5 rounded border text-[10px] font-semibold transition text-center truncate ' + gradeClasses[i];
           } else {
-            btn.className = 'px-2 py-1.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[11px] font-medium text-slate-300 transition text-center truncate';
+            btn.className = 'px-1 py-1.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700/80 text-[10px] font-medium text-slate-300 transition text-center truncate';
           }
         }
       }
@@ -886,17 +899,19 @@ CONFERENCE_UI = """<!DOCTYPE html>
     function renderAnalysis(data) {
       currentAnalysis = data;
       const stageCode = data.stageCode;
+      
+      // Clinical Traffic-Light Color Coding for Stages
       const stageColors = {
         0: 'text-emerald-400',
-        1: 'text-sky-300',
-        2: 'text-amber-300',
-        3: 'text-orange-300',
+        1: 'text-sky-400',
+        2: 'text-amber-400',
+        3: 'text-orange-400',
         4: 'text-rose-400'
       };
 
       const titleElem = document.getElementById('diagStageName');
       titleElem.textContent = data.stageName;
-      titleElem.className = 'text-xl font-bold tracking-tight mt-0.5 ' + (stageColors[stageCode] || 'text-white');
+      titleElem.className = 'text-lg font-bold tracking-tight mt-0.5 ' + (stageColors[stageCode] || 'text-white');
 
       document.getElementById('diagConfidence').textContent = (data.confidencePercent || 90.0) + '%';
       document.getElementById('diagLatency').textContent = (data.inferenceLatencyMs || 42.5).toFixed(1) + ' ms';
@@ -911,10 +926,10 @@ CONFERENCE_UI = """<!DOCTYPE html>
 
       const triageBadge = document.getElementById('triageBadge');
       if (data.referralRequired) {
-        triageBadge.className = 'px-2.5 py-0.5 rounded text-[11px] font-semibold uppercase bg-rose-950/80 text-rose-300 border border-rose-800/80';
+        triageBadge.className = 'px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-rose-950/80 text-rose-300 border border-rose-800/80';
         triageBadge.textContent = 'Referral Required';
       } else {
-        triageBadge.className = 'px-2.5 py-0.5 rounded text-[11px] font-semibold uppercase bg-emerald-950/80 text-emerald-300 border border-emerald-800/80';
+        triageBadge.className = 'px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-emerald-950/80 text-emerald-300 border border-emerald-800/80';
         triageBadge.textContent = 'Routine Surveillance';
       }
 
@@ -927,11 +942,11 @@ CONFERENCE_UI = """<!DOCTYPE html>
         const iqaBadge = document.getElementById('iqaBadge');
         iqaBadge.textContent = iqa.verdict + ' (' + iqa.overallScore.toFixed(1) + ' / 100)';
         if (iqa.verdict === 'Good') {
-          iqaBadge.className = 'text-[11px] font-medium px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-300 border border-emerald-800/80';
+          iqaBadge.className = 'text-[10px] font-medium px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-300 border border-emerald-800/80';
         } else if (iqa.verdict === 'Usable') {
-          iqaBadge.className = 'text-[11px] font-medium px-2 py-0.5 rounded bg-amber-950/70 text-amber-300 border border-amber-800/80';
+          iqaBadge.className = 'text-[10px] font-medium px-2 py-0.5 rounded bg-amber-950/70 text-amber-300 border border-amber-800/80';
         } else {
-          iqaBadge.className = 'text-[11px] font-medium px-2 py-0.5 rounded bg-rose-950/70 text-rose-300 border border-rose-800/80';
+          iqaBadge.className = 'text-[10px] font-medium px-2 py-0.5 rounded bg-rose-950/70 text-rose-300 border border-rose-800/80';
         }
 
         if (iqa.metrics) {
@@ -969,15 +984,15 @@ CONFERENCE_UI = """<!DOCTYPE html>
         const csmeBox = document.getElementById('csmeAlertBox');
         const csmeText = document.getElementById('csmeAlertText');
         if (lm.macular_threat) {
-          macBadge.className = 'text-[11px] font-semibold px-2 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-800/80';
+          macBadge.className = 'text-[10px] font-semibold px-2 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-800/80';
           macBadge.textContent = 'CSME Threat';
-          csmeBox.className = 'bg-rose-950/40 border border-rose-800/80 rounded p-2.5 text-xs text-rose-200 leading-relaxed flex items-center justify-between';
+          csmeBox.className = 'bg-rose-950/40 border border-rose-800/80 rounded p-2 text-xs text-rose-200 leading-relaxed flex items-center justify-between';
           csmeText.textContent = lm.macular_status;
         } else {
-          macBadge.className = 'text-[11px] font-medium px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-300 border border-emerald-800/80';
+          macBadge.className = 'text-[10px] font-medium px-2 py-0.5 rounded bg-emerald-950/70 text-emerald-300 border border-emerald-800/80';
           macBadge.textContent = 'FAZ Intact';
-          csmeBox.className = 'bg-slate-900/60 border border-slate-800 rounded p-2.5 text-xs text-slate-300 leading-relaxed flex items-center justify-between';
-          csmeText.textContent = lm.macular_status || 'Macular Avascular Zone Clear (Zero Exudative Encroachment)';
+          csmeBox.className = 'bg-slate-900/60 border border-slate-800 rounded p-2 text-xs text-slate-300 leading-relaxed flex items-center justify-between';
+          csmeText.textContent = lm.macular_status || 'Macular Avascular Zone Clear';
         }
       }
     }
@@ -1179,30 +1194,30 @@ DOCTOR_UI = """<!DOCTYPE html>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen antialiased custom-scroll">
 
-  <!-- PHYSICIAN NAVIGATION TOP BAR -->
-  <header class="no-print bg-white border-b border-slate-200 px-5 py-2.5 flex items-center justify-between sticky top-0 z-40 shadow-sm">
+  <!-- PHYSICIAN NAVIGATION TOP BAR (HOSPITAL SAPPHIRE) -->
+  <header class="no-print bg-[#1e3a8a] text-white px-5 py-2.5 flex items-center justify-between sticky top-0 z-40 shadow-sm">
     <div class="flex items-center space-x-3">
-      <div class="h-8 w-8 rounded-lg bg-blue-700 flex items-center justify-center text-white shadow-sm">
+      <div class="h-8 w-8 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center text-white shadow-sm">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5a4 4 0 008 0V4M8 13v2a4 4 0 004 4h1a4 4 0 004-4v-1.5M19 16a2 2 0 100-4 2 2 0 000 4z"/>
         </svg>
       </div>
       <div>
         <div class="flex items-center space-x-2">
-          <span class="font-semibold text-sm tracking-tight text-slate-900">DRISHTI-AI CLINICAL DECISION SUPPORT</span>
-          <span class="text-[10px] text-slate-300 font-normal">|</span>
-          <span class="text-xs text-slate-600 font-medium">Physician Consultation Portal</span>
-          <span class="text-[10px] font-medium px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">ICDR Clinical Protocol</span>
+          <span class="font-semibold text-sm tracking-tight text-white">DRISHTI-AI CLINICAL DECISION SUPPORT</span>
+          <span class="text-[10px] text-blue-200/60 font-normal">|</span>
+          <span class="text-xs text-blue-100 font-medium">Physician Consultation Portal</span>
+          <span class="text-[10px] font-medium px-2 py-0.5 rounded bg-blue-700/80 text-blue-100 border border-blue-500/40">ICDR Protocol</span>
         </div>
-        <div class="text-[11px] text-slate-500">Tele-Ophthalmology Evaluation &bull; Primary Health Center Clinical Decision Flow</div>
+        <div class="text-[11px] text-blue-200/80">Tele-Ophthalmology Evaluation &bull; Primary Health Center Clinical Decision Flow</div>
       </div>
     </div>
 
     <!-- ACTION BUTTON GROUP -->
     <div class="flex items-center space-x-2">
       <!-- Full Research View Button -->
-      <a href="/" class="px-3 py-1.5 rounded-md bg-white hover:bg-slate-50 border border-slate-300 text-xs font-medium text-slate-700 transition flex items-center space-x-1.5 shadow-sm">
-        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <a href="/" class="px-3 py-1.5 rounded-md bg-white/10 hover:bg-white/20 border border-white/20 text-xs font-medium text-white transition flex items-center space-x-1.5 shadow-sm">
+        <svg class="w-3.5 h-3.5 text-blue-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
           <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
         </svg>
@@ -1210,16 +1225,16 @@ DOCTOR_UI = """<!DOCTYPE html>
       </a>
 
       <!-- Print Clinical Summary Button -->
-      <button onclick="window.print()" class="px-3.5 py-1.5 rounded-md bg-blue-700 hover:bg-blue-800 text-xs font-medium text-white transition flex items-center space-x-1.5 shadow-sm">
-        <svg class="w-3.5 h-3.5 text-blue-100" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <button onclick="window.print()" class="px-3.5 py-1.5 rounded-md bg-white text-blue-900 hover:bg-blue-50 text-xs font-semibold transition flex items-center space-x-1.5 shadow-sm">
+        <svg class="w-3.5 h-3.5 text-blue-900" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
         </svg>
         <span>Print Consultation Sheet (A4)</span>
       </button>
 
       <!-- FHIR Export Button -->
-      <button onclick="downloadDoctorFhir()" class="px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 text-xs font-medium text-white transition flex items-center space-x-1.5 shadow-sm">
-        <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <button onclick="downloadDoctorFhir()" class="px-3 py-1.5 rounded-md bg-blue-950 hover:bg-blue-900 text-xs font-medium text-white transition flex items-center space-x-1.5 shadow-sm">
+        <svg class="w-3.5 h-3.5 text-blue-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
         </svg>
         <span>ABDM FHIR</span>
@@ -1271,18 +1286,18 @@ DOCTOR_UI = """<!DOCTYPE html>
       </div>
     </div>
 
-    <!-- QUICK PRESET PATIENT SELECTOR (For Demo / Rapid Review) -->
+    <!-- QUICK PRESET PATIENT SELECTOR (COLOR CODED BY SEVERITY) -->
     <div class="no-print bg-white border border-slate-200 rounded-xl p-2.5 shadow-sm flex items-center justify-between text-xs">
       <span class="font-medium text-slate-700 flex items-center gap-1.5">
         <span class="h-2 w-2 rounded-full bg-blue-600"></span>
         Load Reference Patient Case:
       </span>
       <div class="grid grid-cols-5 gap-1.5">
-        <button onclick="doctorLoadSample(0)" id="docBtn0" class="px-2.5 py-1 rounded bg-slate-50 hover:bg-slate-100 text-[11px] font-medium text-slate-700 border border-slate-200">0: Normal</button>
-        <button onclick="doctorLoadSample(1)" id="docBtn1" class="px-2.5 py-1 rounded bg-slate-50 hover:bg-slate-100 text-[11px] font-medium text-slate-700 border border-slate-200">1: Mild</button>
-        <button onclick="doctorLoadSample(2)" id="docBtn2" class="px-2.5 py-1 rounded bg-blue-50 text-blue-800 border border-blue-300 font-semibold text-[11px]">2: Moderate</button>
-        <button onclick="doctorLoadSample(3)" id="docBtn3" class="px-2.5 py-1 rounded bg-slate-50 hover:bg-slate-100 text-[11px] font-medium text-slate-700 border border-slate-200">3: Severe</button>
-        <button onclick="doctorLoadSample(4)" id="docBtn4" class="px-2.5 py-1 rounded bg-slate-50 hover:bg-slate-100 text-[11px] font-medium text-slate-700 border border-slate-200">4: PDR</button>
+        <button onclick="doctorLoadSample(0)" id="docBtn0" class="px-2.5 py-1 rounded bg-slate-50 hover:bg-slate-100 text-[11px] font-medium text-emerald-700 border border-slate-200">0: Normal</button>
+        <button onclick="doctorLoadSample(1)" id="docBtn1" class="px-2.5 py-1 rounded bg-slate-50 hover:bg-slate-100 text-[11px] font-medium text-sky-700 border border-slate-200">1: Mild</button>
+        <button onclick="doctorLoadSample(2)" id="docBtn2" class="px-2.5 py-1 rounded bg-amber-50 text-amber-900 border border-amber-300 font-semibold text-[11px]">2: Moderate</button>
+        <button onclick="doctorLoadSample(3)" id="docBtn3" class="px-2.5 py-1 rounded bg-slate-50 hover:bg-slate-100 text-[11px] font-medium text-orange-700 border border-slate-200">3: Severe</button>
+        <button onclick="doctorLoadSample(4)" id="docBtn4" class="px-2.5 py-1 rounded bg-slate-50 hover:bg-slate-100 text-[11px] font-medium text-rose-700 border border-slate-200">4: PDR</button>
       </div>
     </div>
 
@@ -1360,7 +1375,7 @@ DOCTOR_UI = """<!DOCTYPE html>
           </div>
 
           <!-- DIRECT CLINICAL ACTION DIRECTIVE -->
-          <div class="bg-slate-50 border-l-3 border-amber-500 p-3 rounded-r-lg space-y-1">
+          <div class="bg-slate-50 border-l-4 border-amber-500 p-3 rounded-r-lg space-y-1">
             <span class="text-[10px] font-semibold uppercase text-slate-500 block">Clinical Urgency &amp; Directive:</span>
             <div id="docDirective" class="text-xs font-bold text-slate-900">
               Non-Urgent Tele-Ophthalmology Referral (Within 30 Days)
@@ -1428,12 +1443,20 @@ DOCTOR_UI = """<!DOCTYPE html>
     });
 
     function doctorLoadSample(grade) {
-      // Update button styles
+      // Update button styles with clean semantic severity colors
+      const btnActiveClasses = {
+        0: 'bg-emerald-50 text-emerald-800 border-emerald-300 font-semibold',
+        1: 'bg-sky-50 text-sky-800 border-sky-300 font-semibold',
+        2: 'bg-amber-50 text-amber-900 border-amber-300 font-semibold',
+        3: 'bg-orange-50 text-orange-900 border-orange-300 font-semibold',
+        4: 'bg-rose-50 text-rose-900 border-rose-300 font-semibold'
+      };
+
       for (let i = 0; i <= 4; i++) {
         const btn = document.getElementById('docBtn' + i);
         if (btn) {
           if (i === grade) {
-            btn.className = 'px-2.5 py-1 rounded bg-blue-50 text-blue-800 border border-blue-300 font-semibold text-[11px]';
+            btn.className = 'px-2.5 py-1 rounded border text-[11px] ' + btnActiveClasses[i];
           } else {
             btn.className = 'px-2.5 py-1 rounded bg-slate-50 hover:bg-slate-100 text-[11px] font-medium text-slate-700 border border-slate-200';
           }
